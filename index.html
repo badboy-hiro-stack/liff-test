@@ -1,44 +1,74 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>LIFF Init Test (GAS)</title>
+  <meta charset="utf-8">
+  <title>位置情報打刻システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body>
-  <h2>LIFF Init Test (GAS)</h2>
-  <div id="status">Initializing...</div>
 
-  <!-- iframe を脱出して LIFF のリダイレクトを正しく動かす -->
-  <a id="redirect" href="#" target="_top" style="display:none;">redirect</a>
+<body>
+  <h2>位置情報打刻システム</h2>
+
+  <button id="btnIn">出勤</button>
+  <button id="btnOut">退勤</button>
+
+  <p id="result"></p>
 
   <script>
-    const liffId = "2009445215-yPBcEdg0"; // ← ここに LIFF ID を入れる
+    const liffId = "あなたのLIFF IDを入れる";
+    const gasUrl = "あなたのGAS WebアプリURLを入れる";
 
-    async function main() {
-      document.getElementById("status").innerText = "Calling liff.init...";
+    async function init() {
+      await liff.init({ liffId });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      document.getElementById("btnIn").onclick = () => send("出勤");
+      document.getElementById("btnOut").onclick = () => send("退勤");
+    }
+
+    async function send(type) {
+      document.getElementById("result").innerText = "位置情報取得中…";
 
       try {
-        await liff.init({ liffId });
+        const pos = await liff.getCurrentPosition();
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
 
-        document.getElementById("status").innerText = "LIFF init SUCCESS";
+        const profile = await liff.getProfile();
 
-        console.log("isInClient:", liff.isInClient());
-        console.log("OS:", liff.getOS());
-      } catch (err) {
-        document.getElementById("status").innerText = "LIFF init FAILED";
-        console.error("LIFF init error:", err);
+        const payload = {
+          type: type,
+          lineId: profile.userId,
+          name: profile.displayName,
+          lat: lat,
+          lng: lng
+        };
 
-        // ★ GAS の iframe 内では LIFF のリダイレクトがブロックされるため
-        //   target="_top" で iframe を脱出して再読み込みする
-        const url = location.href;
-        const a = document.getElementById("redirect");
-        a.href = url;
-        a.click();
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+
+        if (json.status === "success") {
+          document.getElementById("result").innerText =
+            `【成功】${json.message}\n地点：${json.point}\n距離：${Math.floor(json.distance)}m`;
+        } else {
+          document.getElementById("result").innerText =
+            `【エラー】${json.message}\n距離：${Math.floor(json.distance)}m`;
+        }
+
+      } catch (e) {
+        document.getElementById("result").innerText = "エラーが発生しました：" + e;
       }
     }
 
-    main();
+    init();
   </script>
 </body>
 </html>
