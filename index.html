@@ -16,8 +16,34 @@
 
   <script>
     const liffId = "2009445215-yPBcEdg0";
-    const gasUrl = "https://badboy-hiro-stack.github.io/liff-test/";
+    const gasUrl = "あなたのGAS WebアプリURLを入れる";  // ←ここは必ずGASのURLに直してください
 
+    // ▼ 位置情報取得（LIFF v2 正式対応版）
+    async function getLocation() {
+      // ① 権限確認
+      const permission = await liff.permission.query({ scope: "geolocation" });
+
+      // ② 権限がなければリクエスト
+      if (permission.state !== "granted") {
+        const req = await liff.permission.request({ scope: "geolocation" });
+        if (req.state !== "granted") {
+          throw "位置情報の権限がありません。";
+        }
+      }
+
+      // ③ geolocation API で位置情報取得
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+          }),
+          err => reject(err)
+        );
+      });
+    }
+
+    // ▼ LIFF 初期化
     async function init() {
       await liff.init({ liffId });
 
@@ -30,16 +56,20 @@
       document.getElementById("btnOut").onclick = () => send("退勤");
     }
 
+    // ▼ 打刻処理
     async function send(type) {
       document.getElementById("result").innerText = "位置情報取得中…";
 
       try {
-        const pos = await liff.getLocation();
+        // 位置情報取得
+        const pos = await getLocation();
         const lat = pos.latitude;
         const lng = pos.longitude;
 
+        // LINEプロフィール取得
         const profile = await liff.getProfile();
 
+        // 送信データ
         const payload = {
           type: type,
           lineId: profile.userId,
@@ -48,6 +78,7 @@
           lng: lng
         };
 
+        // GASへ送信
         const res = await fetch(gasUrl, {
           method: "POST",
           body: JSON.stringify(payload)
@@ -55,6 +86,7 @@
 
         const json = await res.json();
 
+        // 結果表示
         if (json.status === "success") {
           document.getElementById("result").innerText =
             `【成功】${json.message}\n地点：${json.point}\n距離：${Math.floor(json.distance)}m`;
@@ -72,3 +104,4 @@
   </script>
 </body>
 </html>
+
