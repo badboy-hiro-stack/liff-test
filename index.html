@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>LIFF Init Test (GAS)</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>LIFF Init Test (GAS)</h2>
+  <div id="status">Initializing...</div>
+
+  <!-- iframe を脱出して LIFF のリダイレクトを正しく動かす -->
+  <a id="redirect" href="#" target="_top" style="display:none;">redirect</a>
+
+  <script>
+    const liffId = "2009445215-yPBcEdg0"; // ← ここに LIFF ID を入れる
+
+    async function main() {
+      document.getElementById("status").innerText = "Calling liff.init...";
+
+      try {
+        await liff.init({ liffId });
+
+        document.getElementById("status").innerText = "LIFF init SUCCESS";
+
+        console.log("isInClient:", liff.isInClient());
+        console.log("OS:", liff.getOS());
+      } catch (err) {
+        document.getElementById("status").innerText = "LIFF init FAILED";
+        console.error("LIFF init error:", err);
+
+        // ★ GAS の iframe 内では LIFF のリダイレクトがブロックされるため
+        //   target="_top" で iframe を脱出して再読み込みする
+        const url = location.href;
+        const a = document.getElementById("redirect");
+        a.href = url;
+        a.click();
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
