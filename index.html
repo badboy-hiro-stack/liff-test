@@ -16,29 +16,17 @@
 
   <script>
     const liffId = "2009445215-yPBcEdg0";
-    const gasUrl = "https://badboy-hiro-stack.github.io/liff-test/";  // ←ここは必ずGASのURLに直してください
+    const gasUrl = "https://badboy-hiro-stack.github.io/liff-test/";  // ←ここを必ず修正
 
-    // ▼ 位置情報取得（LIFF v2 正式対応版）
+    // ▼ 位置情報取得（permission API 不要）
     async function getLocation() {
-      // ① 権限確認
-      const permission = await liff.permission.query({ scope: "geolocation" });
-
-      // ② 権限がなければリクエスト
-      if (permission.state !== "granted") {
-        const req = await liff.permission.request({ scope: "geolocation" });
-        if (req.state !== "granted") {
-          throw "位置情報の権限がありません。";
-        }
-      }
-
-      // ③ geolocation API で位置情報取得
       return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
           pos => resolve({
             latitude: pos.coords.latitude,
             longitude: pos.coords.longitude
           }),
-          err => reject(err)
+          err => reject("位置情報が取得できませんでした：" + err.message)
         );
       });
     }
@@ -96,7 +84,7 @@
         }
 
       } catch (e) {
-        document.getElementById("result").innerText = "エラーが発生しました：" + e;
+        document.getElementById("result").innerText = "エラー：" + e;
       }
     }
 
@@ -104,4 +92,5 @@
   </script>
 </body>
 </html>
+
 
