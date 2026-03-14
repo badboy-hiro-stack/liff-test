@@ -34,9 +34,9 @@
       document.getElementById("result").innerText = "位置情報取得中…";
 
       try {
-        const pos = await liff.getCurrentPosition();
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
+        const pos = await liff.getLocation();
+        const lat = pos.latitude;
+        const lng = pos.longitude;
 
         const profile = await liff.getProfile();
 
