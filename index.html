@@ -6,35 +6,44 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     font-size: 22px;
     text-align: center;
   }
 
+  button {
+    margin: 0;            /* ブラウザ標準の余白を消す */
+  }
+
   .row {
     margin: 15px 0;
+    display: flex;
+    justify-content: center;
   }
 
   /* 出勤・退勤を横並びにする */
   .horizontal {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+    gap: 10px;            /* 間隔はここでだけ管理 */
   }
 
-  /* ボタンの幅を休憩ボタンと揃える（80%） */
   .btn.big {
-    width: 80%;
+    width: 80%;           /* 基準幅：休憩ボタンと同じ */
     padding: 20px;
     font-size: 24px;
     border-radius: 10px;
   }
 
-  /* 横並びの時だけ幅を半分にする */
+  /* 横並びのときは「行の幅を2分割」して揃える */
   .horizontal .btn.big {
-    width: 40%;
+    width: 50%;
+    max-width: 200px;     /* 好みで調整：左右をきっちり同じにする */
   }
 </style>
+
 <body>
   <h2>位置情報打刻システム</h2>
 
