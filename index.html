@@ -5,12 +5,45 @@
   <title>位置情報打刻システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
+<style>
+  body {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .row {
+    margin: 15px 0;
+  }
+
+  .btn.big {
+    width: 80%;
+    padding: 20px;
+    font-size: 24px;
+    border-radius: 10px;
+  }
+</style>
 
 <body>
   <h2>位置情報打刻システム</h2>
 
-  <button id="btnIn">出勤</button>
-  <button id="btnOut">退勤</button>
+  <body>
+  <h2>位置情報打刻システム</h2>
+
+  <div class="row">
+    <button class="btn big" id="btnIn">出勤</button>
+    <button class="btn big" id="btnOut">退勤</button>
+  </div>
+
+  <div class="row">
+    <button class="btn big" id="btnBreakStart">休憩開始</button>
+  </div>
+
+  <div class="row">
+    <button class="btn big" id="btnBreakEnd">休憩終了</button>
+  </div>
+
+  <p id="result"></p>
+</body>
 
   <p id="result"></p>
 
