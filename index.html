@@ -16,7 +16,7 @@
   }
 
   button {
-    margin: 0;            /* ブラウザ標準の余白を消す */
+    margin: 0;
   }
 
   .row {
@@ -25,25 +25,26 @@
     justify-content: center;
   }
 
-  /* 出勤・退勤を横並びにする */
-  .horizontal {
-    gap: 10px;            /* 間隔はここでだけ管理 */
-  }
-
+  /* 休憩ボタンと同じ基準幅 */
   .btn.big {
-    width: 80%;           /* 基準幅：休憩ボタンと同じ */
+    width: 80%;
     padding: 20px;
     font-size: 24px;
     border-radius: 10px;
   }
 
-  /* 横並びのときは「行の幅を2分割」して揃える */
+  /* 出勤・退勤を横並びにしても幅が揃う */
+  .horizontal {
+    width: 80%;              /* ← ここが重要！ */
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+  }
+
   .horizontal .btn.big {
-    width: 100%;
-    max-width: 200px;     /* 好みで調整：左右をきっちり同じにする */
+    width: 50%;              /* 80% の枠を 2 分割 */
   }
 </style>
-
 <body>
   <h2>位置情報打刻システム</h2>
 
