@@ -7,7 +7,7 @@
 </head>
 <style>
   body {
-    font-size: 20px;
+    font-size: 22px;
     text-align: center;
   }
 
@@ -15,32 +15,38 @@
     margin: 15px 0;
   }
 
+  /* 出勤・退勤を横並びにする */
+  .horizontal {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
   .btn.big {
-    width: 80%;
+    width: 40%;
     padding: 20px;
     font-size: 24px;
     border-radius: 10px;
   }
 </style>
-
 <body>
   <h2>位置情報打刻システム</h2>
 
-  <div class="row">
+  <!-- 出勤・退勤（横並び） -->
+  <div class="row horizontal">
     <button class="btn big" id="btnIn">出勤</button>
     <button class="btn big" id="btnOut">退勤</button>
   </div>
 
+  <!-- 休憩開始（縦） -->
   <div class="row">
     <button class="btn big" id="btnBreakStart">休憩開始</button>
   </div>
 
+  <!-- 休憩終了（縦） -->
   <div class="row">
     <button class="btn big" id="btnBreakEnd">休憩終了</button>
   </div>
-
-  <p id="result"></p>
-</body>
 
   <p id="result"></p>
 
