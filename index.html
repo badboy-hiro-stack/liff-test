@@ -148,8 +148,9 @@
         
           // 出勤・退勤 → 地点と距離を表示
           if (json.action === "clock_in" || json.action === "clock_out") {
+            const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
-              `【成功】${json.message}\n地点：${json.point}\n距離：${Math.floor(json.distance)}m`;
+              `【成功】${json.message}\n地点：${json.point}\n距離：${dist}m`;
           }
         
           // 休憩開始・休憩終了 → 地点・距離は非表示
@@ -158,10 +159,12 @@
           }
         
         } else {
-          // ▼ エラー時（距離は出勤・退勤のみ表示）
+        
+          // ▼ エラー時（出勤・退勤のみ距離を表示）
           if (json.action === "clock_in" || json.action === "clock_out") {
+            const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
-              `【エラー】${json.message}\n距離：${Math.floor(json.distance)}m`;
+              `【エラー】${json.message}\n距離：${dist}m`;
           } else {
             resultText = `【エラー】${json.message}`;
           }
