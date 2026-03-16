@@ -72,6 +72,9 @@
     <button class="btn big" id="btnBreakEnd">休憩終了</button>
   </div>
 
+  <!-- ステータス表示 -->
+  <div id="status" style="font-size: 28px; font-weight: bold; margin-top: 15px;"></div>
+
   <p id="result"></p>
 
   <script>
@@ -138,17 +141,58 @@
         const json = await res.json();
 
         // 結果表示
+        let resultText = "";
+
+        // ▼ 成功時
         if (json.status === "success") {
-          document.getElementById("result").innerText =
-            `【成功】${json.message}\n地点：${json.point}\n距離：${Math.floor(json.distance)}m`;
+        
+          // 出勤・退勤 → 地点と距離を表示
+          if (json.action === "clock_in" || json.action === "clock_out") {
+            resultText =
+              `【成功】${json.message}\n地点：${json.point}\n距離：${Math.floor(json.distance)}m`;
+          }
+        
+          // 休憩開始・休憩終了 → 地点・距離は非表示
+          if (json.action === "break_start" || json.action === "break_end") {
+            resultText = `【成功】${json.message}`;
+          }
+        
         } else {
-          document.getElementById("result").innerText =
-            `【エラー】${json.message}\n距離：${Math.floor(json.distance)}m`;
+          // ▼ エラー時（距離は出勤・退勤のみ表示）
+          if (json.action === "clock_in" || json.action === "clock_out") {
+            resultText =
+              `【エラー】${json.message}\n距離：${Math.floor(json.distance)}m`;
+          } else {
+            resultText = `【エラー】${json.message}`;
+          }
         }
+        
+        document.getElementById("result").innerText = resultText;
 
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
       }
+    }
+
+    const statusBox = document.getElementById("status");
+
+    if (json.action === "clock_in") {
+      statusBox.innerText = "出勤中";
+      statusBox.style.color = "green";
+    }
+    
+    if (json.action === "break_start") {
+      statusBox.innerText = "休憩中";
+      statusBox.style.color = "orange";
+    }
+    
+    if (json.action === "break_end") {
+      statusBox.innerText = "出勤中";
+      statusBox.style.color = "green";
+    }
+    
+    if (json.action === "clock_out") {
+      statusBox.innerText = "";
     }
 
     init();
