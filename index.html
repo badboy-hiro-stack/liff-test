@@ -113,16 +113,16 @@
     // ▼ 打刻処理
     async function send(type) {
       document.getElementById("result").innerText = "位置情報取得中…";
-
+    
       try {
         // 位置情報取得
         const pos = await getLocation();
         const lat = pos.latitude;
         const lng = pos.longitude;
-
+    
         // LINEプロフィール取得
         const profile = await liff.getProfile();
-
+    
         // 送信データ
         const payload = {
           type: type,
@@ -131,36 +131,54 @@
           lat: lat,
           lng: lng
         };
-
+    
         // GASへ送信
         const res = await fetch(gasUrl, {
           method: "POST",
           body: JSON.stringify(payload)
         });
-
+    
         const json = await res.json();
-
-        // 結果表示
+    
+        // ▼ ステータス表示（ここに移動！）
+        const statusBox = document.getElementById("status");
+    
+        if (json.action === "clock_in") {
+          statusBox.innerText = "出勤中";
+          statusBox.style.color = "green";
+        }
+    
+        if (json.action === "break_start") {
+          statusBox.innerText = "休憩中";
+          statusBox.style.color = "orange";
+        }
+    
+        if (json.action === "break_end") {
+          statusBox.innerText = "出勤中";
+          statusBox.style.color = "green";
+        }
+    
+        if (json.action === "clock_out") {
+          statusBox.innerText = "";
+        }
+    
+        // ▼ 結果表示
         let resultText = "";
-
-        // ▼ 成功時
+    
         if (json.status === "success") {
-        
-          // 出勤・退勤 → 地点と距離を表示
+    
           if (json.action === "clock_in" || json.action === "clock_out") {
             const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
               `【成功】${json.message}\n地点：${json.point}\n距離：${dist}m`;
           }
-        
-          // 休憩開始・休憩終了 → 地点・距離は非表示
+    
           if (json.action === "break_start" || json.action === "break_end") {
             resultText = `【成功】${json.message}`;
           }
-        
+    
         } else {
-        
-          // ▼ エラー時（出勤・退勤のみ距離を表示）
+    
           if (json.action === "clock_in" || json.action === "clock_out") {
             const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
@@ -169,35 +187,13 @@
             resultText = `【エラー】${json.message}`;
           }
         }
-        
+    
         document.getElementById("result").innerText = resultText;
-
+    
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
       }
     }
-
-    const statusBox = document.getElementById("status");
-
-    if (json.action === "clock_in") {
-      statusBox.innerText = "出勤中";
-      statusBox.style.color = "green";
-    }
-    
-    if (json.action === "break_start") {
-      statusBox.innerText = "休憩中";
-      statusBox.style.color = "orange";
-    }
-    
-    if (json.action === "break_end") {
-      statusBox.innerText = "出勤中";
-      statusBox.style.color = "green";
-    }
-    
-    if (json.action === "clock_out") {
-      statusBox.innerText = "";
-    }
-
     init();
   </script>
 </body>
