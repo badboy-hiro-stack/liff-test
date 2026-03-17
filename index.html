@@ -72,6 +72,11 @@
     <button class="btn big" id="btnBreakEnd">休憩終了</button>
   </div>
 
+  <!-- 再出勤ボタンの表示 -->
+  <button id="btnForceIn" style="display:none; margin-top:10px;">
+    再出勤する
+  </button>
+
   <!-- ステータス表示 -->
   <div id="status" style="font-size: 60px; font-weight: bold; margin-top: 15px;"></div>
 
@@ -103,6 +108,10 @@
         liff.login();
         return;
       }
+
+      // ▼ LIFF起動時に現在のステータスを取得
+      const profile = await liff.getProfile();
+      loadCurrentStatus(profile.userId);
 
       document.getElementById("btnIn").onclick = () => send("出勤");
       document.getElementById("btnOut").onclick = () => send("退勤");
@@ -140,26 +149,43 @@
     
         const json = await res.json();
     
-        // ▼ ステータス表示（ここに移動！）
+        // ▼ ★★★ ここが重要：confirm の処理 ★★★
+        if (json.status === "confirm") {
+          document.getElementById("result").innerText = `【確認】${json.message}`;
+    
+          // 再出勤ボタンを表示
+          const btn = document.getElementById("btnForceIn");
+          btn.style.display = "block";
+    
+          // ボタン押下で force:true を付けて再送信
+          btn.onclick = () => sendForceClockIn(profile.userId, lat, lng);
+    
+          return; // confirm の場合はここで終了
+        }
+    
+        // ▼ ステータス表示（成功したときだけ更新）
         const statusBox = document.getElementById("status");
-    
-        if (json.action === "clock_in") {
-          statusBox.innerText = "出勤中";
-          statusBox.style.color = "green";
-        }
-    
-        if (json.action === "break_start") {
-          statusBox.innerText = "休憩中";
-          statusBox.style.color = "orange";
-        }
-    
-        if (json.action === "break_end") {
-          statusBox.innerText = "出勤中";
-          statusBox.style.color = "green";
-        }
-    
-        if (json.action === "clock_out") {
-          statusBox.innerText = "";
+        
+        if (json.status === "success") {
+        
+          if (json.action === "clock_in") {
+            statusBox.innerText = "出勤中";
+            statusBox.style.color = "green";
+          }
+        
+          if (json.action === "break_start") {
+            statusBox.innerText = "休憩中";
+            statusBox.style.color = "orange";
+          }
+        
+          if (json.action === "break_end") {
+            statusBox.innerText = "出勤中";
+            statusBox.style.color = "green";
+          }
+        
+          if (json.action === "clock_out") {
+            statusBox.innerText = "";
+          }
         }
     
         // ▼ 結果表示
@@ -192,6 +218,56 @@
     
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
+      }
+    }
+
+    // 再出勤（force:true）を送る関数を追加
+    async function sendForceClockIn(lineId, lat, lng) {
+      const payload = {
+        type: "出勤",
+        lineId: lineId,
+        lat: lat,
+        lng: lng,
+        force: true
+      };
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    
+      const json = await res.json();
+    
+      // ボタンを隠す
+      document.getElementById("btnForceIn").style.display = "none";
+    
+      // 結果表示
+      document.getElementById("result").innerText = `【成功】${json.message}`;
+    }
+
+    // 現在のステータスを読み込む関数を追加
+    async function loadCurrentStatus(lineId) {
+      const payload = {
+        type: "status",
+        lineId: lineId
+      };
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    
+      const json = await res.json();
+      const statusBox = document.getElementById("status");
+    
+      if (json.status === "work") {
+        statusBox.innerText = "出勤中";
+        statusBox.style.color = "green";
+      } else if (json.status === "break") {
+        statusBox.innerText = "休憩中";
+        statusBox.style.color = "orange";
+      } else {
+        statusBox.innerText = "";
       }
     }
     init();
