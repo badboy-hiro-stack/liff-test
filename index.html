@@ -74,7 +74,7 @@
 
   <!-- 再出勤ボタンの表示 -->
   <div class="row">
-    <button class="btn big" id="btnForceIn">再出勤する</button>
+    <button class="btn big" id="btnForceIn" style="display:none;">再出勤する</button>
   </div>
 
   <!-- ステータス表示 -->
@@ -108,6 +108,9 @@
         liff.login();
         return;
       }
+
+      // ▼ 起動時に必ず再出勤ボタンを隠す
+      document.getElementById("btnForceIn").style.display = "none";
 
       // ▼ LIFF起動時に現在のステータスを取得
       const profile = await liff.getProfile();
