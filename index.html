@@ -61,55 +61,42 @@
   body {
     font-size: 36px;
     text-align: center;
-    background: #f5f7fa; /* 柔らかい背景色 */
+    background: #f5f7fa;
     padding: 20px;
     font-family: sans-serif;
   }
 
-  button {
-    margin: 0;
+  /* 2×2 グリッド配置 */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2列 */
+    gap: 25px; /* ボタン間隔 */
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 30px;
   }
 
-  /* ボタン行の間隔を広げる */
-  .row {
-    margin: 30px 0; /* ← 15px → 30px に拡大 */
-    display: flex;
-    justify-content: center;
-  }
-
-  /* ボタンの基本デザイン */
+  /* ボタンデザイン */
   .btn.big {
-    width: 80%;
-    padding: 25px;
+    width: 100%;
+    padding: 40px 0; /* 大きくする */
     font-size: 40px;
-    border-radius: 14px;
+    border-radius: 18px;
     border: none;
     background: #4a90e2;
     color: white;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* 影を追加 */
-    transition: 0.15s ease; /* アニメーション */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
   }
 
   /* 押した時の視覚効果 */
   .btn.big:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
     background: #357ABD;
     box-shadow: 0 3px 6px rgba(0,0,0,0.2);
   }
 
-  /* 出勤・退勤の横並び */
-  .horizontal {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    gap: 25px; /* ← 10px → 25px に拡大 */
-  }
-
-  .horizontal .btn.big {
-    width: 50%;
-  }
-
-  /* ステータス表示をカード風に */
+  /* ステータス表示 */
   #status {
     margin-top: 20px;
     padding: 15px;
@@ -131,22 +118,28 @@
   }
 </style>
 
+
 <body>
   <h2>打刻システム(GPS対応)</h2>
 
   <!-- 出勤・退勤（横並び） -->
-  <div class="row horizontal">
+<!--   <div class="row horizontal">
     <button class="btn big" id="btnIn">出勤</button>
     <button class="btn big" id="btnOut">退勤</button>
   </div>
-
-  <!-- 休憩開始（縦） -->
   <div class="row">
     <button class="btn big" id="btnBreakStart">休憩開始</button>
   </div>
-
-  <!-- 休憩終了（縦） -->
   <div class="row">
+    <button class="btn big" id="btnBreakEnd">休憩終了</button>
+  </div> -->
+
+  <!-- 2×2の表示 -->
+  <div class="grid">
+    <button class="btn big" id="btnIn">出勤</button>
+    <button class="btn big" id="btnOut">退勤</button>
+  
+    <button class="btn big" id="btnBreakStart">休憩開始</button>
     <button class="btn big" id="btnBreakEnd">休憩終了</button>
   </div>
 
