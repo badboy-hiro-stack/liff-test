@@ -97,7 +97,7 @@
     transition: 0.15s ease;
   }
 
-  .btn.force:time {
+  .btn.time:active {
     transform: scale(0.95);
     background: #13bf80;
   }
@@ -169,6 +169,10 @@
     <button class="btn big" id="btnBreakEnd">休憩終了</button>
   </div>
 
+  <div class="row">
+    <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
+  </div>
+  
   <!-- 再出勤ボタンの表示 -->
   <div class="row">
     <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
