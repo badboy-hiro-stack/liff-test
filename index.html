@@ -5,54 +5,6 @@
   <title>新世代のGPS打刻システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<!-- <style>
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    font-size: 36px;
-    text-align: center;
-  }
-
-  button {
-    margin: 0;
-  }
-
-  .row {
-    margin: 15px 0;
-    display: flex;
-    justify-content: center;
-  }
-
-  /* 休憩ボタンと同じ基準幅 */
-  .btn.big {
-    width: 80%;
-    padding: 20px;
-    font-size: 40px;
-    border-radius: 10px;
-  }
-
-  /* 出勤・退勤を横並びにしても幅が揃う */
-  .horizontal {
-    width: 80%;              /* ← ここが重要！ */
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-  }
-
-  .horizontal .btn.big {
-    width: 50%;              /* 80% の枠を 2 分割 */
-  }
-
-  #result {
-    font-size: 36px;
-    margin-top: 20px;
-    line-height: 1.6;
-    white-space: pre-line;
-  }
-</style> -->
-  
 <style>
   * {
     box-sizing: border-box;
@@ -130,6 +82,26 @@
     background: #cf6d1a;
   }
 
+    /* 勤務状態ボタン（単独表示用） */
+  .btn.time {
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 90%;
+    padding: 30px;
+    font-size: 36px;
+    border-radius: 14px;
+    border: none;
+    background: #22e69e;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  .btn.force:active {
+    transform: scale(0.95);
+    background: #13bf80;
+  }
+
   #result {
     font-size: 36px;
     margin-top: 20px;
@@ -137,23 +109,56 @@
     white-space: pre-line;
     min-height: 60px;
   }
-</style>
 
+  /* ▼ 月選択ドロップダウン */
+.month-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ▼ タイムカード表 */
+.timecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.timecard-table th {
+  background: #4CAF50;
+  color: white;
+  padding: 8px;
+  position: sticky;
+  top: 0;
+}
+
+.timecard-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* ▼ ストライプ */
+.timecard-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* ▼ 合計欄 */
+.total-card {
+  margin-top: 15px;
+  padding: 15px;
+  background: #eef7ff;
+  border-radius: 8px;
+  border: 1px solid #bcdcff;
+  font-size: 18px;
+}
+
+</style>
 
 <body>
   <h2>打刻システム(GPS対応)</h2>
-
-  <!-- 出勤・退勤（横並び） -->
-<!--   <div class="row horizontal">
-    <button class="btn big" id="btnIn">出勤</button>
-    <button class="btn big" id="btnOut">退勤</button>
-  </div>
-  <div class="row">
-    <button class="btn big" id="btnBreakStart">休憩開始</button>
-  </div>
-  <div class="row">
-    <button class="btn big" id="btnBreakEnd">休憩終了</button>
-  </div> -->
 
   <!-- 2×2の表示 -->
   <div class="grid">
@@ -174,6 +179,13 @@
 
   <p id="result"></p>
 
+  <div id="timeCard" style="display:none; margin-top:20px;">
+    <div style="margin-bottom:10px;">
+      <select id="monthSelect" onchange="changeMonth()"></select>
+    </div>
+    <div id="timeCardContent"></div>
+  </div>
+  
   <script>
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbwND9ZrLBq4KzUqp-8jrp7JBmREJCHRdkuQripZGiLSUIZBOxNlJ-QclgDS0ci6e8B_/exec";  // ←ここを必ず修正
@@ -320,30 +332,6 @@
       }
     }
 
-/*     // 再出勤（force:true）を送る関数を追加
-    async function sendForceClockIn(lineId, lat, lng) {
-      const payload = {
-        type: "出勤",
-        lineId: lineId,
-        lat: lat,
-        lng: lng,
-        force: true
-      };
-    
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    
-      const json = await res.json();
-    
-      // ボタンを隠す
-      document.getElementById("btnForceIn").style.display = "none";
-    
-      // 結果表示
-      document.getElementById("result").innerText = `【成功】${json.message}`;
-    } */
-
     // 再出勤（force:true）を送る関数
     async function sendForceClockIn(lineId, lat, lng) {
       const payload = {
@@ -407,7 +395,109 @@
         statusBox.innerText = "";
       }
     }
+
+    // タイムカード画面表示処理
+    async function showTimeCard() {
+      // ▼ LINE ID を取得
+      const profile = await liff.getProfile();
+      const lineId = profile.userId;
+    
+      // ▼ 今月の年月を取得
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+    
+      // ▼ GAS にリクエスト
+      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status !== "success") {
+        alert(json.message);
+        return;
+      }
+    
+      // ▼ タイムカード画面を描画
+      renderTimeCard(json.data, json.total, year, month);
+    }
+
+    // タイムカード画面の描画
+    function renderTimeCard(rows, total, year, month) {
+      const container = document.getElementById("timeCardContent");
+      container.innerHTML = `
+        <h2>${year}年${month}月の勤務状況</h2>
+    
+        <table border="1">
+          <tr>
+            <th>日付</th>
+            <th>出勤</th>
+            <th>退勤</th>
+            <th>労働</th>
+            <th>休憩</th>
+            <th>残業</th>
+          </tr>
+          ${rows.map(r => `
+            <tr>
+              <td>${r.date}</td>
+              <td>${r.clockIn}</td>
+              <td>${r.clockOut}</td>
+              <td>${r.workMinutes}分</td>
+              <td>${r.breakMinutes}分</td>
+              <td>${r.overMinutes}分</td>
+            </tr>
+          `).join("")}
+        </table>
+    
+        <h3>合計</h3>
+        <p>労働時間：${total.work}分</p>
+        <p>休憩時間：${total.break}分</p>
+        <p>残業時間：${total.over}分</p>
+      `;
+    }
+
+    // 月選択ドロップダウンを生成
+    function setupMonthSelect() {
+      const select = document.getElementById("monthSelect");
+      const now = new Date();
+      const year = now.getFullYear();
+    
+      // 過去12ヶ月分を表示
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(year, now.getMonth() - i, 1);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+    
+        const option = document.createElement("option");
+        option.value = `${y}-${m}`;
+        option.textContent = `${y}年${m}月`;
+    
+        if (i === 0) option.selected = true; // 今月をデフォルト
+        select.appendChild(option);
+      }
+    }
+
+    // 月変更時の処理
+    async function changeMonth() {
+      const value = document.getElementById("monthSelect").value;
+      const [year, month] = value.split("-");
+    
+      const profile = await liff.getProfile();
+      const lineId = profile.userId;
+    
+      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status !== "success") {
+        alert(json.message);
+        return;
+      }
+    
+      renderTimeCard(json.data, json.total, year, month);
+    }
+
     init();
+    setupMonthSelect();
   </script>
 </body>
 </html>
