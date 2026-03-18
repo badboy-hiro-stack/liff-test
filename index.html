@@ -194,20 +194,20 @@
         // ▼ 結果表示
         let resultText = "";
     
-        if (json.status === "success") {
-    
+        if (json.status === "success" || json.status === "complete" || json.status === "continue") {
+      
           if (json.action === "clock_in" || json.action === "clock_out") {
             const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
               `【成功】${json.message}\n地点：${json.point}\n距離：${dist}m`;
           }
-    
+        
           if (json.action === "break_start" || json.action === "break_end") {
             resultText = `【成功】${json.message}`;
           }
-    
+        
         } else {
-    
+        
           if (json.action === "clock_in" || json.action === "clock_out") {
             const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
             resultText =
