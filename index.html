@@ -109,6 +109,24 @@
     min-width: 300px;
   }
 
+  /* 再出勤ボタン（単独表示用） */
+  .btn.force {
+    width: 90%;
+    padding: 30px;
+    font-size: 36px;
+    border-radius: 14px;
+    border: none;
+    background: #e67e22; /* オレンジ系で注意喚起 */
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  .btn.force:active {
+    transform: scale(0.95);
+    background: #cf6d1a;
+  }
+
   #result {
     font-size: 36px;
     margin-top: 20px;
@@ -145,7 +163,7 @@
 
   <!-- 再出勤ボタンの表示 -->
   <div class="row">
-    <button class="btn big" id="btnForceIn" style="display:none;">再出勤する</button>
+    <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
   </div>
 
   <!-- ステータス表示 -->
