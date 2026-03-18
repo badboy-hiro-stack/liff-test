@@ -5,7 +5,7 @@
   <title>新世代のGPS打刻システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<style>
+<!-- <style>
   * {
     box-sizing: border-box;
   }
@@ -51,8 +51,86 @@
     line-height: 1.6;
     white-space: pre-line;
   }
-</style>
+</style> -->
   
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-size: 36px;
+    text-align: center;
+    background: #f5f7fa; /* 柔らかい背景色 */
+    padding: 20px;
+    font-family: sans-serif;
+  }
+
+  button {
+    margin: 0;
+  }
+
+  /* ボタン行の間隔を広げる */
+  .row {
+    margin: 30px 0; /* ← 15px → 30px に拡大 */
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ボタンの基本デザイン */
+  .btn.big {
+    width: 80%;
+    padding: 25px;
+    font-size: 40px;
+    border-radius: 14px;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* 影を追加 */
+    transition: 0.15s ease; /* アニメーション */
+  }
+
+  /* 押した時の視覚効果 */
+  .btn.big:active {
+    transform: scale(0.96);
+    background: #357ABD;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  }
+
+  /* 出勤・退勤の横並び */
+  .horizontal {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    gap: 25px; /* ← 10px → 25px に拡大 */
+  }
+
+  .horizontal .btn.big {
+    width: 50%;
+  }
+
+  /* ステータス表示をカード風に */
+  #status {
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: inline-block;
+    min-width: 300px;
+  }
+
+  #result {
+    font-size: 36px;
+    margin-top: 20px;
+    line-height: 1.6;
+    white-space: pre-line;
+    min-height: 60px;
+  }
+</style>
+
 <body>
   <h2>打刻システム(GPS対応)</h2>
 
