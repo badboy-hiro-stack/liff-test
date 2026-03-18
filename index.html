@@ -153,16 +153,16 @@
         const json = await res.json();
     
         // ▼ ★★★ ここが重要：confirm の処理 ★★★
-        if (json.status === "confirm") {
+        if (json.status === "confirm" && json.action === "clock_in") {
           document.getElementById("result").innerText = `【確認】${json.message}`;
-    
+        
           // 再出勤ボタンを表示
           const btn = document.getElementById("btnForceIn");
           btn.style.display = "block";
-    
+        
           // ボタン押下で force:true を付けて再送信
           btn.onclick = () => sendForceClockIn(profile.userId, lat, lng);
-    
+        
           return; // confirm の場合はここで終了
         }
     
