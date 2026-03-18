@@ -169,7 +169,11 @@
         // ▼ ステータス表示（成功したときだけ更新）
         const statusBox = document.getElementById("status");
         
-        if (json.status === "success") {
+        if (
+          json.status === "success" ||
+          json.status === "complete" ||
+          json.status === "continue"
+        ) {
         
           if (json.action === "clock_in") {
             statusBox.innerText = "出勤中";
