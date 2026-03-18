@@ -488,7 +488,7 @@
       const profile = await liff.getProfile();
       const lineId = profile.userId;
     
-      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       const json = await res.json();
     
