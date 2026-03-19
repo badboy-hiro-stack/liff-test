@@ -208,6 +208,106 @@
       });
     }
 
+    // タイムカード画面表示処理
+    async function showTimeCard() {
+      // ▼ LINE ID を取得
+      const profile = await liff.getProfile();
+      const lineId = profile.userId;
+    
+      // ▼ 今月の年月を取得
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+    
+      // ▼ GAS にリクエスト
+      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status !== "success") {
+        alert(json.message);
+        return;
+      }
+    
+      // ▼ タイムカード画面を描画
+      renderTimeCard(json.data, json.total, year, month);
+    }
+
+    // タイムカード画面の描画
+    function renderTimeCard(rows, total, year, month) {
+      const container = document.getElementById("timeCardContent");
+      container.innerHTML = `
+        <h2>${year}年${month}月の勤務状況</h2>
+    
+        <table border="1">
+          <tr>
+            <th>日付</th>
+            <th>出勤</th>
+            <th>退勤</th>
+            <th>労働</th>
+            <th>休憩</th>
+            <th>残業</th>
+          </tr>
+          ${rows.map(r => `
+            <tr>
+              <td>${r.date}</td>
+              <td>${r.clockIn}</td>
+              <td>${r.clockOut}</td>
+              <td>${r.workMinutes}分</td>
+              <td>${r.breakMinutes}分</td>
+              <td>${r.overMinutes}分</td>
+            </tr>
+          `).join("")}
+        </table>
+    
+        <h3>合計</h3>
+        <p>労働時間：${total.work}分</p>
+        <p>休憩時間：${total.break}分</p>
+        <p>残業時間：${total.over}分</p>
+      `;
+    }
+
+    // 月選択ドロップダウンを生成
+    function setupMonthSelect() {
+      const select = document.getElementById("monthSelect");
+      const now = new Date();
+      const year = now.getFullYear();
+    
+      // 過去12ヶ月分を表示
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(year, now.getMonth() - i, 1);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+    
+        const option = document.createElement("option");
+        option.value = `${y}-${m}`;
+        option.textContent = `${y}年${m}月`;
+    
+        if (i === 0) option.selected = true; // 今月をデフォルト
+        select.appendChild(option);
+      }
+    }
+
+    // 月変更時の処理
+    async function changeMonth() {
+      const value = document.getElementById("monthSelect").value;
+      const [year, month] = value.split("-");
+    
+      const profile = await liff.getProfile();
+      const lineId = profile.userId;
+    
+      const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status !== "success") {
+        alert(json.message);
+        return;
+      }
+    
+      renderTimeCard(json.data, json.total, year, month);
+    }
+    
     // ▼ LIFF 初期化
     async function init() {
       await liff.init({ liffId });
@@ -400,107 +500,7 @@
         statusBox.innerText = "";
       }
     }
-
-    // タイムカード画面表示処理
-    async function showTimeCard() {
-      // ▼ LINE ID を取得
-      const profile = await liff.getProfile();
-      const lineId = profile.userId;
     
-      // ▼ 今月の年月を取得
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-    
-      // ▼ GAS にリクエスト
-      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
-      const res = await fetch(url);
-      const json = await res.json();
-    
-      if (json.status !== "success") {
-        alert(json.message);
-        return;
-      }
-    
-      // ▼ タイムカード画面を描画
-      renderTimeCard(json.data, json.total, year, month);
-    }
-
-    // タイムカード画面の描画
-    function renderTimeCard(rows, total, year, month) {
-      const container = document.getElementById("timeCardContent");
-      container.innerHTML = `
-        <h2>${year}年${month}月の勤務状況</h2>
-    
-        <table border="1">
-          <tr>
-            <th>日付</th>
-            <th>出勤</th>
-            <th>退勤</th>
-            <th>労働</th>
-            <th>休憩</th>
-            <th>残業</th>
-          </tr>
-          ${rows.map(r => `
-            <tr>
-              <td>${r.date}</td>
-              <td>${r.clockIn}</td>
-              <td>${r.clockOut}</td>
-              <td>${r.workMinutes}分</td>
-              <td>${r.breakMinutes}分</td>
-              <td>${r.overMinutes}分</td>
-            </tr>
-          `).join("")}
-        </table>
-    
-        <h3>合計</h3>
-        <p>労働時間：${total.work}分</p>
-        <p>休憩時間：${total.break}分</p>
-        <p>残業時間：${total.over}分</p>
-      `;
-    }
-
-    // 月選択ドロップダウンを生成
-    function setupMonthSelect() {
-      const select = document.getElementById("monthSelect");
-      const now = new Date();
-      const year = now.getFullYear();
-    
-      // 過去12ヶ月分を表示
-      for (let i = 0; i < 12; i++) {
-        const d = new Date(year, now.getMonth() - i, 1);
-        const y = d.getFullYear();
-        const m = d.getMonth() + 1;
-    
-        const option = document.createElement("option");
-        option.value = `${y}-${m}`;
-        option.textContent = `${y}年${m}月`;
-    
-        if (i === 0) option.selected = true; // 今月をデフォルト
-        select.appendChild(option);
-      }
-    }
-
-    // 月変更時の処理
-    async function changeMonth() {
-      const value = document.getElementById("monthSelect").value;
-      const [year, month] = value.split("-");
-    
-      const profile = await liff.getProfile();
-      const lineId = profile.userId;
-    
-      const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
-      const res = await fetch(url);
-      const json = await res.json();
-    
-      if (json.status !== "success") {
-        alert(json.message);
-        return;
-      }
-    
-      renderTimeCard(json.data, json.total, year, month);
-    }
-
     init();
     setupMonthSelect();
   </script>
