@@ -147,7 +147,7 @@
   font-size: 18px;
 }
 
-.btn.back {
+.back-button {
   display: inline-block;
   padding: 14px 24px; /* ← 大きく */
   font-size: 22px;    /* ← 読みやすく */
@@ -161,11 +161,11 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 20px ;
 }
 
 th, td {
-  padding: 8px 6px;
+  padding: 12px 8px;
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
