@@ -106,7 +106,7 @@
 .month-select {
   width: 100%;
   padding: 10px;
-  font-size: 18px;
+  font-size: 22px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
@@ -145,6 +145,17 @@
   border-radius: 8px;
   border: 1px solid #bcdcff;
   font-size: 18px;
+}
+
+.btn.back {
+  display: inline-block;
+  padding: 14px 24px; /* ← 大きく */
+  font-size: 22px;    /* ← 読みやすく */
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 20px;
 }
 
 table {
