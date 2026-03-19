@@ -281,9 +281,9 @@
           </tr>
           ${rows.map(r => `
             <tr>
-              <td>${r.date}</td>
-              <td>${r.clockIn}</td>
-              <td>${r.clockOut}</td>
+              <td>${formatDate(r.date)}</td>
+              <td>${formatTime(r.clockIn)}</td>
+              <td>${formatTime(r.clockOut)}</td>
               <td>${r.workMinutes}分</td>
               <td>${r.breakMinutes}分</td>
               <td>${r.overMinutes}分</td>
@@ -545,6 +545,23 @@
       document.getElementById("status").style.display = "block";
       document.getElementById("result").style.display = "block";
     };
+
+    // 日付を YYYY/MM/DD に整形
+    function formatDate(dateString) {
+      const d = new Date(dateString);
+      const year = d.getFullYear();
+      const month = ("0" + (d.getMonth() + 1)).slice(-2);
+      const day = ("0" + d.getDate()).slice(-2);
+      return `${year}/${month}/${day}`;
+    }
+    
+    // 時刻を HH:MM に整形
+    function formatTime(dateString) {
+      const d = new Date(dateString);
+      const hours = ("0" + d.getHours()).slice(-2);
+      const minutes = ("0" + d.getMinutes()).slice(-2);
+      return `${hours}:${minutes}`;
+    }
 
     // ▼ LIFF 初期化
     init();
