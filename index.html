@@ -172,6 +172,10 @@
   <div class="row">
     <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
   </div>
+
+  <div class="row">
+    <button class="btn back" id="btnBack" style="display:none;">戻る</button>
+  </div>
   
   <!-- 再出勤ボタンの表示 -->
   <div class="row">
@@ -210,6 +214,19 @@
 
     // タイムカード画面表示処理
     async function showTimeCard() {
+      // ▼ メイン画面を隠す
+      document.querySelector(".grid").style.display = "none";
+      document.getElementById("btnStatus").style.display = "none";
+      document.getElementById("btnForceIn").style.display = "none";
+      document.getElementById("status").style.display = "none";
+      document.getElementById("result").style.display = "none";
+    
+      // ▼ タイムカード画面を表示
+      document.getElementById("timeCard").style.display = "block";
+    
+      // ▼ ★ 戻るボタンを表示
+      document.getElementById("btnBack").style.display = "block";
+      
       // ▼ LINE ID を取得
       const profile = await liff.getProfile();
       const lineId = profile.userId;
@@ -329,6 +346,7 @@
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始");
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了");
       document.getElementById("btnStatus").onclick = () => showTimeCard();
+      document.getElementById("timeCard").style.display = "none";
     }
 
     // ▼ 打刻処理
@@ -500,7 +518,21 @@
         statusBox.innerText = "";
       }
     }
-    
+
+    // ▼ 戻るボタンの処理（グローバル）
+    document.getElementById("btnBack").onclick = () => {
+      // タイムカード画面を隠す
+      document.getElementById("timeCard").style.display = "none";
+      document.getElementById("btnBack").style.display = "none";
+  
+      // メイン画面を表示
+      document.querySelector(".grid").style.display = "grid";
+      document.getElementById("btnStatus").style.display = "block";
+      document.getElementById("status").style.display = "block";
+      document.getElementById("result").style.display = "block";
+    };
+
+    // ▼ LIFF 初期化
     init();
     setupMonthSelect();
   </script>
