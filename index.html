@@ -241,7 +241,7 @@
     
       // ▼ GAS にリクエスト
       alert("fetch 開始");
-      const url = `${GAS_URL}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
+      const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       alert("fetch 完了");
       const json = await res.json();
