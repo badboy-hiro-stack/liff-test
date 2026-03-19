@@ -241,19 +241,9 @@
       const month = now.getMonth() + 1;
     
       // ▼ GAS にリクエスト
-      alert(
-        "fetch 開始\n" +
-        "gasUrl: " + gasUrl + "\n" +
-        "lineId: " + lineId + "\n" +
-        "year: " + year + "\n" +
-        "month: " + month + "\n" +
-        "生成URL:\n" + `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`
-      );
       const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
-      alert("fetch 完了");
       const json = await res.json();
-      alert("rows length = " + json.data.length);
 
       if (json.status !== "success") {
         alert(json.message);
