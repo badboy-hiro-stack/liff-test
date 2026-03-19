@@ -106,7 +106,7 @@
 .month-select {
   width: 100%;
   padding: 10px;
-  font-size: 22px;
+  font-size: 30px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
@@ -116,7 +116,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  font-size: 16px;
+  font-size: 28px;
 }
 
 .timecard-table th {
