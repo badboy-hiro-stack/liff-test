@@ -1,8 +1,174 @@
-* {
-  box-sizing: border-box;
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-size: 36px;
+    text-align: center;
+    background: #f5f7fa;
+    padding: 20px;
+    font-family: sans-serif;
+  }
+
+  /* 2×2 グリッド配置 */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2列 */
+    gap: 25px; /* ボタン間隔 */
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+
+  /* ボタンデザイン */
+  .btn.big {
+    width: 100%;
+    height: 200px;
+    padding: 40px 0; /* 大きくする */
+    font-size: 40px;
+    border-radius: 18px;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  /* 押した時の視覚効果 */
+  .btn.big:active {
+    transform: scale(0.95);
+    background: #357ABD;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  }
+
+  /* ステータス表示 */
+  #status {
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: inline-block;
+    min-width: 300px;
+  }
+
+  /* 再出勤ボタン（単独表示用） */
+  .btn.force {
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 90%;
+    padding: 30px;
+    font-size: 36px;
+    border-radius: 14px;
+    border: none;
+    background: #e67e22; /* オレンジ系で注意喚起 */
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  .btn.force:active {
+    transform: scale(0.95);
+    background: #cf6d1a;
+  }
+
+    /* 勤務状態ボタン（単独表示用） */
+  .btn.time {
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 90%;
+    padding: 30px;
+    font-size: 36px;
+    border-radius: 14px;
+    border: none;
+    background: #22e69e;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  .btn.time:active {
+    transform: scale(0.95);
+    background: #13bf80;
+  }
+
+  #result {
+    font-size: 36px;
+    margin-top: 20px;
+    line-height: 1.6;
+    white-space: pre-line;
+    min-height: 60px;
+  }
+
+  /* ▼ 月選択ドロップダウン */
+.month-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-body {
-  font-size: 36px;
+/* ▼ タイムカード表 */
+.timecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.timecard-table th {
+  background: #4CAF50;
+  color: white;
+  padding: 8px;
+  position: sticky;
+  top: 0;
+}
+
+.timecard-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* ▼ ストライプ */
+.timecard-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* ▼ 合計欄 */
+.total-card {
+  margin-top: 15px;
+  padding: 15px;
+  background: #eef7ff;
+  border-radius: 8px;
+  border: 1px solid #bcdcff;
+  font-size: 18px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 8px 6px;
   text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
 }
