@@ -209,6 +209,14 @@
       document.getElementById("timeCard").style.display = "none";
     }
 
+    liff.getProfile().then(profile => {
+      const userId = profile.userId;
+    
+      document.getElementById("adminButton").onclick = () => {
+        loadStatusList(userId);
+      };
+    });
+
     // ▼ 打刻処理
     async function send(type) {
       document.getElementById("result").innerText = "位置情報取得中…";
@@ -425,14 +433,6 @@
 
     // ▼ LIFF 初期化
     init();
-
-    liff.getProfile().then(profile => {
-      const userId = profile.userId;
-    
-      document.getElementById("adminButton").onclick = () => {
-        loadStatusList(userId);
-      };
-    });
 
     setupMonthSelect();
   </script>
