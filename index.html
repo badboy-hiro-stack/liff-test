@@ -441,6 +441,22 @@
       renderStatusList(json.data);
     }
 
+    function renderStatusList(list) {
+      const container = document.getElementById("statusList");
+      container.innerHTML = "";
+    
+      list.forEach(item => {
+        container.innerHTML += `
+          <div class="card">
+            <div><strong>${item.name}</strong></div>
+            <div>区分：${item.status}</div>
+            <div>稼働時間：${item.workMinutes}分</div>
+            <div>休憩合計：${item.breakMinutes}分</div>
+          </div>
+        `;
+      });
+    }
+
     // ▼ LIFF 初期化
     init();
 
