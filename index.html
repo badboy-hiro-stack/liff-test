@@ -421,18 +421,18 @@
 
     async function loadStatusList(userId) {
       alert("① loadStatusList START");
-      
+          
       const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
       alert("② URL作成完了：" + url);
     
       const res = await fetch(url);
       alert("③ fetch完了");
-
+    
       const json = await res.json();
       alert("④ JSON取得完了");
-
+    
       alert("⑤ json.status = " + json.status);
-      
+    
       if (json.status === "forbidden") {
         alert("管理者専用機能です");
         return;
