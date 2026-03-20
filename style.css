@@ -109,7 +109,7 @@
     transition: 0.15s ease;
   }
 
-  .btn.admin:active {
+  .btnadmin:active {
     transform: scale(0.95);
     background: #1da1c4;
   }
