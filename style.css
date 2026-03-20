@@ -95,7 +95,7 @@
   }
 
   /* 管理者限定ボタン（単独表示用） */
-  .btn.admin {
+  .btnadmin {
     margin: 0 auto;
     margin-top: 30px;
     width: 90%;
