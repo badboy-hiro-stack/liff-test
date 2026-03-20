@@ -80,6 +80,7 @@
       document.getElementById("btnForceIn").style.display = "none";
       document.getElementById("status").style.display = "none";
       document.getElementById("result").style.display = "none";
+      document.getElementById("adminButton").style.display = "none";
     
       // ▼ タイムカード画面を表示
       document.getElementById("timeCard").style.display = "block";
@@ -207,6 +208,7 @@
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了");
       document.getElementById("btnStatus").onclick = () => showTimeCard();
       document.getElementById("timeCard").style.display = "none";
+      document.getElementById("adminButton").style.display = "none";
     }
 
     liff.getProfile().then(profile => {
@@ -398,6 +400,7 @@
       document.getElementById("btnStatus").style.display = "block";
       document.getElementById("status").style.display = "block";
       document.getElementById("result").style.display = "block";
+      document.getElementById("adminButton").style.display = "block";
     };
 
     // 日付を YYYY/MM/DD に整形
