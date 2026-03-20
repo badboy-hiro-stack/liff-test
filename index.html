@@ -444,21 +444,19 @@
     function renderStatusList(data) {
       let html = "<h2>ステータス一覧</h2>";
     
-      html += "<table border='1' style='width:100%; border-collapse: collapse;'>";
-      html += "<tr><th>名前</th><th>ステータス</th><th>勤務時間</th><th>休憩時間</th></tr>";
-    
       data.forEach(item => {
-        html += `
-          <tr>
-            <td>${item.name}</td>
-            <td>${item.status}</td>
-            <td>${item.workMinutes} 分</td>
-            <td>${item.breakMinutes} 分</td>
-          </tr>
-        `;
-      });
+        html += `<div class="card">`;
+        html += `<div class="name">${item.name}</div>`;
+        html += `<div class="status">${item.status}</div>`;
     
-      html += "</table>";
+        if (item.status === "退勤") {
+          html += `<div>労働時間：${item.workMinutes} 分</div>`;
+          html += `<div>休憩時間：${item.breakMinutes} 分</div>`;
+          html += `<div>残業時間：${item.overtimeMinutes} 分</div>`;
+        }
+    
+        html += `</div>`;
+      });
     
       document.getElementById("statusList").innerHTML = html;
     }
