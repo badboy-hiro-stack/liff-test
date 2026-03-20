@@ -189,35 +189,33 @@
     // ▼ LIFF 初期化
     async function init() {
       await liff.init({ liffId });
-
+    
       if (!liff.isLoggedIn()) {
         liff.login();
         return;
       }
-
+    
       // ▼ 起動時に必ず再出勤ボタンを隠す
       document.getElementById("btnForceIn").style.display = "none";
-
+    
       // ▼ LIFF起動時に現在のステータスを取得
       const profile = await liff.getProfile();
-      loadCurrentStatus(profile.userId);
-
+      const userId = profile.userId;
+    
+      loadCurrentStatus(userId);
+    
       document.getElementById("btnIn").onclick = () => send("出勤");
       document.getElementById("btnOut").onclick = () => send("退勤");
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始");
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了");
       document.getElementById("btnStatus").onclick = () => showTimeCard();
       document.getElementById("timeCard").style.display = "none";
-      document.getElementById("adminButton").style.display = "none";
-    }
-
-    liff.getProfile().then(profile => {
-      const userId = profile.userId;
     
+      // ▼ 管理者ボタンの onclick をここに入れる！
       document.getElementById("adminButton").onclick = () => {
         loadStatusList(userId);
       };
-    });
+    }
 
     // ▼ 打刻処理
     async function send(type) {
