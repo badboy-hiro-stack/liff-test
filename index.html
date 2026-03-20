@@ -22,6 +22,11 @@
     <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
   </div>
 
+  <!-- 管理者限定ボタン -->
+  <div class="row">
+    <button class="btn big" id="adminButton">ステータス一覧</button>
+  </div>
+
   <div class="row">
     <button class="back-button" id="btnBack" style="display:none;">戻る</button>
   </div>
@@ -30,6 +35,8 @@
   <div class="row">
     <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
   </div>
+
+  <div id="statusList"></div>
 
   <!-- ステータス表示 -->
   <div id="status" style="font-size: 60px; font-weight: bold; margin-top: 15px;"></div>
@@ -362,7 +369,7 @@
       const statusBox = document.getElementById("status");
     
       if (json.status === "work") {
-        statusBox.innerText = "出勤中";
+        statusBox.innerText = "勤務中";
         statusBox.style.color = "green";
       } else if (json.status === "break") {
         statusBox.innerText = "休憩中";
@@ -402,8 +409,31 @@
       return `${hours}:${minutes}`;
     }
 
+    async function loadStatusList(userId) {
+      const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
+    
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status === "forbidden") {
+        alert("管理者専用機能です");
+        return;
+      }
+    
+      renderStatusList(json.data);
+    }
+
     // ▼ LIFF 初期化
     init();
+
+    liff.getProfile().then(profile => {
+      const userId = profile.userId;
+    
+      document.getElementById("adminButton").onclick = () => {
+        loadStatusList(userId);
+      };
+    });
+
     setupMonthSelect();
   </script>
 </body>
