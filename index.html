@@ -420,10 +420,16 @@
     }
 
     async function loadStatusList(userId) {
+      console.log("loadStatusList START", userId);
+    
       const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
+      console.log("fetch URL:", url);
     
       const res = await fetch(url);
+      console.log("fetch response:", res);
+    
       const json = await res.json();
+      console.log("json:", json);
     
       if (json.status === "forbidden") {
         alert("管理者専用機能です");
