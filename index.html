@@ -23,8 +23,9 @@
   </div>
 
   <!-- 管理者限定ボタン -->
-  <div class="row">
-    <button class="btnadmin" id="adminButton">ステータス一覧</button>
+  <div id="statusListScreen" style="display:none;">
+    <button id="btnStatusBack" style="display:none;">戻る</button>
+    <div id="statusList"></div>
   </div>
 
   <div class="row">
@@ -440,7 +441,6 @@
       }
     
       renderStatusList(json.data);
-      document.getElementById("statusList").style.display = "block";
     }
 
     function renderStatusList(data) {
@@ -465,6 +465,35 @@
     
       document.getElementById("statusList").innerHTML = html;
     }
+
+    async function showStatusList(userId) {
+      // ▼ メイン画面を隠す
+      document.querySelector(".grid").style.display = "none";
+      document.getElementById("btnStatus").style.display = "none";
+      document.getElementById("btnForceIn").style.display = "none";
+      document.getElementById("status").style.display = "none";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("adminButton").style.display = "none";
+    
+      // ▼ ステータス一覧画面を表示
+      document.getElementById("statusListScreen").style.display = "block";
+      document.getElementById("btnStatusBack").style.display = "block";
+    
+      // ▼ データ読み込み
+      await loadStatusList(userId);
+    }
+
+    document.getElementById("btnStatusBack").onclick = () => {
+      document.getElementById("statusListScreen").style.display = "none";
+      document.getElementById("btnStatusBack").style.display = "none";
+    
+      // ▼ メイン画面を再表示
+      document.querySelector(".grid").style.display = "grid";
+      document.getElementById("btnStatus").style.display = "block";
+      document.getElementById("status").style.display = "block";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("adminButton").style.display = "block";
+    };
 
     // ▼ LIFF 初期化
     init();
