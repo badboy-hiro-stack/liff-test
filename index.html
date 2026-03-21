@@ -36,7 +36,7 @@
     <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
   </div>
 
-  <div id="statusList"></div>
+  <div id="statusList" style="display:none;"></div>
 
   <!-- ステータス表示 -->
   <div id="status" style="font-size: 60px; font-weight: bold; margin-top: 15px;"></div>
@@ -213,7 +213,7 @@
     
       // ▼ 管理者ボタンの onclick をここに入れる！
       document.getElementById("adminButton").onclick = () => {
-        alert("ステータス一覧のボタンが押されました！");
+        // alert("ステータス一覧のボタンが押されました！");
         loadStatusList(userId);
       };
     }
@@ -440,20 +440,24 @@
       }
     
       renderStatusList(json.data);
+      document.getElementById("statusList").style.display = "block";
     }
 
     function renderStatusList(data) {
-      let html = "<h2>ステータス一覧</h2>";
+      let html = "";
     
       data.forEach(item => {
         html += `<div class="card">`;
         html += `<div class="name">${item.name}</div>`;
         html += `<div class="status ${item.statusClass}">${item.status}</div>`;
+        html += `<div class="place">📍 ${item.place}</div>`;
     
         if (item.status === "退勤") {
           html += `<div>労働時間：${item.workMinutes} 分</div>`;
           html += `<div>休憩時間：${item.breakMinutes} 分</div>`;
           html += `<div>残業時間：${item.overtimeMinutes} 分</div>`;
+        } else {
+          html += `<div class="detail">休憩時間：${item.breakMinutes} 分</div>`;
         }
     
         html += `</div>`;
