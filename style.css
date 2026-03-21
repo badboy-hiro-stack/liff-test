@@ -187,13 +187,13 @@
 }
 
 .name {
-  font-size: 30px;
+  font-size: 50px;
   font-weight: bold;
   margin-bottom: 4px;
 }
 
 .status {
-  font-size: 25px;
+  font-size: 40px;
   font-weight: bold;
   margin-bottom: 6px;
 }
@@ -204,7 +204,7 @@
 .status.finished { color: #d9534f; }  /* 退勤 */
 
 .card div {
-  font-size: 25px;
+  font-size: 40px;
   margin-left: 8px;
 }
 
