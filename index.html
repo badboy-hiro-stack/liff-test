@@ -448,7 +448,7 @@
       data.forEach(item => {
         html += `<div class="card">`;
         html += `<div class="name">${item.name}</div>`;
-        html += `<div class="status">${item.status}</div>`;
+        html += `<div class="status ${item.statusClass}">${item.status}</div>`;
     
         if (item.status === "退勤") {
           html += `<div>労働時間：${item.workMinutes} 分</div>`;
