@@ -180,11 +180,32 @@
 
 .card {
   background: #fff;
-  padding: 16px;
-  margin: 12px 0;
-  border-radius: 8px;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  font-size: 20px;
+}
+
+.name {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.status {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.status.work { color: #2a8fbd; }      /* 勤務中 */
+.status.break { color: #e6a100; }     /* 休憩中 */
+.status.none { color: #777; }         /* 未出勤 */
+.status.finished { color: #d9534f; }  /* 退勤 */
+
+.card div {
+  font-size: 25px;
+  margin-left: 8px;
 }
 
 table {
