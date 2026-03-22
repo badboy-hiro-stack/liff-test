@@ -31,6 +31,8 @@
     <button class="back-button id="btnStatusBack" style="display:none;">戻る</button>
     <div id="statusList"></div>
   </div>
+  
+<div id="debug" style="color:red; font-size:20px;"></div>
 
   <div class="row">
     <button class="back-button" id="btnBack" style="display:none;">戻る</button>
@@ -199,7 +201,9 @@
         liff.login();
         return;
       }
-    
+      
+    document.getElementById("debug").innerText = "INIT START";
+
       // ▼ 起動時に必ず再出勤ボタンを隠す
       document.getElementById("btnForceIn").style.display = "none";
     
