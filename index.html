@@ -31,8 +31,6 @@
     <button class="back-button id="btnStatusBack" style="display:none;">戻る</button>
     <div id="statusList"></div>
   </div>
-  
-<div id="debug" style="color:red; font-size:20px;"></div>
 
   <div class="row">
     <button class="back-button" id="btnBack" style="display:none;">戻る</button>
@@ -201,29 +199,33 @@
         liff.login();
         return;
       }
-      
-    document.getElementById("debug").innerText = "INIT START";
-
-      // ▼ 起動時に必ず再出勤ボタンを隠す
-      document.getElementById("btnForceIn").style.display = "none";
     
-      // ▼ LIFF起動時に現在のステータスを取得
+      // ▼ ★ LIFF が完全に ready になるまで確実に待つ
+      await new Promise(resolve => {
+        if (liff.isReady) resolve();
+        else liff.ready.then(resolve);
+      });
+    
+      // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
     
+      // ▼ UI 初期化
+      document.getElementById("btnForceIn").style.display = "none";
       loadCurrentStatus(userId);
     
-      document.getElementById("btnIn").onclick = () => send("出勤");
-      document.getElementById("btnOut").onclick = () => send("退勤");
-      document.getElementById("btnBreakStart").onclick = () => send("休憩開始");
-      document.getElementById("btnBreakEnd").onclick = () => send("休憩終了");
-      document.getElementById("btnStatus").onclick = () => showTimeCard();
+      // ▼ 出勤・退勤・休憩ボタン
+      document.getElementById("btnIn").onclick = () => send("出勤", userId);
+      document.getElementById("btnOut").onclick = () => send("退勤", userId);
+      document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
+      document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
+    
+      // ▼ タイムカード画面
+      document.getElementById("btnStatus").onclick = () => showTimeCard(userId);
       document.getElementById("timeCard").style.display = "none";
     
-      // ▼ 管理者ボタンの onclick をここに入れる！
-      document.getElementById("adminButton").onclick = () => {
-        showStatusList(userId);
-      };
+      // ▼ ステータス一覧
+      document.getElementById("adminButton").onclick = () => showStatusList(userId);
     }
 
     // ▼ 打刻処理
