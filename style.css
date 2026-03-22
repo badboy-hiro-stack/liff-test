@@ -233,3 +233,33 @@ th {
   color: white;
   font-weight: bold;
 }
+
+/* ここから管理者専用打刻修正用2026/03/23追記 */
+.edit-block {
+  margin: 15px 0;
+}
+
+.edit-block label {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.current-box {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  white-space: pre-line;
+}
+
+.update-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 8px;
+  margin-top: 20px;
+}
