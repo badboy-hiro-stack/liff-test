@@ -190,28 +190,28 @@
     
       renderTimeCard(json.data, json.total, year, month);
     }
-    
+
     // ▼ LIFF 初期化
     async function init() {
       await liff.init({ liffId });
     
-      // ▼ ログインしていなければログイン
       if (!liff.isLoggedIn()) {
         liff.login();
         return;
       }
+
+      // ▼ ★ LIFF が完全に ready になるまで確実に待つ
+      await new Promise(resolve => {
+        if (liff.isReady) resolve();
+        else liff.ready.then(resolve);
+      });
     
-      // ▼ LIFF が完全に ready になるまで待つ（最重要）
-      await liff.ready;
-    
-      // ▼ プロフィール取得（ここで初めて安全）
+      // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
     
-      // ▼ 起動時に必ず再出勤ボタンを隠す
+      // ▼ UI 初期化
       document.getElementById("btnForceIn").style.display = "none";
-    
-      // ▼ 現在のステータスを取得
       loadCurrentStatus(userId);
     
       // ▼ 出勤・退勤・休憩ボタン
@@ -224,7 +224,7 @@
       document.getElementById("btnStatus").onclick = () => showTimeCard(userId);
       document.getElementById("timeCard").style.display = "none";
     
-      // ▼ ステータス一覧ボタン
+      // ▼ ステータス一覧
       document.getElementById("adminButton").onclick = () => showStatusList(userId);
     }
 
