@@ -209,6 +209,8 @@
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
+
+      setupMonthSelect();
     
       // ▼ UI 初期化
       document.getElementById("btnForceIn").style.display = "none";
@@ -507,7 +509,7 @@
     // ▼ LIFF 初期化
     init();
 
-    setupMonthSelect();
+    // setupMonthSelect();
   </script>
 </body>
 </html>
