@@ -41,6 +41,11 @@
     <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
   </div>
 
+  <button id="adminEditButton" style="display:none;">
+  <!-- 上の行から管理者専用の打刻修正ボタン設置　2026/0323追記 -->
+    打刻修正
+  </button>
+
   <div id="statusList" style="display:none;"></div>
 
   <!-- ステータス表示 -->
@@ -54,7 +59,55 @@
     </div>
     <div id="timeCardContent"></div>
   </div>
+
+  <div id="editScreen" style="display:none; padding:20px;">
+  <!-- 上の行から管理者専用打刻修正エリア　2026/3/23追記 -->
+    <h2>打刻修正</h2>
   
+    <!-- 戻るボタン -->
+    <button id="editBackButton" class="back-button">戻る</button>
+  
+    <!-- 日付選択 -->
+    <div class="edit-block">
+      <label>日付</label>
+      <input type="date" id="editDate">
+    </div>
+  
+    <!-- 従業員選択 -->
+    <div class="edit-block">
+      <label>従業員</label>
+      <select id="editEmployee"></select>
+    </div>
+  
+    <!-- 現在のデータ表示 -->
+    <div class="edit-block">
+      <label>現在の打刻データ</label>
+      <div id="currentData" class="current-box">
+        データを選択してください
+      </div>
+    </div>
+  
+    <!-- 修正入力欄 -->
+    <div class="edit-block">
+      <label>出勤時間</label>
+      <input type="time" id="editClockIn">
+    </div>
+  
+    <div class="edit-block">
+      <label>退勤時間</label>
+      <input type="time" id="editClockOut">
+    </div>
+  
+    <div class="edit-block">
+      <label>休憩時間（分）</label>
+      <input type="number" id="editBreakMinutes" min="0">
+    </div>
+  
+    <!-- 更新ボタン -->
+    <button id="updateAttendance" class="update-button">更新</button>
+  
+  </div>
+
   <script>
     const liffId = "2009445215-yPBcEdg0";
     // const gasUrl = "https://script.google.com/macros/s/AKfycbwND9ZrLBq4KzUqp-8jrp7JBmREJCHRdkuQripZGiLSUIZBOxNlJ-QclgDS0ci6e8B_/exec";  // ←ここを必ず修正
@@ -210,6 +263,17 @@
       const profile = await liff.getProfile();
       const userId = profile.userId;
 
+      // ▼ 管理者判定　2026/03/23追記
+      const url = `${gasUrl}?action=checkAdmin&lineId=${lineId}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.isAdmin) {
+        document.getElementById("adminEditButton").style.display = "block";
+      } else {
+        document.getElementById("adminEditButton").style.display = "none";
+      }
+      
       setupMonthSelect();
     
       // ▼ UI 初期化
