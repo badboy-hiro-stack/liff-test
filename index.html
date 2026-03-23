@@ -262,7 +262,7 @@
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
-alert("LINE ID = " + userId);
+
       // ▼ 管理者判定　2026/03/23追記
       const url = `${gasUrl}?action=checkAdmin&lineId=${userId}`;
       const res = await fetch(url);
