@@ -258,7 +258,7 @@
         if (liff.isReady) resolve();
         else liff.ready.then(resolve);
       });
-    
+ 
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
