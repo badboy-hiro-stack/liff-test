@@ -292,6 +292,23 @@
     
       // ▼ ステータス一覧
       document.getElementById("adminButton").onclick = () => showStatusList(userId);
+
+      // ▼ 管理者用「打刻修正」画面を開く
+      document.getElementById("adminEditButton").onclick = () => {
+        showEditScreen();
+      };
+      
+      // ▼ 戻るボタン
+      document.getElementById("editBackButton").onclick = () => {
+        hideEditScreen();
+      };
+      
+      // 打刻修正　更新ボタンのクリックイベント
+      document.getElementById("updateAttendance").onclick = updateAttendance;
+
+      // 日付 or 従業員が変更されたらデータを読み込む
+      document.getElementById("editDate").onchange = loadAttendanceForEdit;
+      document.getElementById("editEmployee").onchange = loadAttendanceForEdit;
     }
 
     // ▼ 打刻処理
@@ -569,6 +586,84 @@
       document.getElementById("result").style.display = "block";
       document.getElementById("adminButton").style.display = "block";
     };
+
+    // 日付＋従業員を選んだら GAS に問い合わせ
+    async function loadAttendanceForEdit() {
+      const date = document.getElementById("editDate").value;
+      const name = document.getElementById("editEmployee").value;
+    
+      if (!date || !name) return; // 両方揃うまで何もしない
+    
+      // const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${name}`;
+      const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${encodeURIComponent(name)}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      if (json.status !== "success") {
+        document.getElementById("currentData").innerText = "データが見つかりません";
+        return;
+      }
+    
+      const d = json.data;
+    
+      // 現在のデータを表示
+      document.getElementById("currentData").innerText =
+        `出勤：${d.clockIn}\n休憩：${d.breakMinutes}分\n退勤：${d.clockOut}`;
+    
+      // 修正欄に初期値をセット
+      document.getElementById("editClockIn").value = d.clockIn;
+      document.getElementById("editClockOut").value = d.clockOut;
+      document.getElementById("editBreakMinutes").value = d.breakMinutes;
+    }
+
+    // 更新ボタンで GAS に送信
+    async function updateAttendance() {
+      const date = document.getElementById("editDate").value;
+      const name = document.getElementById("editEmployee").value;
+    
+      const clockIn = document.getElementById("editClockIn").value;
+      const clockOut = document.getElementById("editClockOut").value;
+      const breakMinutes = document.getElementById("editBreakMinutes").value;
+    
+      if (!date || !name) {
+        alert("日付と従業員を選択してください");
+        return;
+      }
+    
+      const url = `${gasUrl}?action=updateAttendance`
+        + `&date=${date}`
+        + `&name=${encodeURIComponent(name)}`
+        + `&clockIn=${clockIn}`
+        + `&clockOut=${clockOut}`
+        + `&breakMinutes=${breakMinutes}`;
+    
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      alert(json.message);
+    
+      if (json.status === "success") {
+        hideEditScreen(); // メイン画面に戻る
+      }
+    }
+
+    function showEditScreen() {
+      // 他の画面を非表示
+      document.getElementById("mainScreen").style.display = "none";
+      document.getElementById("statusListScreen").style.display = "none";
+      document.getElementById("timeCard").style.display = "none";
+    
+      // 修正画面を表示
+      document.getElementById("editScreen").style.display = "block";
+    }
+    
+    function hideEditScreen() {
+      // 修正画面を非表示
+      document.getElementById("editScreen").style.display = "none";
+    
+      // メイン画面に戻る（あなたの構成に合わせて変更可能）
+      document.getElementById("mainScreen").style.display = "block";
+    }
 
     // ▼ LIFF 初期化
     init();
