@@ -698,9 +698,12 @@
     function loadEmployees() {
       alert("loadEmployees が呼ばれた");
     
-      google.script.run
-        .withSuccessHandler((list) => {
-          alert("成功: " + list.length + "\n" + list.join("\n"));
+      const url = `${gasUrl}?action=getEmployeeList`
+    
+      fetch(url)
+        .then(res => res.json())
+        .then(list => {
+          alert("取得件数: " + list.length + "\n" + list.join("\n"));
     
           const select = document.getElementById("editEmployee");
           select.innerHTML = "";
@@ -712,10 +715,9 @@
             select.appendChild(option);
           });
         })
-        .withFailureHandler((err) => {
-          alert("GAS エラー: " + err.message);
-        })
-        .getEmployeeList();
+        .catch(err => {
+          alert("fetch エラー: " + err);
+        });
     }
 
     // ▼ LIFF 初期化
