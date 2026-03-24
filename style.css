@@ -247,8 +247,9 @@ th {
 }
 
 .editBackButton {
-  font-size: 22px;
+  font-size: 30px;
   padding: 12px 20px;
+  width: 80%;
   border-radius: 8px;
   background-color: #888;
   color: white;
