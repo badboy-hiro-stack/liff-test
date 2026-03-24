@@ -693,6 +693,21 @@
       document.getElementById("mainScreen").style.display = "block";
     }
 
+    // 従業員リストを読み込む関数
+    function loadEmployees() {
+      google.script.run.withSuccessHandler((list) => {
+        const select = document.getElementById("editEmployee");
+        select.innerHTML = "";
+    
+        list.forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+        });
+      }).getEmployeeList();
+    }
+
     // ▼ LIFF 初期化
     init();
 
