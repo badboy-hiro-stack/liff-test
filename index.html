@@ -7,79 +7,99 @@
   <link rel="stylesheet" href="style.css?v=20260319">
 </head>
 <body onload="init()">
-  <h2>打刻システム(GPS対応)</h2>
 
-  <!-- 2×2の表示 -->
-  <div class="grid">
-    <button class="btn big" id="btnIn">出勤</button>
-    <button class="btn big" id="btnOut">退勤</button>
-  
-    <button class="btn big" id="btnBreakStart">休憩開始</button>
-    <button class="btn big" id="btnBreakEnd">休憩終了</button>
+  <!-- ▼ 1. メイン画面（一般） -->
+  <div id="mainScreen">
+
+    <h2>打刻システム(GPS対応)</h2>
+
+    <!-- 出勤 / 退勤 / 休憩 -->
+    <div class="grid">
+      <button class="btn big" id="btnIn">出勤</button>
+      <button class="btn big" id="btnOut">退勤</button>
+      <button class="btn big" id="btnBreakStart">休憩開始</button>
+      <button class="btn big" id="btnBreakEnd">休憩終了</button>
+    </div>
+
+    <!-- 勤務状態 -->
+    <div class="row">
+      <button class="btn time" id="btnStatus">勤務状態</button>
+    </div>
+
+    <!-- ステータス一覧（管理者） -->
+    <div class="row">
+      <button class="btnadmin" id="adminButton">ステータス一覧</button>
+    </div>
+
+    <!-- 再出勤 -->
+    <div class="row">
+      <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
+    </div>
+
+    <!-- 打刻修正（管理者） -->
+    <div class="row">
+      <button class="btnadmin" id="adminEditButton" style="display:none;">打刻修正</button>
+    </div>
+
+    <!-- ステータス表示 -->
+    <div id="status" style="font-size: 60px; font-weight: bold; margin-top: 15px;"></div>
+
+    <!-- 結果表示 -->
+    <p id="result"></p>
+
   </div>
+  <!-- ▲ メイン画面ここまで -->
 
-  <div class="row">
-    <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
-  </div>
 
-  <div class="row">
-    <button class="btnadmin" id="adminButton">ステータス一覧</button>
-  </div>
-  
-  <!-- 管理者限定ボタン -->
-  <div id="statusListScreen" style="display:none;">
-    <button class="back-button" id="btnStatusBack" style="display:none;">戻る</button>
-    <div id="statusList"></div>
-  </div>
-
-  <div class="row">
-    <button class="back-button" id="btnBack" style="display:none;">戻る</button>
-  </div>
-  
-  <!-- 再出勤ボタンの表示 -->
-  <div class="row">
-    <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
-  </div>
-
-  <!-- 上の行から管理者専用の打刻修正ボタン設置　2026/0323追記 -->
-  <button class="btnadmin" id="adminEditButton" style="display:none;">
-    打刻修正
-  </button>
-
-  <div id="statusList" style="display:none;"></div>
-
-  <!-- ステータス表示 -->
-  <div id="status" style="font-size: 60px; font-weight: bold; margin-top: 15px;"></div>
-
-  <p id="result"></p>
-
+  <!-- ▼ 2. 勤務状態一覧画面（timeCard） -->
   <div id="timeCard" style="display:none; margin-top:20px;">
+
+    <!-- 戻るボタン（timeCard 内に移動） -->
+    <button class="back-button" id="btnBack">戻る</button>
+
+    <!-- 月選択 -->
     <div style="margin-bottom:10px;">
       <select class="month-select" id="monthSelect" onchange="changeMonth()"></select>
     </div>
-    <div id="timeCardContent"></div>
-  </div>
 
-  <!-- 管理者専用打刻修正エリア　2026/3/23追記 -->
+    <!-- タイムカード内容 -->
+    <div id="timeCardContent"></div>
+
+  </div>
+  <!-- ▲ 勤務状態一覧画面ここまで -->
+
+
+  <!-- ▼ 3. ステータス一覧画面（管理者） -->
+  <div id="statusListScreen" style="display:none;">
+
+    <button class="back-button" id="btnStatusBack">戻る</button>
+
+    <div id="statusList"></div>
+
+  </div>
+  <!-- ▲ ステータス一覧画面ここまで -->
+
+
+  <!-- ▼ 4. 打刻修正画面（管理者） -->
   <div id="editScreen" style="display:none; padding:20px;">
-  
+
     <h2>打刻修正</h2>
-  
-    <!-- 戻るボタン -->
+
+    <!-- 戻る -->
     <button id="editBackButton" class="back-button">戻る</button>
-  
+
     <!-- 日付選択 -->
     <div class="edit-block">
       <label>日付</label>
       <input type="date" id="editDate">
     </div>
-  
+
     <!-- 従業員選択 -->
     <div class="edit-block">
       <label>従業員</label>
       <select id="editEmployee"></select>
     </div>
-  
+
     <!-- 現在のデータ表示 -->
     <div class="edit-block">
       <label>現在の打刻データ</label>
@@ -87,27 +107,30 @@
         データを選択してください
       </div>
     </div>
-  
+
     <!-- 修正入力欄 -->
     <div class="edit-block">
       <label>出勤時間</label>
       <input type="time" id="editClockIn">
     </div>
-  
+
     <div class="edit-block">
       <label>退勤時間</label>
       <input type="time" id="editClockOut">
     </div>
-  
+
     <div class="edit-block">
       <label>休憩時間（分）</label>
       <input type="number" id="editBreakMinutes" min="0">
     </div>
-  
+
     <!-- 更新ボタン -->
     <button id="updateAttendance" class="update-button">更新</button>
-  
+
   </div>
+  <!-- ▲ 打刻修正画面ここまで -->
+
+</body>
 
   <script>
     const liffId = "2009445215-yPBcEdg0";
