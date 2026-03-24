@@ -696,6 +696,9 @@
     // 従業員リストを読み込む関数
     function loadEmployees() {
       google.script.run.withSuccessHandler((list) => {
+        // ① まずは中身をそのまま確認
+        alert("取得件数: " + list.length + "\n" + list.join("\n"));
+    
         const select = document.getElementById("editEmployee");
         select.innerHTML = "";
     
