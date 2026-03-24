@@ -246,6 +246,16 @@ th {
   margin-bottom: 5px;
 }
 
+.editBackButton {
+  font-size: 22px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #888;
+  color: white;
+  border: none;
+  margin-bottom: 20px;
+}
+
 input[type="date"],
 input[type="time"],
 input[type="number"],
