@@ -697,20 +697,25 @@
     // 従業員リストを読み込む関数
     function loadEmployees() {
       alert("loadEmployees が呼ばれた");
-      google.script.run.withSuccessHandler((list) => {
-        // ① まずは中身をそのまま確認
-        alert("取得件数: " + list.length + "\n" + list.join("\n"));
-        alert("GAS から返ってきた件数: " + list.length);
-        const select = document.getElementById("editEmployee");
-        select.innerHTML = "";
     
-        list.forEach(name => {
-          const option = document.createElement("option");
-          option.value = name;
-          option.textContent = name;
-          select.appendChild(option);
-        });
-      }).getEmployeeList();
+      google.script.run
+        .withSuccessHandler((list) => {
+          alert("成功: " + list.length + "\n" + list.join("\n"));
+    
+          const select = document.getElementById("editEmployee");
+          select.innerHTML = "";
+    
+          list.forEach(name => {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+          });
+        })
+        .withFailureHandler((err) => {
+          alert("GAS エラー: " + err.message);
+        })
+        .getEmployeeList();
     }
 
     // ▼ LIFF 初期化
