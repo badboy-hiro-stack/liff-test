@@ -673,6 +673,7 @@
     }
 
     function showEditScreen() {
+      alert("showEditScreen が呼ばれた");
       // 他の画面を非表示
       document.getElementById("mainScreen").style.display = "none";
       document.getElementById("statusListScreen").style.display = "none";
@@ -695,10 +696,11 @@
 
     // 従業員リストを読み込む関数
     function loadEmployees() {
+      alert("loadEmployees が呼ばれた");
       google.script.run.withSuccessHandler((list) => {
         // ① まずは中身をそのまま確認
         alert("取得件数: " + list.length + "\n" + list.join("\n"));
-    
+        alert("GAS から返ってきた件数: " + list.length);
         const select = document.getElementById("editEmployee");
         select.innerHTML = "";
     
