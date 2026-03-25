@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css?v=20260319">
 </head>
 <body onload="init()">
+<div id="debug" style="white-space: pre-wrap; color: red; font-size: 12px;"></div>
 
   <!-- ▼ 1. メイン画面（一般） -->
   <div id="mainScreen">
@@ -652,10 +653,19 @@
 
     function loadSelectedWork() {
       const rowIndex = document.getElementById("editWorkIndex").value;
-      if (!rowIndex) return;
     
-      // すでに取得済みの list から該当勤務を探す
+      debug("rowIndex = " + rowIndex);
+      debug("currentList length = " + currentList.length);
+    
       const item = currentList.find(x => x.rowIndex == rowIndex);
+    
+      if (!item) {
+        debug("item = undefined");
+        alert("勤務データが取得できません（item undefined）");
+        return;
+      }
+    
+      debug("item found: " + JSON.stringify(item));
     
       document.getElementById("editClockIn").value = item.clockIn;
       document.getElementById("editClockOut").value = item.clockOut;
@@ -760,6 +770,10 @@
         .catch(err => {
           alert("fetch エラー: " + err);
         });
+    }
+
+    function debug(msg) {
+      document.getElementById("debug").textContent += msg + "\n";
     }
 
     // ▼ LIFF 初期化
