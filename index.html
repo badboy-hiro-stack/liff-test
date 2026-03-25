@@ -626,10 +626,13 @@
     let currentList = [];  // ← グローバルに保存しておく
     
     function loadAttendanceForEdit() {
-      const date = document.getElementById("editDate").value;
+      let date = document.getElementById("editDate").value;
       const name = document.getElementById("editEmployee").value;
-    
+
+      // ★ ここが超重要：ハイフン → スラッシュに変換
       if (!date || !name) return;
+
+      date = date.replace(/-/g, "/");
     
       fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
         .then(res => res.text())
