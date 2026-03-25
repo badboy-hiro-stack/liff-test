@@ -690,7 +690,8 @@
       const rowIndex = document.getElementById("editWorkIndex").value;
       if (!rowIndex) return;
     
-      const item = currentList.find(x => x.rowIndex == rowIndex);
+      // ★ dailyRow を使って検索（ここが最重要）
+      const item = currentList.find(x => x.dailyRow == rowIndex);
       if (!item) return;
     
       // ★ 選択された勤務のデータを反映
