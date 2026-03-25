@@ -625,7 +625,9 @@
       const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${encodeURIComponent(name)}`;
       const res = await fetch(url);
       const json = await res.json();
-    
+
+      alert("返却データ: " + JSON.stringify(json));
+      
       if (json.status !== "success") {
         document.getElementById("currentData").innerText = "データが見つかりません";
         return;
