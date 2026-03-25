@@ -634,6 +634,7 @@
       fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
         .then(res => res.json())
         .then(json => {
+          alert(json);
           if (json.status !== "success") {
             alert(json.message);
             return;
