@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css?v=20260319">
 </head>
 <body onload="init()">
-<div id="debug" style="white-space: pre-wrap; color: red; font-size: 12px;"></div>
 
   <!-- ▼ 1. メイン画面（一般） -->
   <div id="mainScreen">
@@ -83,7 +82,7 @@
 
   <!-- ▼ 4. 打刻修正画面（管理者） -->
   <div id="editScreen" style="display:none; padding:20px;">
-
+  <div id="debug" style="white-space: pre-wrap; color: red; font-size: 12px;"></div>
     <h2>打刻修正</h2>
 
     <!-- 戻る -->
@@ -651,6 +650,10 @@
         });
     }
 
+    function debug(msg) {
+      document.getElementById("debug").textContent += msg + "\n";
+    }
+    
     function loadSelectedWork() {
       const rowIndex = document.getElementById("editWorkIndex").value;
     
@@ -770,10 +773,6 @@
         .catch(err => {
           alert("fetch エラー: " + err);
         });
-    }
-
-    function debug(msg) {
-      document.getElementById("debug").textContent += msg + "\n";
     }
 
     // ▼ LIFF 初期化
