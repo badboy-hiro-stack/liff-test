@@ -734,7 +734,7 @@
     // 更新ボタンで GAS に送信
     async function updateAttendance() {
       let date = document.getElementById("editDate").value;
-      date = date.replace(/-/g, "/");   // ★ これが必須！
+      date = date.replace(/-/g, "/");
     
       const name = document.getElementById("editEmployee").value;
     
@@ -747,12 +747,25 @@
         return;
       }
     
+      // ★ 選択中の勤務データを取得
+      const rowIndex = document.getElementById("editWorkIndex").value;
+      const item = currentList.find(x => x.dailyRow == rowIndex);
+    
+      if (!item) {
+        alert("勤務データが取得できませんでした");
+        return;
+      }
+    
+      // ★ 必須データをすべて送る
       const url = `${gasUrl}?action=updateAttendance`
         + `&date=${date}`
         + `&name=${encodeURIComponent(name)}`
         + `&clockIn=${clockIn}`
         + `&clockOut=${clockOut}`
-        + `&breakMinutes=${breakMinutes}`;
+        + `&breakMinutes=${breakMinutes}`
+        + `&dailyRow=${item.dailyRow}`
+        + `&clockInRow=${item.clockInRow}`
+        + `&clockOutRow=${item.clockOutRow}`;
     
       const res = await fetch(url);
       const json = await res.json();
