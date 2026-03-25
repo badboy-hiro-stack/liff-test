@@ -91,13 +91,13 @@
     <!-- 日付選択 -->
     <div class="edit-block">
       <label>日付</label>
-      <input type="date" id="editDate">
+      <input type="date" id="editDate" onchange="loadAttendanceForEdit()">
     </div>
 
     <!-- 従業員選択 -->
     <div class="edit-block">
       <label>従業員</label>
-      <select id="editEmployee"></select>
+      <select id="editEmployee" onchange="loadAttendanceForEdit()"></select>
     </div>
 
     <!-- 現在のデータ表示 -->
@@ -618,7 +618,9 @@
     async function loadAttendanceForEdit() {
       const date = document.getElementById("editDate").value;
       const name = document.getElementById("editEmployee").value;
-    
+      
+      alert("loadAttendanceForEdit が呼ばれた");
+      
       if (!date || !name) return; // 両方揃うまで何もしない
     
       // const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${name}`;
