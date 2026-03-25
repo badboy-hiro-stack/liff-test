@@ -622,7 +622,9 @@
       alert("loadAttendanceForEdit が呼ばれた");
       
       if (!date || !name) return; // 両方揃うまで何もしない
-    
+      
+    alert("送信している名前: " + name);
+
       // const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${name}`;
       const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${encodeURIComponent(name)}`;
       const res = await fetch(url);
