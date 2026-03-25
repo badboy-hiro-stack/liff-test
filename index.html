@@ -748,9 +748,9 @@
       }
     
       // ★ 選択中の勤務データを取得
-      const rowIndex = document.getElementById("editWorkIndex").value;
-      const item = currentList.find(x => x.dailyRow == rowIndex);
-    
+      const rowIndex = Number(document.getElementById("editWorkIndex").value);
+      const item = currentList.find(x => x.dailyRow === rowIndex);
+      
       if (!item) {
         alert("勤務データが取得できませんでした");
         return;
