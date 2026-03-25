@@ -100,6 +100,13 @@
       <select id="editEmployee" onchange="loadAttendanceForEdit()"></select>
     </div>
 
+    <!-- 勤務を選択 -->
+    <div class="edit-block">
+      <select id="editWorkIndex" onchange="loadSelectedWork()">
+        <option value="">勤務を選択</option>
+      </select>
+    </div>
+
     <!-- 現在のデータ表示 -->
     <div class="edit-block">
       <label>現在の打刻データ</label>
