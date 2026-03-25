@@ -663,13 +663,14 @@
     
           currentList.forEach(item => {
             const option = document.createElement("option");
+            const outText = item.clockOut ? item.clockOut : "未退勤";
             option.value = item.dailyRow;
-            option.textContent = `${item.index}勤務目（${item.clockIn}〜${item.clockOut}）`;
+            option.textContent = `${item.index}勤務目（${item.clockIn}〜${outText}）`;
             select.appendChild(option);
           });
     
           // ★ 勤務が1件しかない場合は自動で選択処理を実行
-          if (currentList.length === 1) {
+          if (currentList.length >= 1) {
             select.value = currentList[0].dailyRow;
             loadSelectedWork();
           }
