@@ -716,7 +716,9 @@
 
     // 更新ボタンで GAS に送信
     async function updateAttendance() {
-      const date = document.getElementById("editDate").value;
+      let date = document.getElementById("editDate").value;
+      date = date.replace(/-/g, "/");   // ★ これが必須！
+    
       const name = document.getElementById("editEmployee").value;
     
       const clockIn = document.getElementById("editClockIn").value;
@@ -741,7 +743,7 @@
       alert(json.message);
     
       if (json.status === "success") {
-        hideEditScreen(); // メイン画面に戻る
+        hideEditScreen();
       }
     }
 
