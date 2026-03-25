@@ -615,38 +615,76 @@
     };
 
     // 日付＋従業員を選んだら GAS に問い合わせ
-    async function loadAttendanceForEdit() {
+    let currentList = [];  // ← グローバルに保存しておく
+    
+    function loadAttendanceForEdit() {
       const date = document.getElementById("editDate").value;
       const name = document.getElementById("editEmployee").value;
-      
-      alert("loadAttendanceForEdit が呼ばれた");
-      
-      if (!date || !name) return; // 両方揃うまで何もしない
-      
-    alert("送信している名前: " + name);
+    
+      if (!date || !name) return;
+    
+      fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.status !== "success") {
+            alert(json.message);
+            return;
+          }
+    
+          currentList = json.list;  // ← 保存
 
-      // const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${name}`;
-      const url = `${gasUrl}?action=getAttendanceForEdit&date=${date}&name=${encodeURIComponent(name)}`;
-      const res = await fetch(url);
-      const json = await res.json();
+          const select = document.getElementById("editWorkIndex");
+          select.innerHTML = "";
+    
+          if (currentList.length === 0) {
+            select.innerHTML = `<option value="">勤務なし</option>`;
+            return;
+          }
+    
+          currentList.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.rowIndex;   // ← これが編集対象の行番号
+            option.textContent = `${item.index}勤務目（${item.clockIn}〜${item.clockOut}）`;
+            select.appendChild(option);
+          });
+        });
+    }
 
-      alert("返却データ: " + JSON.stringify(json));
-      
-      if (json.status !== "success") {
-        document.getElementById("currentData").innerText = "データが見つかりません";
-        return;
-      }
+    function loadSelectedWork() {
+      const rowIndex = document.getElementById("editWorkIndex").value;
+      if (!rowIndex) return;
     
-      const d = json.data;
+      // すでに取得済みの list から該当勤務を探す
+      const item = currentList.find(x => x.rowIndex == rowIndex);
     
-      // 現在のデータを表示
-      document.getElementById("currentData").innerText =
-        `出勤：${d.clockIn}\n休憩：${d.breakMinutes}分\n退勤：${d.clockOut}`;
+      document.getElementById("editClockIn").value = item.clockIn;
+      document.getElementById("editClockOut").value = item.clockOut;
+      document.getElementById("editBreak").value = item.breakMinutes;
+    }
+
+    　// 更新処理
+    function saveAttendance() {
+      const date = document.getElementById("editDate").value;
+      const rowIndex = document.getElementById("editWorkIndex").value;
     
-      // 修正欄に初期値をセット
-      document.getElementById("editClockIn").value = d.clockIn;
-      document.getElementById("editClockOut").value = d.clockOut;
-      document.getElementById("editBreakMinutes").value = d.breakMinutes;
+      const clockIn = document.getElementById("editClockIn").value;
+      const clockOut = document.getElementById("editClockOut").value;
+      const breakMinutes = document.getElementById("editBreak").value;
+    
+      fetch(`${gasUrl}?action=updateAttendanceByRow`, {
+        method: "POST",
+        body: JSON.stringify({
+          date: date,
+          rowIndex: rowIndex,
+          clockIn: clockIn,
+          clockOut: clockOut,
+          breakMinutes: breakMinutes
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        alert(json.message);
+      });
     }
 
     // 更新ボタンで GAS に送信
