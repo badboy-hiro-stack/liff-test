@@ -632,9 +632,11 @@
       if (!date || !name) return;
     
       fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
-        .then(res => res.json())
-        .then(json => {
-          alert(json);
+        .then(res => res.text())
+        .then(text => {
+          alert(text);   // ← これで本当のレスポンスが見える
+          const json = JSON.parse(text);
+          
           if (json.status !== "success") {
             alert(json.message);
             return;
