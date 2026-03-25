@@ -628,27 +628,33 @@
     function loadAttendanceForEdit() {
       let date = document.getElementById("editDate").value;
       const name = document.getElementById("editEmployee").value;
-
-      // ★ ここが超重要：ハイフン → スラッシュに変換
+    
       if (!date || !name) return;
-
+    
+      // ★ ハイフン → スラッシュ
       date = date.replace(/-/g, "/");
     
       fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
         .then(res => res.text())
         .then(text => {
-          alert(text);   // ← これで本当のレスポンスが見える
+          alert(text);   // ← デバッグ用
           const json = JSON.parse(text);
-          
+    
           if (json.status !== "success") {
             alert(json.message);
             return;
           }
     
-          currentList = json.list;  // ← 保存
-
+          currentList = json.list;
+    
           const select = document.getElementById("editWorkIndex");
           select.innerHTML = "";
+    
+          // ★ データエリアをクリア（勤務変更時の残り防止）
+          document.getElementById("currentData").textContent = "データを選択してください";
+          document.getElementById("editClockIn").value = "";
+          document.getElementById("editClockOut").value = "";
+          document.getElementById("editBreakMinutes").value = "";
     
           if (currentList.length === 0) {
             select.innerHTML = `<option value="">勤務なし</option>`;
@@ -657,10 +663,16 @@
     
           currentList.forEach(item => {
             const option = document.createElement("option");
-            option.value = item.rowIndex;   // ← これが編集対象の行番号
+            option.value = item.rowIndex;
             option.textContent = `${item.index}勤務目（${item.clockIn}〜${item.clockOut}）`;
             select.appendChild(option);
           });
+    
+          // ★ 勤務が1件しかない場合は自動で選択処理を実行
+          if (currentList.length === 1) {
+            select.value = currentList[0].rowIndex;
+            loadSelectedWork();
+          }
         });
     }
 
@@ -669,27 +681,30 @@
     }
     
     function loadSelectedWork() {
-      const rowIndex = document.getElementById("editWorkIndex").value;
+      // ★ まずデータエリアをクリア
+      document.getElementById("currentData").textContent = "データを選択してください";
+      document.getElementById("editClockIn").value = "";
+      document.getElementById("editClockOut").value = "";
+      document.getElementById("editBreakMinutes").value = "";
     
-      debug("rowIndex = " + rowIndex);
-      debug("currentList length = " + currentList.length);
+      const rowIndex = document.getElementById("editWorkIndex").value;
+      if (!rowIndex) return;
     
       const item = currentList.find(x => x.rowIndex == rowIndex);
+      if (!item) return;
     
-      if (!item) {
-        debug("item = undefined");
-        alert("勤務データが取得できません（item undefined）");
-        return;
-      }
-    
-      debug("item found: " + JSON.stringify(item));
-    
+      // ★ 選択された勤務のデータを反映
       document.getElementById("editClockIn").value = item.clockIn;
       document.getElementById("editClockOut").value = item.clockOut;
       document.getElementById("editBreakMinutes").value = item.breakMinutes;
+    
+      document.getElementById("currentData").textContent =
+        `出勤：${item.clockIn}　退勤：${item.clockOut || "未退勤"}　休憩：${item.breakMinutes}分`;
+    
+      debug("選択された勤務：" + JSON.stringify(item));
     }
 
-    　// 更新処理
+    // 更新処理
     function saveAttendance() {
       const date = document.getElementById("editDate").value;
       const rowIndex = document.getElementById("editWorkIndex").value;
