@@ -173,7 +173,10 @@
       document.getElementById("adminButton").style.display = "none";
       document.getElementById("statusListScreen").style.display = "none";
       document.getElementById("btnStatusBack").style.display = "none";
-    
+
+      // ▼ 打刻修正（管理者）を隠す
+      document.getElementById("adminEditButton").style.display = "none";
+      
       // ▼ タイムカード画面を表示
       document.getElementById("timeCard").style.display = "block";
     
@@ -601,6 +604,9 @@
       document.getElementById("status").style.display = "none";
       document.getElementById("result").style.display = "none";
       document.getElementById("adminButton").style.display = "none";
+
+      // ▼ 打刻修正（管理者）を隠す
+      document.getElementById("adminEditButton").style.display = "none";
     
       // ▼ ステータス一覧画面を表示
       document.getElementById("statusListScreen").style.display = "block";
