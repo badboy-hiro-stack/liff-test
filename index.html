@@ -731,50 +731,27 @@
       });
     }
 
-    // 更新ボタンで GAS に送信
+    // 更新ボタンで GAS に送信　POST用に変更
     async function updateAttendance() {
-      let date = document.getElementById("editDate").value;
-      date = date.replace(/-/g, "/");
+      const params = new URLSearchParams();
+      params.append("action", "updateAttendance");
+      params.append("date", date);
+      params.append("name", name);
+      params.append("clockIn", clockIn);
+      params.append("clockOut", clockOut);
+      params.append("breakMinutes", breakMinutes);
+      params.append("dailyRow", item.dailyRow);
+      params.append("clockInRow", item.clockInRow);
+      params.append("clockOutRow", item.clockOutRow);
     
-      const name = document.getElementById("editEmployee").value;
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
     
-      const clockIn = document.getElementById("editClockIn").value;
-      const clockOut = document.getElementById("editClockOut").value;
-      const breakMinutes = document.getElementById("editBreakMinutes").value;
-    
-      if (!date || !name) {
-        alert("日付と従業員を選択してください");
-        return;
-      }
-    
-      // ★ 選択中の勤務データを取得
-      const rowIndex = Number(document.getElementById("editWorkIndex").value);
-      const item = currentList.find(x => x.dailyRow === rowIndex);
-      
-      if (!item) {
-        alert("勤務データが取得できませんでした");
-        return;
-      }
-    
-      // ★ 必須データをすべて送る
-      const url = `${gasUrl}?action=updateAttendance`
-        + `&date=${date}`
-        + `&name=${encodeURIComponent(name)}`
-        + `&clockIn=${clockIn}`
-        + `&clockOut=${clockOut}`
-        + `&breakMinutes=${breakMinutes}`
-        + `&dailyRow=${item.dailyRow}`
-        + `&clockInRow=${item.clockInRow}`
-        + `&clockOutRow=${item.clockOutRow}`;
-    
-      const res = await fetch(url);
       const json = await res.json();
-    
       alert(json.message);
-    
-      if (json.status === "success") {
-        hideEditScreen();
-      }
     }
 
     function showEditScreen() {
