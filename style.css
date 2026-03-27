@@ -178,6 +178,11 @@
   margin-bottom: 20px;
 }
 
+.back-button:active {
+  transform: scale(0.95);
+  background: #1e8f23;
+}
+
 .card {
   background: #fff;
   border-radius: 12px;
@@ -251,10 +256,15 @@ th {
   padding: 12px 20px;
   width: 90%;
   border-radius: 8px;
-  background-color: #888;
+  background-color: #4CAF50;
   color: white;
   border: none;
   margin-bottom: 20px;
+}
+
+.editBackButton:active {
+  transform: scale(0.95);
+  background: #1e8f23;
 }
 
 input[type="date"],
