@@ -133,7 +133,7 @@
 
 /* ▼ タイムカード表 */
 .timecard-table {
-  width: 90%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
   font-size: 30px;
@@ -143,12 +143,14 @@
   background: #4CAF50;
   color: white;
   padding: 8px;
+  font-size: 30px;
   position: sticky;
   top: 0;
 }
 
 .timecard-table td {
   padding: 8px;
+  font-size: 30px;
   border-bottom: 1px solid #ddd;
 }
 
