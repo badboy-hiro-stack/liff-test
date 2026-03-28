@@ -115,10 +115,11 @@
   }
 
   #result {
-    font-size: 36px;
+    font-size: 40px;
     margin-top: 20px;
     line-height: 1.6;
-    white-space: pre-line;
+    text-align: left;
+    white-space: pre-wrap;
     min-height: 60px;
   }
 
