@@ -42,7 +42,7 @@
   }
 
   /* ステータス表示 */
-  #status {
+  .status {
     margin-top: 20px;
     padding: 15px;
     font-size: 36px;
@@ -201,12 +201,6 @@
   font-size: 50px;
   font-weight: bold;
   margin-bottom: 4px;
-}
-
-.status {
-  font-size: 40px;
-  font-weight: bold;
-  margin-bottom: 6px;
 }
 
 .status.work { color: #2a8fbd; }      /* 勤務中 */
