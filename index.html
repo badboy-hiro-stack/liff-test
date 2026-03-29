@@ -422,34 +422,18 @@
           }
         }
     
-        // ▼ 結果表示
+        // ▼ 結果表示（安全版）
         let resultText = "";
-    
+        
         if (json.status === "success" || json.status === "complete" || json.status === "continue") {
-      
-          if (json.action === "clock_in" || json.action === "clock_out") {
-            const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
-            resultText =
-              `【成功】${json.message}\n地点：${json.point}\n距離：${dist}m`;
-          }
-        
-          if (json.action === "break_start" || json.action === "break_end") {
-            resultText = `【成功】${json.message}`;
-          }
-        
+          // 成功時は message をそのまま表示
+          resultText = json.message;
         } else {
-        
-          if (json.action === "clock_in" || json.action === "clock_out") {
-            const dist = (json.distance !== undefined) ? Math.floor(json.distance) : "";
-            resultText =
-              `【エラー】${json.message}\n距離：${dist}m`;
-          } else {
-            resultText = `【エラー】${json.message}`;
-          }
+          // エラー時だけ強調
+          resultText = `【エラー】\n${json.message}`;
         }
-    
+        
         document.getElementById("result").innerText = resultText;
-    
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
       }
