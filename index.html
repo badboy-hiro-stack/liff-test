@@ -301,14 +301,17 @@
       const userId = profile.userId;
 
       // ▼ 管理者判定　2026/03/23追記
-      // const url = `${gasUrl}?action=checkAdmin&lineId=${userId}`;
-      const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
+      const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
+      // const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
       const res = await fetch(url);
       const json = await res.json();
-    
-      if (json.isAdmin) {
-        document.getElementById("adminEditButton").style.display = "block";
-      } else {
+
+      // ★ 判定結果を保存
+      isAdminUser = json.isAdmin;
+      
+      // ★ 管理者でなければボタン非表示
+      if (!isAdminUser) {
+        document.getElementById("adminButton").style.display = "none";
         document.getElementById("adminEditButton").style.display = "none";
       }
       
@@ -514,8 +517,14 @@
       document.getElementById("btnStatus").style.display = "block";
       document.getElementById("status").style.display = "block";
       document.getElementById("result").style.display = "block";
-      document.getElementById("adminButton").style.display = "block";
-      document.getElementById("adminEditButton").style.display = "block";
+      // ★ 管理者だけボタンを表示
+      if (isAdminUser) {
+        document.getElementById("adminButton").style.display = "block";
+        document.getElementById("adminEditButton").style.display = "block";
+      } else {
+        document.getElementById("adminButton").style.display = "none";
+        document.getElementById("adminEditButton").style.display = "none";
+      }
     };
 
     // 日付を YYYY/MM/DD に整形
@@ -610,8 +619,14 @@
       document.getElementById("btnStatus").style.display = "block";
       document.getElementById("status").style.display = "block";
       document.getElementById("result").style.display = "block";
-      document.getElementById("adminButton").style.display = "block";
-      document.getElementById("adminEditButton").style.display = "block";
+      // ★ 管理者だけボタンを表示
+      if (isAdminUser) {
+        document.getElementById("adminButton").style.display = "block";
+        document.getElementById("adminEditButton").style.display = "block";
+      } else {
+        document.getElementById("adminButton").style.display = "none";
+        document.getElementById("adminEditButton").style.display = "none";
+      }
     };
 
     // 日付＋従業員を選んだら GAS に問い合わせ
