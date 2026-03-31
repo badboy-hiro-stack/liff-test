@@ -641,12 +641,18 @@
       // ★ ハイフン → スラッシュ
       date = date.replace(/-/g, "/");
     
-      fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}`)
+      fetch(`${gasUrl}?action=getAttendanceListForDate&date=${date}&name=${name}&userId=${userId}`)
         .then(res => res.text())
         .then(text => {
           alert(text);   // ← デバッグ用
           const json = JSON.parse(text);
-    
+
+          // ★ 管理者以外はここでブロック
+          if (json.status === "forbidden") {
+            alert("管理者専用機能です");
+            return;
+          }
+          
           if (json.status !== "success") {
             alert(json.message);
             return;
