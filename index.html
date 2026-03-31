@@ -309,8 +309,11 @@
       // ★ 判定結果を保存
       isAdminUser = json.isAdmin;
       
-      // ★ 管理者でなければボタン非表示
-      if (!isAdminUser) {
+      // ★ 管理者だけボタンを表示
+      if (isAdminUser) {
+        document.getElementById("adminButton").style.display = "block";
+        document.getElementById("adminEditButton").style.display = "block";
+      } else {
         document.getElementById("adminButton").style.display = "none";
         document.getElementById("adminEditButton").style.display = "none";
       }
