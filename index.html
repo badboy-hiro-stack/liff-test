@@ -195,7 +195,10 @@
         alert(result.message);
         return;
       }
-      // ③ 退勤成功 → 作業内容画面へ
+      // ③ ★ rowIndex を受け取って保存
+      latestRowIndex = result.rowIndex;
+
+      // ④ 退勤成功 → 作業内容画面へ
       showTaskScreen();
     }
 
@@ -218,6 +221,7 @@
         headers: { "Content-Type": "application/json" },  // ★ 追加
         body: JSON.stringify({
           action: "saveTasks",
+          rowIndex: latestRowIndex,   // ★ ここが重要
           userId: currentUserId,
           tasks: tasks
         })
