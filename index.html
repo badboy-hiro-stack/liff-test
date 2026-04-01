@@ -54,7 +54,7 @@
   <div id="taskScreen" style="display:none; padding:20px;">
     <h2>本日の作業内容</h2>
   
-    <p>今日行った作業を選択してください（複数選択可）</p>
+    <p>今日行った作業を選択してください<br>（複数選択可）</p>
   
     <label><input type="checkbox" id="taskSort"> 仕分け</label><br>
     <label><input type="checkbox" id="taskUnload"> 荷バラシ</label><br>
@@ -176,6 +176,10 @@
     function showTaskScreen() {
       document.getElementById("mainScreen").style.display = "none";
       document.getElementById("taskScreen").style.display = "block";
+      // ★ チェックをリセット（初期値＝未チェック）
+      document.getElementById("taskSort").checked = false;
+      document.getElementById("taskUnload").checked = false;
+      document.getElementById("taskInspect").checked = false;
     }
     
     function backToMain() {
@@ -197,6 +201,7 @@
 
     // ▼ 作業内容送信ボタン
     function submitTasks() {
+      alert("submitTasks が呼ばれました");
       const tasks = [];
       if (document.getElementById("taskSort").checked) tasks.push("仕分け");
       if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
