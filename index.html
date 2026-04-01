@@ -655,7 +655,13 @@
       const name = document.getElementById("editEmployee").value;
     
       if (!date || !name) return;
-    
+
+      // ★ 管理者以外はここでブロック
+      if (!isAdminUser) {
+        alert("管理者専用機能です");
+        return;
+      }
+      
       // ★ ハイフン → スラッシュ
       date = date.replace(/-/g, "/");
     
@@ -665,12 +671,6 @@
           alert(text);   // ← デバッグ用
           const json = JSON.parse(text);
 
-          // ★ 管理者以外はここでブロック
-/*           if (json.status === "forbidden") {
-            alert("管理者専用機能です");
-            return;
-          } */
-          
           if (json.status !== "success") {
             alert(json.message);
             return;
