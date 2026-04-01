@@ -189,7 +189,7 @@
 
     async function handleClockOutWithTasks() {
       // ① まず退勤処理を実行
-      const result = await send("退勤");
+      const result = await send("clockOut");
       // ② 退勤失敗（休憩不足など）
       if (result.status !== "success") {
         alert(result.message);
@@ -463,6 +463,7 @@
     
         // 送信データ
         const payload = {
+          action: type,   // ★ 追加
           type: type,
           lineId: profile.userId,
           name: profile.displayName,
