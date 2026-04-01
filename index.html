@@ -138,10 +138,6 @@
   </div>
   <!-- ▲ 打刻修正画面ここまで -->
 
-  <button id="testAdminButton" onclick="testAdminCheck()">
-    管理者判定テスト
-  </button>
-
 </body>
 
   <script>
@@ -320,8 +316,8 @@
       const userId = profile.userId;
 
       // ▼ 管理者判定　2026/03/23追記
-      // const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
-      const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
+      const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
+      // const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
       const res = await fetch(url);
       const json = await res.json();
 
