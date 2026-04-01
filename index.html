@@ -183,6 +183,18 @@
       document.getElementById("mainScreen").style.display = "block";
     }
 
+    async function handleClockOutWithTasks() {
+      // ① まず退勤処理を実行
+      const result = await send("退勤", userId);
+      // ② 退勤失敗（休憩不足など）
+      if (result.status !== "success") {
+        alert(result.message);
+        return;
+      }
+      // ③ 退勤成功 → 作業内容画面へ
+      showTaskScreen();
+    }
+
     // ▼ 作業内容送信ボタン
     function submitTasks() {
       const tasks = [];
@@ -191,22 +203,22 @@
       if (document.getElementById("taskInspect").checked) tasks.push("検品");
     
       const taskString = tasks.join(",");
-      clockOut(taskString);
+      clockOutTasks(taskString);
     }
     
     // ▼ 新規の退勤処理（GASへ送信）
-    function clockOut(tasks) {
+    function clockOutTasks(tasks) {
       fetch(gasUrl, {
         method: "POST",
         body: JSON.stringify({
-          action: "clockOut",
+          action: "saveTasks",
           userId: currentUserId,
           tasks: tasks
         })
       })
       .then(res => res.json())
       .then(json => {
-        alert(json.message);
+        alert("作業内容を記録しました");
         backToMain();
       });
     }
@@ -394,7 +406,8 @@
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
       // document.getElementById("btnOut").onclick = () => send("退勤", userId);
-      document.getElementById("btnOut").onclick = () => showTaskScreen();
+      document.getElementById("btnOut").onclick = () => handleClockOutWithTasks();
+      // document.getElementById("btnOut").onclick = () => showTaskScreen();
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
     
