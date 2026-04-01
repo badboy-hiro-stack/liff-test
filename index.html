@@ -215,6 +215,7 @@
     function clockOutTasks(tasks) {
       fetch(gasUrl, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },  // ★ 追加
         body: JSON.stringify({
           action: "saveTasks",
           userId: currentUserId,
