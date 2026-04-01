@@ -185,7 +185,7 @@
 
     async function handleClockOutWithTasks() {
       // ① まず退勤処理を実行
-      const result = await send("退勤", userId);
+      const result = await send("退勤");
       // ② 退勤失敗（休憩不足など）
       if (result.status !== "success") {
         alert(result.message);
@@ -477,7 +477,7 @@
           // ボタン押下で force:true を付けて再送信
           btn.onclick = () => sendForceClockIn(profile.userId, lat, lng);
         
-          return; // confirm の場合はここで終了
+          return json;   // ← ★ 追加
         }
     
         // ▼ ステータス表示（成功したときだけ更新）
@@ -521,8 +521,10 @@
         }
         
         document.getElementById("result").innerText = resultText;
+        return json;   // ← ★ これが超重要
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
+        return { status: "error", message: e.toString() };  // ← ★ エラー時も返す
       }
     }
 
