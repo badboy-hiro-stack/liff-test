@@ -138,6 +138,10 @@
   </div>
   <!-- ▲ 打刻修正画面ここまで -->
 
+  <button id="testAdminButton" onclick="testAdminCheck()">
+    管理者判定テスト
+  </button>
+
 </body>
 
   <script>
@@ -279,6 +283,21 @@
       }
     
       renderTimeCard(json.data, json.total, year, month);
+    }
+
+    async function testAdminCheck() {
+      const profile = await liff.getProfile();
+      const userId = profile.userId;
+    
+      const url = `${gasUrl}?action=testAdmin&userId=${userId}`;
+      const res = await fetch(url);
+      const json = await res.json();
+    
+      alert(
+        "受信 userId = [" + json.debug.received + "]\n" +
+        "管理者シート値 = [" + json.debug.sheetValue + "]\n" +
+        "isAdmin = " + json.isAdmin
+      );
     }
 
     // ▼ LIFF 初期化
