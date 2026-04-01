@@ -50,6 +50,20 @@
   </div>
   <!-- ▲ メイン画面ここまで -->
 
+  <!-- 本日の作業内容画面 -->
+  <div id="taskScreen" style="display:none; padding:20px;">
+    <h2>本日の作業内容</h2>
+  
+    <p>今日行った作業を選択してください（複数選択可）</p>
+  
+    <label><input type="checkbox" id="taskSort"> 仕分け</label><br>
+    <label><input type="checkbox" id="taskUnload"> 荷バラシ</label><br>
+    <label><input type="checkbox" id="taskInspect"> 検品</label><br><br>
+  
+    <button onclick="submitTasks()">作業内容を送信</button>
+    <button onclick="backToMain()">戻る</button>
+  </div>
+  <!-- 本日の作業内容画面ここまで -->
 
   <!-- ▼ 2. 勤務状態一覧画面（timeCard） -->
   <div id="timeCard" style="display:none; margin-top:20px;">
@@ -156,6 +170,44 @@
           err => reject("位置情報が取得できませんでした：" + err.message),
           { enableHighAccuracy: true }
         );
+      });
+    }
+
+    function showTaskScreen() {
+      document.getElementById("mainScreen").style.display = "none";
+      document.getElementById("taskScreen").style.display = "block";
+    }
+    
+    function backToMain() {
+      document.getElementById("taskScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "block";
+    }
+
+    // ▼ 作業内容送信ボタン
+    function submitTasks() {
+      const tasks = [];
+      if (document.getElementById("taskSort").checked) tasks.push("仕分け");
+      if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
+      if (document.getElementById("taskInspect").checked) tasks.push("検品");
+    
+      const taskString = tasks.join(",");
+      clockOut(taskString);
+    }
+    
+    // ▼ 新規の退勤処理（GASへ送信）
+    function clockOut(tasks) {
+      fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "clockOut",
+          userId: currentUserId,
+          tasks: tasks
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        alert(json.message);
+        backToMain();
       });
     }
 
@@ -341,7 +393,8 @@
     
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
-      document.getElementById("btnOut").onclick = () => send("退勤", userId);
+      // document.getElementById("btnOut").onclick = () => send("退勤", userId);
+      document.getElementById("btnOut").onclick = () => showTaskScreen();
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
     
