@@ -218,6 +218,25 @@
     function clockOutTasks(tasks) {
       fetch(gasUrl, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "作業内容",
+          rowIndex: latestRowIndex,
+          tasks: tasks
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        alert("作業内容を記録しました");
+        backToMain();
+      })
+      .catch(err => {
+        alert("エラー: " + err);
+      });
+    }
+/*     function clockOutTasks(tasks) {
+      fetch(gasUrl, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },  // ★ 追加
         body: JSON.stringify({
           type: "作業内容",
@@ -230,7 +249,7 @@
         alert("作業内容を記録しました");
         backToMain();
       });
-    }
+    } */
 
     // タイムカード画面表示処理
     async function showTimeCard() {
