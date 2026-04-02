@@ -190,7 +190,6 @@
     async function handleClockOutWithTasks() {
       // ① まず退勤処理を実行
       const result = await send("退勤");
-      alert("退勤 result:\n" + JSON.stringify(result));
       // ② 退勤失敗（休憩不足など）
       if (result.status !== "success") {
         alert("退勤失敗:\n" + result.message);
@@ -198,7 +197,7 @@
       }
       // ③ ★ rowIndex を受け取って保存
       latestRowIndex = result.rowIndex;
-      alert("latestRowIndex = " + latestRowIndex);
+
       // ④ 退勤成功 → 作業内容画面へ
       showTaskScreen();
     }
@@ -212,17 +211,11 @@
       if (document.getElementById("taskInspect").checked) tasks.push("検品");
     
       const taskString = tasks.join(",");
-      alert("送信する作業内容:\n" + taskString);
       clockOutTasks(taskString);
     }
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
-      alert(
-        "clockOutTasks 送信内容:\n" +
-        "rowIndex=" + latestRowIndex + "\n" +
-        "tasks=" + tasks
-      );
       fetch(gasUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },  // ★ 追加
@@ -234,11 +227,8 @@
       })
       .then(res => res.json())
       .then(json => {
-        alert("saveTasks のレスポンス:\n" + JSON.stringify(json));
+        alert("作業内容を記録しました");
         backToMain();
-      });
-      .catch(err => {
-        alert("fetch エラー:\n" + err);
       });
     }
 
