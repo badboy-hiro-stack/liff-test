@@ -220,7 +220,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },  // ★ 追加
         body: JSON.stringify({
-          action: "saveTasks",
+          type: "作業内容",
           rowIndex: latestRowIndex,   // ★ ここが重要
           tasks: tasks
         })
