@@ -196,7 +196,8 @@
         return;
       }
       // ③ ★ rowIndex を受け取って保存
-      latestRowIndex = result.rowIndex;
+      // latestRowIndex = result.rowIndex;
+      latestRowIndex = result.data.rowIndex;  
 
       // ④ 退勤成功 → 作業内容画面へ
       showTaskScreen();
