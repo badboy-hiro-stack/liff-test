@@ -218,6 +218,7 @@
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
+      alert("gasUrl = " + gasUrl);
       fetch(gasUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
