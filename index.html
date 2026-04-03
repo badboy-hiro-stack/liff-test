@@ -218,24 +218,25 @@
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
-      alert("gasUrl = " + gasUrl);
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "作業内容",
-          rowIndex: latestRowIndex,
-          tasks: tasks
+      setTimeout(() => {
+        fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "作業内容",
+            rowIndex: latestRowIndex,
+            tasks: tasks
+          })
         })
-      })
-      .then(res => res.json())
-      .then(json => {
-        alert("作業内容を記録しました");
-        backToMain();
-      })
-      .catch(err => {
-        alert("エラー: " + err);
-      });
+        .then(res => res.json())
+        .then(json => {
+          alert("作業内容を記録しました");
+          backToMain();
+        })
+        .catch(err => {
+          alert("エラー: " + err);
+        });
+      }, 150);  // ← 150ms が最も安定
     }
 /*     function clockOutTasks(tasks) {
       fetch(gasUrl, {
