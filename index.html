@@ -190,6 +190,7 @@
     async function handleClockOutWithTasks() {
       // ① まず退勤処理を実行
       const result = await send("退勤");
+      alert("退勤レスポンス:\n" + JSON.stringify(result, null, 2));
       // ② 退勤失敗（休憩不足など）
       if (result.status !== "success") {
         alert("退勤失敗:\n" + result.message);
@@ -198,7 +199,6 @@
       // ③ ★ rowIndex を受け取って保存
       // latestRowIndex = result.rowIndex;
       latestRowIndex = result.data.rowIndex;
-      console.log("退勤レスポンス:", result);
 
       // ④ 退勤成功 → 作業内容画面へ
       showTaskScreen();
