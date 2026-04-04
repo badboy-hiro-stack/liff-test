@@ -218,25 +218,6 @@
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
-      const form = new FormData();
-      form.append("type", "作業内容");
-      form.append("rowIndex", latestRowIndex);
-      form.append("tasks", tasks);
-    
-      fetch(gasUrl, {
-        method: "POST",
-        body: form
-      })
-      .then(res => res.json())
-      .then(json => {
-        alert("作業内容を保存しました");
-        backToMain();
-      })
-      .catch(err => {
-        alert("fetch ERROR: " + err);
-      });
-    }
-/*     function clockOutTasks(tasks) {
       alert("clockOutTasks START");
       setTimeout(() => {
         alert("fetch to: " + gasUrl);
@@ -261,8 +242,9 @@
         .catch(err => {
           alert("fetch ERROR: " + err);
         });
-      }, 150);  // ← 150ms が最も安定
-    } */
+      }, 400);  // ← 150ms が最も安定
+    }
+    
 /*     function clockOutTasks(tasks) {
       fetch(gasUrl, {
         method: "POST",
