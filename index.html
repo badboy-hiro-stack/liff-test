@@ -218,8 +218,9 @@
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
-      alert("gasUrl = " + gasUrl);
+      alert("clockOutTasks START");
       setTimeout(() => {
+        alert("fetch to: " + gasUrl);
         fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -229,13 +230,17 @@
             tasks: tasks
           })
         })
-        .then(res => res.json())
+        // .then(res => res.json())
+        .then(res => {
+          alert("fetch OK, status=" + res.status);
+          return res.json();
+        })
         .then(json => {
           alert("作業内容を記録しました");
           backToMain();
         })
         .catch(err => {
-          alert("エラー: " + err);
+          alert("fetch ERROR: " + err);
         });
       }, 150);  // ← 150ms が最も安定
     }
