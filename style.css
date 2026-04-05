@@ -303,6 +303,29 @@ select {
   transition: 0.15s ease;
 }
 
+.task-list {
+  width: 90%;
+  max-width: 320px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 8px;
+  font-size: 40px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.task-item input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+}
+
+
 .update-button:active {
   transform: scale(0.95);
   background: #1e8f23;
