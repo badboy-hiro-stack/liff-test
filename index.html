@@ -193,7 +193,7 @@
     }
 
     function showTaskScreen() {
-      if (!latestRowIndex) {
+      if (!latestRowIndex || latestRowIndex < 2) {
         document.getElementById("messageArea").textContent =
           "出勤処理がされていません。先に出勤してください。";
         return;
