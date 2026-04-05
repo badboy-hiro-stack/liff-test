@@ -21,6 +21,11 @@
       <button class="btn big" id="btnBreakEnd">休憩終了</button>
     </div>
 
+    <!-- 作業内容の報告 -->
+    <div class="row">
+      <button class="btn time" id="btnTaskReport" onclick="showTaskScreen()">作業内容の報告</button>
+    </div>
+    
     <!-- 勤務状態 -->
     <div class="row">
       <button class="btn time" id="btnStatus">勤務状態</button>
@@ -47,6 +52,7 @@
     <!-- 結果表示 -->
     <p id="result"></p>
 
+    <div id="messageArea"></div>   
   </div>
   <!-- ▲ メイン画面ここまで -->
 
@@ -56,12 +62,25 @@
   
     <p>今日行った作業を選択してください<br>（複数選択可）</p>
   
-    <label><input type="checkbox" id="taskSort"> 仕分け</label><br>
-    <label><input type="checkbox" id="taskUnload"> 荷バラシ</label><br>
-    <label><input type="checkbox" id="taskInspect"> 検品</label><br><br>
+    <div class="task-list">
+      <label class="task-item">
+        <input type="checkbox" id="taskSort">
+        <span>仕分け</span>
+      </label>
+    
+      <label class="task-item">
+        <input type="checkbox" id="taskUnload">
+        <span>荷バラシ</span>
+      </label>
+    
+      <label class="task-item">
+        <input type="checkbox" id="taskInspect">
+        <span>検品</span>
+      </label>
+    </div>
   
-    <button onclick="submitTasks()">作業内容を送信</button>
-    <button onclick="backToMain()">戻る</button>
+    <button class="update-button" onclick="submitTasks()">作業内容を送信</button>
+    <button class="back-button" onclick="backToMain()">戻る</button>
   </div>
   <!-- 本日の作業内容画面ここまで -->
 
@@ -174,6 +193,11 @@
     }
 
     function showTaskScreen() {
+      if (!latestRowIndex) {
+        document.getElementById("messageArea").textContent =
+          "出勤処理がされていません。先に出勤してください。";
+        return;
+      }
       document.getElementById("mainScreen").style.display = "none";
       document.getElementById("taskScreen").style.display = "block";
       // ★ チェックをリセット（初期値＝未チェック）
@@ -206,14 +230,46 @@
 
     // ▼ 作業内容送信ボタン
     function submitTasks() {
-      alert("submitTasks が呼ばれました");
       const tasks = [];
+    
       if (document.getElementById("taskSort").checked) tasks.push("仕分け");
       if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
       if (document.getElementById("taskInspect").checked) tasks.push("検品");
     
       const taskString = tasks.join(",");
-      clockOutTasks(taskString);
+    
+      // ▼ rowIndex が無い場合は保存できない
+      if (!latestRowIndex) {
+        document.getElementById("messageArea").textContent =
+          "出勤情報が取得できていません。再度出勤ボタンを押してください。";
+        return;
+      }
+    
+      fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "saveTasks",
+          rowIndex: latestRowIndex,   // ← ★ 出勤時に取得した行番号
+          tasks: taskString
+        })
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status === "success") {
+    
+          // ★ 退勤前チェック用に保存
+          workTasks = taskString;
+    
+          document.getElementById("messageArea").textContent =
+            "作業内容を保存しました。";
+    
+          // メイン画面へ戻す
+          showMainScreen();
+        } else {
+          document.getElementById("messageArea").textContent =
+            "作業内容の保存に失敗しました。";
+        }
+      });
     }
     
     // ▼ 新規の退勤処理（GASへ送信）
@@ -447,7 +503,7 @@
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
       // document.getElementById("btnOut").onclick = () => send("退勤", userId);
-      document.getElementById("btnOut").onclick = () => handleClockOutWithTasks();
+      document.getElementById("btnOut").onclick = () => clockOut();
       // document.getElementById("btnOut").onclick = () => showTaskScreen();
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
@@ -475,6 +531,19 @@
       // 日付 or 従業員が変更されたらデータを読み込む
       document.getElementById("editDate").onchange = loadAttendanceForEdit;
       document.getElementById("editEmployee").onchange = loadAttendanceForEdit;
+    }
+    
+    // 退勤前に作業内容の有無を確認
+    function clockOut() {
+      // 作業内容が未登録なら退勤不可
+      if (!workTasks || workTasks === "") {
+        document.getElementById("messageArea").textContent =
+          "本日の作業内容が報告されていません。作業内容の報告ボタンから該当する作業をチェックして送信してください。";
+        return;
+      }
+    
+      // 作業内容が登録されていれば退勤処理へ
+      send("退勤", userId);
     }
 
     // ▼ 打刻処理
@@ -534,6 +603,12 @@
           if (json.action === "clock_in") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
+
+            // ★ 出勤成功 → GAS が返した rowIndex を保存
+            latestRowIndex = json.data.rowIndex;
+            
+            // ★ 出勤成功 → 作業内容を初期化
+            workTasks = "";
           }
         
           if (json.action === "break_start") {
