@@ -187,11 +187,6 @@
       });
     }
 
-    function backToMain() {
-      document.getElementById("taskScreen").style.display = "none";
-      document.getElementById("mainScreen").style.display = "block";
-    }
-    
     function showTaskScreen(tasks) {
       // ▼ 出勤していない場合のチェック（安全のため残す）
       if (!latestRowIndex || latestRowIndex < 2) {
@@ -220,38 +215,10 @@
         });
       }
     }
-
-    // 【最終仕様対応版】sendClockOut 2026/04/06
-    function sendClockOut() {
-      const params = new URLSearchParams();
-      params.append("type", "退勤");
-      params.append("lineId", userId);
     
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ 作業内容画面を閉じてメイン画面へ戻す
-          document.getElementById("taskScreen").style.display = "none";
-          document.getElementById("mainScreen").style.display = "block";
-    
-          // ▼ rowIndex をリセット（翌日の誤動作防止）
-          latestRowIndex = null;
-    
-          alert("退勤処理が完了しました");
-    
-        } else {
-          alert("退勤処理に失敗しました");
-        }
-      })
-      .catch(() => {
-        alert("通信エラーが発生しました");
-      });
+    function backToMain() {
+      document.getElementById("taskScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "block";
     }
 
     async function handleClockOutWithTasks() {
@@ -269,51 +236,6 @@
 
       // ④ 退勤成功 → 作業内容画面へ
       showTaskScreen();
-    }
-
-    // ▼ 作業内容送信ボタン 【新仕様対応版】2026/04/06
-    function submitTasks() {
-      const tasks = [];
-    
-      if (document.getElementById("taskSort").checked) tasks.push("仕分け");
-      if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
-      if (document.getElementById("taskInspect").checked) tasks.push("検品");
-    
-      const taskString = tasks.join(",");
-    
-      // ▼ rowIndex が無い場合は保存できない
-      if (!latestRowIndex) {
-        document.getElementById("messageArea").textContent =
-          "出勤情報が取得できていません。再度出勤ボタンを押してください。";
-        return;
-      }
-    
-      // ▼ form-urlencoded で送信（Android でも安定）
-      const params = new URLSearchParams();
-      params.append("action", "saveTasks");
-      params.append("rowIndex", latestRowIndex);
-      params.append("tasks", taskString);
-    
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ 作業内容保存成功 → 退勤処理へ
-          sendClockOut();
-    
-        } else {
-          document.getElementById("messageArea").textContent =
-            "作業内容の保存に失敗しました。";
-        }
-      })
-      .catch(() => {
-        alert("通信エラーが発生しました");
-      });
     }
     
     // ▼ 新規の退勤処理（GASへ送信）
@@ -546,7 +468,7 @@
     
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
-      // ▼ 退勤ボタン押下 → getTasks を呼ぶ 2026/04/06　修正部分
+      
       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
         params.append("action", "getTasks");
@@ -560,12 +482,14 @@
         .then(res => res.json())
         .then(json => {
           if (json.status === "success") {
-            showTaskScreen(json.tasks); // ← 編集モード or 新規
+            // 送信済みなら編集モードで表示
+            showTaskScreen(json.tasks);
           } else {
-            showTaskScreen(""); // ← 未送信
+            // 未送信なら通常モード
+            showTaskScreen("");
           }
         })
-        .catch(() => {
+        .catch(err => {
           alert("通信エラーが発生しました");
         });
       };
@@ -597,6 +521,79 @@
       document.getElementById("editDate").onchange = loadAttendanceForEdit;
       document.getElementById("editEmployee").onchange = loadAttendanceForEdit;
     }
+
+    // ▼ 作業内容送信ボタン
+    function submitTasks() {
+      const tasks = [];
+    
+      if (document.getElementById("taskSort").checked) tasks.push("仕分け");
+      if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
+      if (document.getElementById("taskInspect").checked) tasks.push("検品");
+    
+      const taskString = tasks.join(",");
+    
+      // ▼ rowIndex が無い場合は保存できない
+      if (!latestRowIndex) {
+        document.getElementById("messageArea").textContent =
+          "出勤情報が取得できていません。再度出勤ボタンを押してください。";
+        return;
+      }
+    
+      // ▼ form-urlencoded で送信（Android でも安定）
+      const params = new URLSearchParams();
+      params.append("action", "saveTasks");
+      params.append("rowIndex", latestRowIndex);
+      params.append("tasks", taskString);
+    
+      fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status === "success") {
+    
+          // ▼ 作業内容保存成功 → 退勤処理へ
+          sendClockOut();
+    
+        } else {
+          document.getElementById("messageArea").textContent =
+            "作業内容の保存に失敗しました。";
+        }
+      })
+      .catch(() => {
+        alert("通信エラーが発生しました");
+      });
+    }
+
+    function sendClockOut() {
+      const params = new URLSearchParams();
+      params.append("type", "退勤");
+      params.append("lineId", userId);
+    
+      fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status === "success") {
+    
+          // ▼ ここで画面を戻す
+          document.getElementById("taskScreen").style.display = "none";
+          document.getElementById("mainScreen").style.display = "block";
+
+          // ▼ rowIndex をリセット（翌日の誤動作防止）
+          latestRowIndex = null;
+          
+          alert("退勤処理が完了しました");
+        } else {
+          alert("退勤処理に失敗しました");
+        }
+      })
+    }
     
     // 退勤前に作業内容の有無を確認
     function clockOut() {
@@ -624,84 +621,89 @@
         // LINEプロフィール取得
         const profile = await liff.getProfile();
     
-        // ▼ form-urlencoded で送信する
-        const params = new URLSearchParams();
-        params.append("type", type);
-        params.append("lineId", profile.userId);
-        params.append("name", profile.displayName);
-        params.append("lat", lat);
-        params.append("lng", lng);
+        // 送信データ
+        const payload = {
+          action: null,   // ★ 追加
+          type: type,
+          lineId: profile.userId,
+          name: profile.displayName,
+          lat: lat,
+          lng: lng
+        };
     
+        // GASへ送信
         const res = await fetch(gasUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
+          body: JSON.stringify(payload)
         });
     
         const json = await res.json();
     
-        // ▼ confirm（再出勤確認）
+        // ▼ ★★★ ここが重要：confirm の処理 ★★★
         if (json.status === "confirm" && json.action === "clock_in") {
           document.getElementById("result").innerText = `【確認】${json.message}`;
-    
+        
+          // 再出勤ボタンを表示
           const btn = document.getElementById("btnForceIn");
           btn.style.display = "block";
-    
+        
+          // ボタン押下で force:true を付けて再送信
           btn.onclick = () => sendForceClockIn(profile.userId, lat, lng);
-    
-          return json;
+        
+          return json;   // ← ★ 追加
         }
     
-        // ▼ ステータス表示
+        // ▼ ステータス表示（成功したときだけ更新）
         const statusBox = document.getElementById("status");
-    
+        
         if (
           json.status === "success" ||
           json.status === "complete" ||
           json.status === "continue"
         ) {
-    
+        
           if (json.action === "clock_in") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
-    
-            // ★ 出勤成功 → rowIndex を保存
+
+            // ★ 出勤成功 → GAS が返した rowIndex を保存
             latestRowIndex = json.data.rowIndex;
-    
-            // ★ 作業内容を初期化
+            
+            // ★ 出勤成功 → 作業内容を初期化
             workTasks = "";
           }
-    
+        
           if (json.action === "break_start") {
             statusBox.innerText = "休憩中";
             statusBox.style.color = "orange";
           }
-    
+        
           if (json.action === "break_end") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
           }
-    
+        
           if (json.action === "clock_out") {
             statusBox.innerText = "";
           }
         }
     
-        // ▼ 結果表示
+        // ▼ 結果表示（安全版）
         let resultText = "";
-    
+        
         if (json.status === "success" || json.status === "complete" || json.status === "continue") {
+          // 成功時は message をそのまま表示
           resultText = json.message;
         } else {
+          // エラー時だけ強調
           resultText = `【エラー】\n${json.message}`;
         }
-    
+        
         document.getElementById("result").innerText = resultText;
-        return json;
-    
+        return json;   // ← ★ これが超重要
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
-        return { status: "error", message: e.toString() };
+        return { status: "error", message: e.toString() };  // ← ★ エラー時も返す
       }
     }
 
@@ -1110,7 +1112,3 @@
   </script>
 </body>
 </html>
-
-
-
-
