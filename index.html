@@ -749,6 +749,7 @@
     
       const res = await fetch(gasUrl, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },  // ← 必須！
         body: JSON.stringify(payload)
       });
     
