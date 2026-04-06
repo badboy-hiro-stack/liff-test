@@ -429,18 +429,15 @@
         liff.login();
         return;
       }
-    
-      // ▼ ★ LIFF が完全に ready になるまで確実に待つ
-      await new Promise(resolve => {
-        if (liff.isReady) resolve();
-        else liff.ready.then(resolve);
-      });
  
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
       const userId = profile.userId;
-
       currentUserId = profile.userId;
+
+      // ▼ UI 初期化
+      document.getElementById("btnForceIn").style.display = "none";
+      loadCurrentStatus(userId);
 
       // ▼ 管理者判定　2026/03/23追記
       const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
@@ -461,10 +458,6 @@
       }
       
       setupMonthSelect();
-    
-      // ▼ UI 初期化
-      document.getElementById("btnForceIn").style.display = "none";
-      loadCurrentStatus(userId);
     
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
