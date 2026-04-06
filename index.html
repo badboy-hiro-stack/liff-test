@@ -733,17 +733,16 @@
       document.getElementById("result").innerText = json.message;
     }
 
-    // 現在のステータスを読み込む関数を追加
+    // 現在のステータスを読み込む関数を追加　送信方式の変更
     async function loadCurrentStatus(lineId) {
-      const payload = {
-        type: "status",
-        lineId: lineId
-      };
+      const params = new URLSearchParams();
+      params.append("type", "status");
+      params.append("lineId", lineId);
     
       const res = await fetch(gasUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },  // ← 必須！
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
       });
     
       const json = await res.json();
