@@ -621,89 +621,84 @@
         // LINEプロフィール取得
         const profile = await liff.getProfile();
     
-        // 送信データ
-        const payload = {
-          action: null,   // ★ 追加
-          type: type,
-          lineId: profile.userId,
-          name: profile.displayName,
-          lat: lat,
-          lng: lng
-        };
+        // ▼ form-urlencoded で送信する
+        const params = new URLSearchParams();
+        params.append("type", type);
+        params.append("lineId", profile.userId);
+        params.append("name", profile.displayName);
+        params.append("lat", lat);
+        params.append("lng", lng);
     
-        // GASへ送信
         const res = await fetch(gasUrl, {
           method: "POST",
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
         });
     
         const json = await res.json();
     
-        // ▼ ★★★ ここが重要：confirm の処理 ★★★
+        // ▼ confirm（再出勤確認）
         if (json.status === "confirm" && json.action === "clock_in") {
           document.getElementById("result").innerText = `【確認】${json.message}`;
-        
-          // 再出勤ボタンを表示
+    
           const btn = document.getElementById("btnForceIn");
           btn.style.display = "block";
-        
-          // ボタン押下で force:true を付けて再送信
+    
           btn.onclick = () => sendForceClockIn(profile.userId, lat, lng);
-        
-          return json;   // ← ★ 追加
+    
+          return json;
         }
     
-        // ▼ ステータス表示（成功したときだけ更新）
+        // ▼ ステータス表示
         const statusBox = document.getElementById("status");
-        
+    
         if (
           json.status === "success" ||
           json.status === "complete" ||
           json.status === "continue"
         ) {
-        
+    
           if (json.action === "clock_in") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
-
-            // ★ 出勤成功 → GAS が返した rowIndex を保存
+    
+            // ★ 出勤成功 → rowIndex を保存
             latestRowIndex = json.data.rowIndex;
-            
-            // ★ 出勤成功 → 作業内容を初期化
+    
+            // ★ 作業内容を初期化
             workTasks = "";
           }
-        
+    
           if (json.action === "break_start") {
             statusBox.innerText = "休憩中";
             statusBox.style.color = "orange";
           }
-        
+    
           if (json.action === "break_end") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
           }
-        
+    
           if (json.action === "clock_out") {
             statusBox.innerText = "";
           }
         }
     
-        // ▼ 結果表示（安全版）
+        // ▼ 結果表示
         let resultText = "";
-        
+    
         if (json.status === "success" || json.status === "complete" || json.status === "continue") {
-          // 成功時は message をそのまま表示
           resultText = json.message;
         } else {
-          // エラー時だけ強調
           resultText = `【エラー】\n${json.message}`;
         }
-        
+    
         document.getElementById("result").innerText = resultText;
-        return json;   // ← ★ これが超重要
+        return json;
+    
       } catch (e) {
         document.getElementById("result").innerText = "エラー：" + e;
-        return { status: "error", message: e.toString() };  // ← ★ エラー時も返す
+        return { status: "error", message: e.toString() };
       }
     }
 
