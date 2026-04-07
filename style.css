@@ -326,9 +326,13 @@ select {
 }
 
 .status-group-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 20px 0 10px;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 32px 0 18px;
+  color: #222;
+  display: flex;
+  align-items: center
+  gap: 8px;
 }
 .card-working {
   border-left: 6px solid #4CAF50; /* 緑 */
