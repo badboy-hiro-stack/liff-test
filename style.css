@@ -325,6 +325,32 @@ select {
   margin-right: 12px;
 }
 
+.status-group-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 20px 0 10px;
+}
+.card-working {
+  border-left: 6px solid #4CAF50; /* 緑 */
+}
+
+.card-break {
+  border-left: 6px solid #FFC107; /* 黄色 */
+}
+
+.card-finished {
+  border-left: 6px solid #2196F3; /* 青 */
+}
+
+.name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.detail {
+  margin-top: 4px;
+  font-size: 14px;
+}
 
 .update-button:active {
   transform: scale(0.95);
