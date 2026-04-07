@@ -824,15 +824,9 @@
         alert("⑦ forbidden：管理者ではありません");
         return;
       }
-    
-      if (!json.data) {
-        alert("⑧ json.data が undefined");
-        return;
-      }
-    
-      alert("⑨ data 件数 = " + json.data.length);
-    
-      renderStatusList(json.data);
+
+      renderStatusList(json);
+      
       alert("⑩ renderStatusList 完了");
     }
     /* async function loadStatusList(userId) {
