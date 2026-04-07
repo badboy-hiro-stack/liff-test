@@ -798,6 +798,19 @@
     }
 
     async function loadStatusList(userId) {
+      const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
+      const res = await fetch(url); // ← GET に戻す
+    
+      const json = await res.json();
+    
+      if (json.status === "forbidden") {
+        alert("管理者専用機能です");
+        return;
+      }
+    
+      renderStatusList(json.data);
+    }
+    /* async function loadStatusList(userId) {
       const params = new URLSearchParams();
       params.append("action", "getStatusList");
       params.append("userId", userId);
@@ -816,7 +829,7 @@
       }
     
       renderStatusList(json.data);
-    }
+    } */
 
     function renderStatusList(data) {
       let html = "";
