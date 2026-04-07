@@ -856,7 +856,52 @@
       renderStatusList(json.data);
     } */
 
+    // 2026/04/07 修正
     function renderStatusList(data) {
+      const working = data.working;
+      const finished = data.finished;
+    
+      let html = "";
+    
+      // ▼ 勤務中グループ
+      html += `<div class="status-group-title">🟢 勤務中（${working.length}名）</div>`;
+    
+      working.forEach(item => {
+        const cardClass = item.status === "休憩中" ? "card-break" : "card-working";
+    
+        html += `
+          <div class="card ${cardClass}">
+            <div class="name">${item.name}</div>
+            <div class="detail">勤務日：${item.workDate}</div>
+            <div class="detail">ステータス：${item.status}</div>
+            <div class="detail">最終地点：${item.place}</div>
+            <div class="detail">休憩時間：${item.breakMinutes} 分</div>
+          </div>
+        `;
+      });
+    
+      // ▼ 退勤済みグループ
+      html += `<div class="status-group-title">🔵 退勤済み（${finished.length}名）</div>`;
+    
+      finished.forEach(item => {
+        html += `
+          <div class="card card-finished">
+            <div class="name">${item.name}</div>
+            <div class="detail">勤務日：${item.workDate}</div>
+            <div class="detail">ステータス：退勤済み</div>
+            <div class="detail">退勤地点：${item.place}</div>
+            <div class="detail">労働時間：${item.workMinutes} 分</div>
+            <div class="detail">休憩時間：${item.breakMinutes} 分</div>
+            <div class="detail">残業時間：${item.overtimeMinutes} 分</div>
+            <div class="detail">作業内容：${item.tasks ?? "（未報告）"}</div>
+          </div>
+        `;
+      });
+    
+      document.getElementById("statusList").innerHTML = html;
+    }
+    
+    /* function renderStatusList(data) {
       let html = "";
     
       data.forEach(item => {
@@ -877,7 +922,7 @@
       });
     
       document.getElementById("statusList").innerHTML = html;
-    }
+    } */
 
     async function showStatusList(userId) {
       // ▼ メイン画面を隠す
