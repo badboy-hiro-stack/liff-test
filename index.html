@@ -798,20 +798,18 @@
     }
 
     async function loadStatusList(userId) {
-      // alert("① loadStatusList START");
-          
-      const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
-      // alert("② URL作成完了：" + url);
+      const params = new URLSearchParams();
+      params.append("action", "getStatusList");
+      params.append("userId", userId);
     
-      const res = await fetch(url);
-      // alert("③ fetch完了");
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
     
       const json = await res.json();
-      // alert("④ JSON取得完了");
     
-      // alert("⑤ json.status = " + json.status);
-      // alert("json.data = " + JSON.stringify(json.data));
-
       if (json.status === "forbidden") {
         alert("管理者専用機能です");
         return;
