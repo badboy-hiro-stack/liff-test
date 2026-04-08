@@ -461,7 +461,7 @@
       setupMonthSelect();
     
       // ▼ 出勤・退勤・休憩ボタン
-      document.getElementById("btnOut").onclick = () => {
+/*       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
         params.append("action", "getLatestWorkRow");
         params.append("lineId", userId);
@@ -481,8 +481,8 @@
         .catch(err => {
           alert("fetch エラー：" + err);
         });
-      };
-      /* document.getElementById("btnIn").onclick = () => send("出勤", userId);
+      }; */
+      document.getElementById("btnIn").onclick = () => send("出勤", userId);
       
       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
@@ -509,7 +509,7 @@
         .catch(() => {
           alert("通信エラーが発生しました");
         });
-      }; */
+      };
       
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
