@@ -473,20 +473,21 @@
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
         })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error("HTTPエラー");
+          return res.json();
+        })
         .then(json => {
           if (json.status === "working") {
-      
-            // ★ 編集モード or 通常モードを tasks の有無で判定
             const tasks = json.tasks || "";
-      
             showTaskScreen(tasks, json.rowIndex);
-      
           } else {
             alert("出勤していません");
           }
         })
-        .catch(() => alert("通信エラーが発生しました"));
+        .catch(() => {
+          alert("通信エラーが発生しました");
+        });
       };
       
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
@@ -619,7 +620,10 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("HTTPエラー");
+        return res.json();
+      })
       .then(json => {
         if (json.status === "success") {
           // 作業内容保存成功 → 退勤処理へ
@@ -628,7 +632,9 @@
           alert("作業内容の保存に失敗しました");
         }
       })
-      .catch(() => alert("通信エラーが発生しました"));
+      .catch(() => {
+        alert("通信エラーが発生しました");
+      });
     }
     
     function saveTasks(tasks) {
@@ -676,7 +682,12 @@
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
         });
-    
+
+        // ★★★ res.ok をチェック（重要）★★★
+        if (!res.ok) {
+          throw new Error("HTTPエラー");
+        }
+        
         const json = await res.json();
     
         // ▼ confirm（再出勤確認）
@@ -697,10 +708,6 @@
         if (json.action === "clock_in") {
           statusBox.innerText = "出勤中";
           statusBox.style.color = "green";
-  
-          // ★ 出勤成功 → rowIndex を保存
-          latestRowIndex = json.rowIndex;
-  
           // ★ 作業内容を初期化
           workTasks = "";
         }
