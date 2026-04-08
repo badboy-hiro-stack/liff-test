@@ -461,7 +461,28 @@
       setupMonthSelect();
     
       // ▼ 出勤・退勤・休憩ボタン
-      document.getElementById("btnIn").onclick = () => send("出勤", userId);
+      document.getElementById("btnOut").onclick = () => {
+        const params = new URLSearchParams();
+        params.append("action", "getLatestWorkRow");
+        params.append("lineId", userId);
+      
+        fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        })
+        .then(async res => {
+          const text = await res.text();  // ★ 生レスポンスを取得
+          alert("レスポンス内容：\n" + text);  // ★ まずこれを確認
+      
+          // ここから先はまだ JSON に変換しない
+          // 原因がわかるまで JSON.parse はしない
+        })
+        .catch(err => {
+          alert("fetch エラー：" + err);
+        });
+      };
+      /* document.getElementById("btnIn").onclick = () => send("出勤", userId);
       
       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
@@ -488,7 +509,7 @@
         .catch(() => {
           alert("通信エラーが発生しました");
         });
-      };
+      }; */
       
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
