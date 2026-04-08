@@ -670,7 +670,7 @@
           json.status === "continue"
         ) {
     
-          if (json.action === "clock_in") {
+          if (json.status === "success") {
             statusBox.innerText = "出勤中";
             statusBox.style.color = "green";
     
