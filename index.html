@@ -601,6 +601,25 @@
       sendClockOut();
     }
 
+    function saveTasks(tasks) {
+      const params = new URLSearchParams();
+      params.append("action", "saveTasks");
+      params.append("rowIndex", latestRowIndex);
+      params.append("tasks", tasks);
+    
+      fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status === "success") {
+          clockOut();
+        }
+      });
+    }
+    
     // ▼ 打刻処理
     async function send(type) {
       document.getElementById("result").innerText = "位置情報取得中…";
