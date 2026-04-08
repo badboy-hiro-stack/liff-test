@@ -664,37 +664,30 @@
     
         // ▼ ステータス表示
         const statusBox = document.getElementById("status");
-    
-        if (
-          json.status === "success" ||
-          json.status === "complete" ||
-          json.status === "continue"
-        ) {
-    
-          if (json.action === "clock_in") {
-            statusBox.innerText = "出勤中";
-            statusBox.style.color = "green";
-    
-            // ★ 出勤成功 → rowIndex を保存
-            latestRowIndex = json.rowIndex;
-    
-            // ★ 作業内容を初期化
-            workTasks = "";
-          }
-    
-          if (json.action === "break_start") {
-            statusBox.innerText = "休憩中";
-            statusBox.style.color = "orange";
-          }
-    
-          if (json.action === "break_end") {
-            statusBox.innerText = "出勤中";
-            statusBox.style.color = "green";
-          }
-    
-          if (json.action === "clock_out") {
-            statusBox.innerText = "";
-          }
+       
+        if (json.action === "clock_in") {
+          statusBox.innerText = "出勤中";
+          statusBox.style.color = "green";
+  
+          // ★ 出勤成功 → rowIndex を保存
+          latestRowIndex = json.rowIndex;
+  
+          // ★ 作業内容を初期化
+          workTasks = "";
+        }
+  
+        if (json.action === "break_start") {
+          statusBox.innerText = "休憩中";
+          statusBox.style.color = "orange";
+        }
+  
+        if (json.action === "break_end") {
+          statusBox.innerText = "出勤中";
+          statusBox.style.color = "green";
+        }
+  
+        if (json.action === "clock_out") {
+          statusBox.innerText = "";
         }
     
         // ▼ 結果表示
