@@ -187,13 +187,10 @@
       });
     }
 
-    function showTaskScreen(tasks) {
-      // ▼ 出勤していない場合のチェック（安全のため残す）
-      if (!latestRowIndex || latestRowIndex < 2) {
-        document.getElementById("messageArea").textContent =
-          "出勤処理がされていません。先に出勤してください。";
-        return;
-      }
+    let currentWorkRow = null;
+    
+    function showTaskScreen(tasks, rowIndex) {
+      currentWorkRow = rowIndex;  // ← ここで保持（latestRowIndex は不要）
     
       // ▼ メイン画面を隠して作業画面を表示
       document.getElementById("mainScreen").style.display = "none";
@@ -214,6 +211,10 @@
           if (t === "検品") document.getElementById("taskInspect").checked = true;
         });
       }
+
+      // ★★★ ここでボタンにイベントを紐付ける ★★★
+      document.getElementById("btnTaskSubmit").onclick = saveTasksAndClockOut;
+      document.getElementById("btnTaskCancel").onclick = backToMain;
     }
     
     function backToMain() {
@@ -463,10 +464,9 @@
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
       
       document.getElementById("btnOut").onclick = () => {
-        alert("退勤時 latestRowIndex = " + latestRowIndex);
         const params = new URLSearchParams();
-        params.append("action", "getTasks");
-        params.append("rowIndex", latestRowIndex);
+        params.append("action", "getLatestWorkRow");
+        params.append("lineId", userId);
       
         fetch(gasUrl, {
           method: "POST",
@@ -475,17 +475,18 @@
         })
         .then(res => res.json())
         .then(json => {
-          if (json.status === "success") {
-            // 送信済みなら編集モードで表示
-            showTaskScreen(json.tasks);
+          if (json.status === "working") {
+      
+            // ★ 編集モード or 通常モードを tasks の有無で判定
+            const tasks = json.tasks || "";
+      
+            showTaskScreen(tasks, json.rowIndex);
+      
           } else {
-            // 未送信なら通常モード
-            showTaskScreen("");
+            alert("出勤していません");
           }
         })
-        .catch(err => {
-          alert("通信エラーが発生しました");
-        });
+        .catch(() => alert("通信エラーが発生しました"));
       };
       
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
@@ -602,6 +603,34 @@
       sendClockOut();
     }
 
+    function saveTasksAndClockOut() {
+      const tasks = [];
+      if (document.getElementById("taskSort").checked) tasks.push("仕分け");
+      if (document.getElementById("taskUnload").checked) tasks.push("荷バラシ");
+      if (document.getElementById("taskInspect").checked) tasks.push("検品");
+    
+      const params = new URLSearchParams();
+      params.append("action", "saveTasks");
+      params.append("rowIndex", currentWorkRow);
+      params.append("tasks", tasks.join(","));
+    
+      fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status === "success") {
+          // 作業内容保存成功 → 退勤処理へ
+          send("退勤");
+        } else {
+          alert("作業内容の保存に失敗しました");
+        }
+      })
+      .catch(() => alert("通信エラーが発生しました"));
+    }
+    
     function saveTasks(tasks) {
       const params = new URLSearchParams();
       params.append("action", "saveTasks");
