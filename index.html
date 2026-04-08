@@ -463,6 +463,7 @@
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
       
       document.getElementById("btnOut").onclick = () => {
+        alert("退勤時 latestRowIndex = " + latestRowIndex);
         const params = new URLSearchParams();
         params.append("action", "getTasks");
         params.append("rowIndex", latestRowIndex);
