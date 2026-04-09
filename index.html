@@ -589,6 +589,52 @@
     }
 
     function sendClockOut() {
+      alert("① sendClockOut が呼ばれたよー");
+    
+      const params = new URLSearchParams();
+      params.append("type", "退勤");
+      params.append("lineId", userId);
+    
+      fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => {
+        alert("② fetch の then(res) まで来た");
+        return res.text();  // ← JSON ではなく text で受け取る
+      })
+      .then(text => {
+        alert("③ 生レスポンス受信: " + text);
+    
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (e) {
+          alert("④ JSON に変換できませんでした");
+          return;
+        }
+    
+        alert("⑤ JSON 解析成功: status=" + json.status);
+    
+        if (json.status === "success") {
+    
+          // ▼ 画面を戻す
+          document.getElementById("taskScreen").style.display = "none";
+          document.getElementById("mainScreen").style.display = "block";
+    
+          currentWorkRow = null;
+    
+          alert("⑥ 退勤処理が完了しました");
+        } else {
+          alert("⑦ 退勤処理に失敗しました");
+        }
+      })
+      .catch(err => {
+        alert("⑧ fetch の catch に入りました");
+      });
+    }
+    /* function sendClockOut() {
       alert("sendClockOut が呼ばれた");
       const params = new URLSearchParams();
       params.append("type", "退勤");
@@ -615,7 +661,7 @@
           alert("退勤処理に失敗しました");
         }
       })
-    }
+    } */
     
     // 退勤前に作業内容の有無を確認
     function clockOut() {
