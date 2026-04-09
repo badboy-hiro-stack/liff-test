@@ -557,7 +557,8 @@
         }
       
         if (json.status === "success") {
-          sendClockOut();
+          // sendClockOut();
+          send("退勤");
         } else {
           document.getElementById("messageArea").textContent =
             "作業内容の保存に失敗しました。";
@@ -577,7 +578,7 @@
     
           // ▼ 作業内容保存成功 → 退勤処理へ
           sendClockOut();
-    
+
         } else {
           document.getElementById("messageArea").textContent =
             "作業内容の保存に失敗しました。";
