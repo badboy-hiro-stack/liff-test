@@ -473,13 +473,9 @@
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
         })
-        /* .then(res => {
+        .then(res => {
           if (!res.ok) throw new Error("HTTPエラー");
           return res.json();
-        }) */
-        .then(async res => {
-          const text = await res.text();
-          alert("レスポンス内容：\n" + text);
         })
         .then(json => {
           if (json.status === "working") {
