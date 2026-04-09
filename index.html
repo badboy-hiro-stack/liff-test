@@ -562,6 +562,7 @@
     }
 
     function sendClockOut() {
+      alert("sendClockOut が呼ばれた");
       const params = new URLSearchParams();
       params.append("type", "退勤");
       params.append("lineId", userId);
