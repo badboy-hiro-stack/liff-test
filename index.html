@@ -556,8 +556,8 @@
             "作業内容の保存に失敗しました。";
         }
       })
-      .catch(() => {
-        alert("通信エラーが発生しました");
+      .catch(err => {
+        console.log("軽微な通信エラー:", err);
       });
     }
 
@@ -580,7 +580,7 @@
           document.getElementById("mainScreen").style.display = "block";
 
           // ▼ rowIndex をリセット（翌日の誤動作防止）
-          latestRowIndex = null;
+          currentWorkRow = null;
           
           alert("退勤処理が完了しました");
         } else {
