@@ -538,8 +538,35 @@
       params.append("action", "saveTasks");
       params.append("rowIndex", currentWorkRow);
       params.append("tasks", taskString);
-    
+
       fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      })
+      .then(res => res.text())
+      .then(text => {
+        console.log("レスポンス生データ:", text);
+      
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (e) {
+          console.log("JSON parse エラー:", e);
+          return;
+        }
+      
+        if (json.status === "success") {
+          sendClockOut();
+        } else {
+          document.getElementById("messageArea").textContent =
+            "作業内容の保存に失敗しました。";
+        }
+      })
+      .catch(err => {
+        console.log("軽微な通信エラー:", err);
+      });
+      /* fetch(gasUrl, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params
@@ -558,7 +585,7 @@
       })
       .catch(err => {
         console.log("軽微な通信エラー:", err);
-      });
+      }); */
     }
 
     function sendClockOut() {
