@@ -213,7 +213,7 @@
       }
 
       // ★★★ ここでボタンにイベントを紐付ける ★★★
-      document.getElementById("btnTaskSubmit").onclick = saveTasksAndClockOut;
+      document.getElementById("btnTaskSubmit").onclick = submitTasks;
       document.getElementById("btnTaskCancel").onclick = backToMain;
     }
     
@@ -527,7 +527,7 @@
       const taskString = tasks.join(",");
     
       // ▼ rowIndex が無い場合は保存できない
-      if (!latestRowIndex) {
+      if (!currentWorkRow) {
         document.getElementById("messageArea").textContent =
           "出勤情報が取得できていません。再度出勤ボタンを押してください。";
         return;
@@ -536,7 +536,7 @@
       // ▼ form-urlencoded で送信（Android でも安定）
       const params = new URLSearchParams();
       params.append("action", "saveTasks");
-      params.append("rowIndex", latestRowIndex);
+      params.append("rowIndex", currentWorkRow);
       params.append("tasks", taskString);
     
       fetch(gasUrl, {
