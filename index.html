@@ -557,7 +557,11 @@
         }
       
         if (json.status === "success") {
-          // sendClockOut();
+          // 先に画面を戻す（send() が result を必要とするため）
+          document.getElementById("taskScreen").style.display = "none";
+          document.getElementById("mainScreen").style.display = "block";
+        
+          // 退勤処理
           send("退勤");
         } else {
           document.getElementById("messageArea").textContent =
