@@ -465,7 +465,7 @@
       
       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
-        params.append("action", "getLatestWorkRow");
+        params.append("action", "getLatestWorkRowAPI");
         params.append("lineId", userId);
       
         fetch(gasUrl, {
