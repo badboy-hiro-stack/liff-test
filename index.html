@@ -943,7 +943,11 @@
         alert("⑤ JSON パース失敗：" + err);
         return;
       }
-    
+
+      if (json.debugSheetName) {
+        alert("参照している勤務シート名：" + json.debugSheetName);
+      }
+      
       alert("⑥ json.status = " + json.status);
     
       if (json.status === "forbidden") {
