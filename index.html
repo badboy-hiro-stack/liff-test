@@ -944,8 +944,13 @@
         return;
       }
 
-      if (json.debugSheetName) {
-        alert("参照している勤務シート名：" + json.debugSheetName);
+      // ▼ debugSheetName を表示
+      if (json.finished && json.finished.length > 0 && json.finished[0].debugSheetName) {
+        alert("勤務シート名：" + json.finished[0].debugSheetName);
+      } else if (json.working && json.working.length > 0 && json.working[0].debugSheetName) {
+        alert("勤務シート名：" + json.working[0].debugSheetName);
+      } else {
+        alert("debugSheetName が見つかりませんでした");
       }
       
       alert("⑥ json.status = " + json.status);
