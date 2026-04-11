@@ -824,6 +824,7 @@
     // 再出勤（force:true）を送る関数
     async function sendForceClockIn(lineId, lat, lng) {
       const payload = {
+        action: "clock_in",
         type: "出勤",
         lineId: lineId,
         lat: lat,
