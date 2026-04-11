@@ -822,7 +822,8 @@
     }
 
     // 再出勤（force:true）を送る関数
-    const payload = new FormData();
+    async function sendForceClockIn(lineId, lat, lng) {
+      const payload = new FormData();
       payload.append("action", "clock_in");
       payload.append("type", "出勤");
       payload.append("lineId", lineId);
@@ -854,6 +855,7 @@
     
       document.getElementById("result").innerText = json.message;
     }
+
     /* async function sendForceClockIn(lineId, lat, lng) {
       const payload = {
         action: "clock_in",
