@@ -335,6 +335,59 @@
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
       const container = document.getElementById("timeCardContent");
+    
+      container.innerHTML = `
+        <h2>${year}年${month}月の勤務状況</h2>
+    
+        <table border="1" class="timecard-table">
+          <tr>
+            <th>日付</th>
+            <th>出勤</th>
+            <th>退勤</th>
+            <th>労働</th>
+            <th>休憩</th>
+            <th>残業</th>
+          </tr>
+    
+          ${rows.map((r, index) => `
+            <!-- メイン行 -->
+            <tr class="accordion-row" data-index="${index}">
+              <td>${formatDate(r.date)}</td>
+              <td>${formatTime(r.clockIn)}</td>
+              <td>${formatTime(r.clockOut)}</td>
+              <td>${r.workMinutes}分</td>
+              <td>${r.breakMinutes}分</td>
+              <td>${r.overMinutes}分</td>
+            </tr>
+    
+            <!-- アコーディオン展開部分 -->
+            <tr class="accordion-content" id="acc-${index}" style="display:none;">
+              <td colspan="6" style="background:#f9f9f9; padding:10px;">
+                <strong>作業内容：</strong><br>
+                ${r.tasks ? r.tasks.replace(/,/g, "<br>") : "（なし）"}
+              </td>
+            </tr>
+          `).join("")}
+        </table>
+    
+        <h3>合計</h3>
+        <p>労働時間：${total.work}分</p>
+        <p>休憩時間：${total.break}分</p>
+        <p>残業時間：${total.over}分</p>
+      `;
+    
+      // ▼ アコーディオン動作を付与
+      document.querySelectorAll(".accordion-row").forEach(row => {
+        row.addEventListener("click", () => {
+          const index = row.dataset.index;
+          const content = document.getElementById(`acc-${index}`);
+          content.style.display = (content.style.display === "none") ? "table-row" : "none";
+        });
+      });
+    }
+
+    /* function renderTimeCard(rows, total, year, month) {
+      const container = document.getElementById("timeCardContent");
       container.innerHTML = `
         <h2>${year}年${month}月の勤務状況</h2>
     
@@ -364,7 +417,7 @@
         <p>休憩時間：${total.break}分</p>
         <p>残業時間：${total.over}分</p>
       `;
-    }
+    } */
 
     // 月選択ドロップダウンを生成
     function setupMonthSelect() {
