@@ -127,7 +127,7 @@
 .month-select {
   width: 100%;
   padding: 10px;
-  font-size: 30px;
+  font-size: 40px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
@@ -137,21 +137,21 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  font-size: 30px;
+  font-size: 40px;
 }
 
 .timecard-table th {
   background: #4CAF50;
   color: white;
   padding: 8px;
-  font-size: 30px;
+  font-size: 40px;
   position: sticky;
   top: 0;
 }
 
 .timecard-table td {
   padding: 8px;
-  font-size: 30px;
+  font-size: 40px;
   border-bottom: 1px solid #ddd;
 }
 
