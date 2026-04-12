@@ -332,18 +332,19 @@
       renderTimeCard(json.data, json.total, year, month);
     }
 
-    function formatDate(date) {
-      const d = new Date(date);
-      const day = ("0" + d.getDate()).slice(-2);
+    function formatDate(dateStr) {
+      // "2026/04/11" → 年月日を安全に分解
+      const [year, month, day] = dateStr.split("/").map(Number);
+      const d = new Date(year, month - 1, day);
+    
+      const dd = ("0" + d.getDate()).slice(-2);
       const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
     
-      // 曜日カラー
       const color =
         youbi === "土" ? "blue" :
         youbi === "日" ? "red"  : "inherit";
     
-      // 太字＋曜日色分け
-      return `<span style="font-weight:bold;">${day}</span><span style="color:${color};">（${youbi}）</span>`;
+      return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
     }
 
     // タイムカード画面の描画
