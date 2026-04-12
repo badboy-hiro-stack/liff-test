@@ -333,13 +333,16 @@
     }
 
     function formatDate(dateStr) {
-      // "2026/04/11" → 年月日を安全に分解
-      const [year, month, day] = dateStr.split("/").map(Number);
-      const d = new Date(year, month - 1, day);
+      // ISO形式 "2026-03-31T15:00:00.000Z" を Date に変換
+      const d = new Date(dateStr);
     
+      // 日付（1〜31）
       const dd = ("0" + d.getDate()).slice(-2);
+    
+      // 曜日
       const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
     
+      // 色分け
       const color =
         youbi === "土" ? "blue" :
         youbi === "日" ? "red"  : "inherit";
@@ -352,9 +355,6 @@
       const container = document.getElementById("timeCardContent");
       
       container.innerHTML = `
-        <pre style="font-size:12px; background:#eee; padding:10px;">
-        DEBUG: ${JSON.stringify(rows[0], null, 2)}
-        </pre>
         <h2>${year}年${month}月の勤務状況</h2>
     
         <table border="1" class="timecard-table">
