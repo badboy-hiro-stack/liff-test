@@ -332,6 +332,20 @@
       renderTimeCard(json.data, json.total, year, month);
     }
 
+    function formatDate(date) {
+      const d = new Date(date);
+      const day = ("0" + d.getDate()).slice(-2);
+      const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
+    
+      // 曜日カラー
+      const color =
+        youbi === "土" ? "blue" :
+        youbi === "日" ? "red"  : "inherit";
+    
+      // 太字＋曜日色分け
+      return `<span style="font-weight:bold;">${day}</span><span style="color:${color};">（${youbi}）</span>`;
+    }
+
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
       const container = document.getElementById("timeCardContent");
