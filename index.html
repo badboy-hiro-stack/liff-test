@@ -365,9 +365,8 @@
           </tr>
     
           ${rows.map((r, index) => `
-            <!-- メイン行 -->
             <tr class="accordion-row" data-index="${index}">
-              <td>${formatDate(r.date)}</td>
+              <td class="date-cell" data-date="${r.date}"></td>
               <td>${formatTime(r.clockIn)}</td>
               <td>${formatTime(r.clockOut)}</td>
               <td>${r.workMinutes}分</td>
@@ -375,7 +374,6 @@
               <td>${r.overMinutes}分</td>
             </tr>
     
-            <!-- アコーディオン展開部分 -->
             <tr class="accordion-content" id="acc-${index}" style="display:none;">
               <td colspan="6" style="background:#f9f9f9; padding:10px;">
                 <strong>作業内容：</strong><br>
@@ -391,7 +389,12 @@
         <p>残業時間：${total.over}分</p>
       `;
     
-      // ▼ アコーディオン動作を付与
+      // ▼ 日付セルに formatDate を適用
+      document.querySelectorAll(".date-cell").forEach(cell => {
+        cell.innerHTML = formatDate(cell.dataset.date);
+      });
+    
+      // ▼ アコーディオン動作
       document.querySelectorAll(".accordion-row").forEach(row => {
         row.addEventListener("click", () => {
           const index = row.dataset.index;
