@@ -350,7 +350,11 @@
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
       const container = document.getElementById("timeCardContent");
-    
+    container.innerHTML = `
+      <pre style="font-size:12px; background:#eee; padding:10px;">
+      DEBUG: ${JSON.stringify(rows[0], null, 2)}
+      </pre>
+    ` + container.innerHTML;
       container.innerHTML = `
         <h2>${year}年${month}月の勤務状況</h2>
     
