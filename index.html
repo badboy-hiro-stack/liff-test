@@ -333,12 +333,11 @@
     }
 
     function formatDate(dateStr) {
-      // Date オブジェクトならそのまま使う
-      const d = (dateStr instanceof Date) ? dateStr : new Date(dateStr);
+      // Safari 対策：ISO を手動で分解する
+      const [datePart] = dateStr.split("T"); // "2026-04-11"
+      const [year, month, day] = datePart.split("-").map(Number);
     
-      if (isNaN(d)) {
-        return `<span style="color:red;">Invalid</span>`;
-      }
+      const d = new Date(year, month - 1, day);
     
       const dd = ("0" + d.getDate()).slice(-2);
       const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
