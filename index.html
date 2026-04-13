@@ -392,7 +392,6 @@
     
           ${rows.map((r, index) => `
             <tr class="accordion-row" data-index="${index}">
-              /* <td class="date-cell" data-date="${r.date}"></td> */
               <td class="date-cell" data-date="${typeof r.date} / ${r.date}"></td>
               <td>${formatTime(r.clockIn)}</td>
               <td>${formatTime(r.clockOut)}</td>
