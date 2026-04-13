@@ -333,8 +333,23 @@
     }
 
     function formatDate(dateStr) {
-      return "TEST";
+      // Date オブジェクトならそのまま使う
+      const d = (dateStr instanceof Date) ? dateStr : new Date(dateStr);
+    
+      if (isNaN(d)) {
+        return `<span style="color:red;">Invalid</span>`;
+      }
+    
+      const dd = ("0" + d.getDate()).slice(-2);
+      const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
+    
+      const color =
+        youbi === "土" ? "blue" :
+        youbi === "日" ? "red"  : "inherit";
+    
+      return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
     }
+
     /* function formatDate(dateStr) {
       // ISO形式 "2026-04-11T15:00:00.000Z" を Date に変換
       const d = new Date(dateStr);
