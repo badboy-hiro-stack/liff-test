@@ -333,8 +333,12 @@
     }
 
     function formatDate(dateStr) {
-      // ISO形式 "2026-03-31T15:00:00.000Z" を Date に変換
+      // ISO形式 "2026-04-11T15:00:00.000Z" を Date に変換
       const d = new Date(dateStr);
+    
+      if (isNaN(d)) {
+        return `<span style="color:red;">Invalid</span>`;
+      }
     
       // 日付（1〜31）
       const dd = ("0" + d.getDate()).slice(-2);
