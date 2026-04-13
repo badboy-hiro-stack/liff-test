@@ -394,8 +394,15 @@
       `;
     
       // ▼ 日付セルに formatDate を適用
-      document.querySelectorAll(".date-cell").forEach(cell => {
+      /* document.querySelectorAll(".date-cell").forEach(cell => {
         cell.innerHTML = formatDate(cell.dataset.date);
+      }); */
+      document.querySelectorAll(".date-cell").forEach(cell => {
+        cell.innerHTML = `
+          <div style="font-size:12px; color:red;">
+            RAW: ${cell.dataset.date}
+          </div>
+        `;
       });
     
       // ▼ アコーディオン動作
