@@ -322,7 +322,7 @@
       const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       const json = await res.json();
-
+alert("1件目のrow[0] = " + json.data[0].date);
       if (json.status !== "success") {
         alert(json.message);
         return;
