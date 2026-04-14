@@ -170,7 +170,6 @@
 
   <script>
     const liffId = "2009445215-yPBcEdg0";
-    // const gasUrl = "https://script.google.com/macros/s/AKfycbwND9ZrLBq4KzUqp-8jrp7JBmREJCHRdkuQripZGiLSUIZBOxNlJ-QclgDS0ci6e8B_/exec";  // ←ここを必ず修正
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";
     
     // ▼ 位置情報取得（permission API は一切使わない）
@@ -225,14 +224,12 @@
     async function handleClockOutWithTasks() {
       // ① まず退勤処理を実行
       const result = await send("退勤");
-      alert("退勤レスポンス:\n" + JSON.stringify(result, null, 2));
       // ② 退勤失敗（休憩不足など）
       if (result.status !== "success") {
         alert("退勤失敗:\n" + result.message);
         return;
       }
       // ③ ★ rowIndex を受け取って保存
-      // latestRowIndex = result.rowIndex;
       latestRowIndex = result.data.rowIndex;
 
       // ④ 退勤成功 → 作業内容画面へ
@@ -241,9 +238,7 @@
     
     // ▼ 新規の退勤処理（GASへ送信）
     function clockOutTasks(tasks) {
-      alert("clockOutTasks START");
       setTimeout(() => {
-        alert("fetch to: " + gasUrl);
         fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -255,7 +250,6 @@
         })
         // .then(res => res.json())
         .then(res => {
-          alert("fetch OK, status=" + res.status);
           return res.json();
         })
         .then(json => {
@@ -267,28 +261,9 @@
         });
       }, 400);  // ← 150ms が最も安定
     }
-    
-/*     function clockOutTasks(tasks) {
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },  // ★ 追加
-        body: JSON.stringify({
-          type: "作業内容",
-          rowIndex: latestRowIndex,   // ★ ここが重要
-          tasks: tasks
-        })
-      })
-      .then(res => res.json())
-      .then(json => {
-        alert("作業内容を記録しました");
-        backToMain();
-      });
-    } */
 
     // タイムカード画面表示処理
     async function showTimeCard() {
-      // ▼ タイムカードの中身を初期化（最重要）
-      // document.getElementById("timeCardContent").innerHTML = "";
       
       // ▼ メイン画面を隠す
       document.querySelector(".grid").style.display = "none";
@@ -322,18 +297,12 @@
       const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       const json = await res.json();
-alert("1件目のrow[0] = " + json.data[0].date);
-      if (json.status !== "success") {
-        alert(json.message);
-        return;
-      }
     
       // ▼ タイムカード画面を描画
       renderTimeCard(json.data, json.total, year, month);
     }
 
     function formatDateForTimeCard(dateStr) {
-      alert("formatDate が呼ばれた！ dateStr=" + dateStr);
       // "2026/04/13" を安全に分解
       const [year, month, day] = dateStr.split("/").map(Number);
       const d = new Date(year, month - 1, day);
@@ -347,28 +316,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
     
       return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
     }
-
-    /* function formatDate(dateStr) {
-      // ISO形式 "2026-04-11T15:00:00.000Z" を Date に変換
-      const d = new Date(dateStr);
-    
-      if (isNaN(d)) {
-        return `<span style="color:red;">Invalid</span>`;
-      }
-    
-      // 日付（1〜31）
-      const dd = ("0" + d.getDate()).slice(-2);
-    
-      // 曜日
-      const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
-    
-      // 色分け
-      const color =
-        youbi === "土" ? "blue" :
-        youbi === "日" ? "red"  : "inherit";
-    
-      return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
-    } */
     
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
@@ -411,20 +358,10 @@ alert("1件目のrow[0] = " + json.data[0].date);
         <p>休憩時間：${total.break}分</p>
         <p>残業時間：${total.over}分</p>
       `;
-      
-    alert("date-cell 数 = " + document.querySelectorAll(".date-cell").length);
 
       // ▼ 日付セルに formatDate を適用
       document.querySelectorAll(".date-cell").forEach(cell => {
         cell.innerHTML = formatDateForTimeCard(cell.dataset.date);
-      });
-      document.querySelectorAll(".date-cell").forEach(cell => {
-        alert("data-date = [" + cell.dataset.date + "]");
-      });
-      document.querySelectorAll(".date-cell").forEach(cell => {
-        const before = cell.innerHTML;
-        const after = formatDateForTimeCard(cell.dataset.date);
-        alert("before=[" + before + "]\nafter=[" + after + "]");
       });
     
       // ▼ アコーディオン動作
@@ -436,39 +373,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
         });
       });
     }
-
-    /* function renderTimeCard(rows, total, year, month) {
-      const container = document.getElementById("timeCardContent");
-      container.innerHTML = `
-        <h2>${year}年${month}月の勤務状況</h2>
-    
-        <table border="1">
-          <tr>
-            <th>日付</th>
-            <th>出勤</th>
-            <th>退勤</th>
-            <th>労働</th>
-            <th>休憩</th>
-            <th>残業</th>
-          </tr>
-          ${rows.map(r => `
-            <tr>
-              <td>${formatDate(r.date)}</td>
-              <td>${formatTime(r.clockIn)}</td>
-              <td>${formatTime(r.clockOut)}</td>
-              <td>${r.workMinutes}分</td>
-              <td>${r.breakMinutes}分</td>
-              <td>${r.overMinutes}分</td>
-            </tr>
-          `).join("")}
-        </table>
-    
-        <h3>合計</h3>
-        <p>労働時間：${total.work}分</p>
-        <p>休憩時間：${total.break}分</p>
-        <p>残業時間：${total.over}分</p>
-      `;
-    } */
 
     // 月選択ドロップダウンを生成
     function setupMonthSelect() {
@@ -546,7 +450,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
 
       // ▼ 管理者判定　2026/03/23追記
       const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
-      // const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
       const res = await fetch(url);
       const json = await res.json();
 
@@ -611,9 +514,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
       document.getElementById("editBackButton").onclick = () => {
         hideEditScreen();
       };
-      
-      // 打刻修正　更新ボタンのクリックイベント
-      // document.getElementById("updateAttendance").onclick = updateAttendance;
 
       // 日付 or 従業員が変更されたらデータを読み込む
       document.getElementById("editDate").onchange = loadAttendanceForEdit;
@@ -675,30 +575,8 @@ alert("1件目のrow[0] = " + json.data[0].date);
       .catch(err => {
         console.log("軽微な通信エラー:", err);
       });
-      /* fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ 作業内容保存成功 → 退勤処理へ
-          sendClockOut();
-
-        } else {
-          document.getElementById("messageArea").textContent =
-            "作業内容の保存に失敗しました。";
-        }
-      })
-      .catch(err => {
-        console.log("軽微な通信エラー:", err);
-      }); */
-    }
 
     function sendClockOut() {
-      alert("① sendClockOut が呼ばれたよー");
     
       const params = new URLSearchParams();
       params.append("type", "退勤");
@@ -710,11 +588,9 @@ alert("1件目のrow[0] = " + json.data[0].date);
         body: params
       })
       .then(res => {
-        alert("② fetch の then(res) まで来た");
         return res.text();  // ← JSON ではなく text で受け取る
       })
       .then(text => {
-        alert("③ 生レスポンス受信: " + text);
     
         let json;
         try {
@@ -724,8 +600,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
           return;
         }
     
-        alert("⑤ JSON 解析成功: status=" + json.status);
-    
         if (json.status === "success") {
     
           // ▼ 画面を戻す
@@ -734,7 +608,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
     
           currentWorkRow = null;
     
-          alert("⑥ 退勤処理が完了しました");
         } else {
           alert("⑦ 退勤処理に失敗しました");
         }
@@ -743,34 +616,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
         alert("⑧ fetch の catch に入りました");
       });
     }
-    /* function sendClockOut() {
-      alert("sendClockOut が呼ばれた");
-      const params = new URLSearchParams();
-      params.append("type", "退勤");
-      params.append("lineId", userId);
-    
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ ここで画面を戻す
-          document.getElementById("taskScreen").style.display = "none";
-          document.getElementById("mainScreen").style.display = "block";
-
-          // ▼ rowIndex をリセット（翌日の誤動作防止）
-          currentWorkRow = null;
-          
-          alert("退勤処理が完了しました");
-        } else {
-          alert("退勤処理に失敗しました");
-        }
-      })
-    } */
     
     // 退勤前に作業内容の有無を確認
     function clockOut() {
@@ -963,44 +808,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
       document.getElementById("result").innerText = json.message;
     }
 
-    /* async function sendForceClockIn(lineId, lat, lng) {
-      const payload = {
-        action: "clock_in",
-        type: "出勤",
-        lineId: lineId,
-        lat: lat,
-        lng: lng,
-        force: true
-      };
-    
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    
-      const json = await res.json();
-    
-      // ▼ 再出勤ボタンを隠す
-      document.getElementById("btnForceIn").style.display = "none";
-    
-      // ▼ ステータス更新（send() と同じ成功条件）
-      const statusBox = document.getElementById("status");
-    
-      if (
-        json.status === "success" ||
-        json.status === "complete" ||
-        json.status === "continue"
-      ) {
-        if (json.action === "clock_in") {
-          statusBox.innerText = "出勤中";
-          statusBox.style.color = "green";
-        }
-      }
-    
-      // ▼ 結果表示
-      document.getElementById("result").innerText = json.message;
-    } */
-
     // 現在のステータスを読み込む関数を追加　送信方式の変更
     async function loadCurrentStatus(lineId) {
       const params = new URLSearchParams();
@@ -1066,36 +873,18 @@ alert("1件目のrow[0] = " + json.data[0].date);
     }
 
     async function loadStatusList(userId) {
-      alert("① loadStatusList START userId=" + userId);
     
       const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
-      alert("② URL作成完了：" + url);
-    
       const res = await fetch(url);
-      alert("③ fetch 完了");
-    
       const text = await res.text();
-      alert("④ 生レスポンス：" + text);
     
       let json;
       try {
         json = JSON.parse(text);
-        alert("⑤ JSON パース成功");
       } catch (err) {
         alert("⑤ JSON パース失敗：" + err);
         return;
       }
-
-      // ▼ debugSheetName を表示
-      if (json.finished && json.finished.length > 0 && json.finished[0].debugSheetName) {
-        alert("勤務シート名：" + json.finished[0].debugSheetName);
-      } else if (json.working && json.working.length > 0 && json.working[0].debugSheetName) {
-        alert("勤務シート名：" + json.working[0].debugSheetName);
-      } else {
-        alert("debugSheetName が見つかりませんでした");
-      }
-      
-      alert("⑥ json.status = " + json.status);
     
       if (json.status === "forbidden") {
         alert("⑦ forbidden：管理者ではありません");
@@ -1104,28 +893,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
 
       renderStatusList(json);
       
-      alert("⑩ renderStatusList 完了");
     }
-    /* async function loadStatusList(userId) {
-      const params = new URLSearchParams();
-      params.append("action", "getStatusList");
-      params.append("userId", userId);
-    
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      });
-    
-      const json = await res.json();
-    
-      if (json.status === "forbidden") {
-        alert("管理者専用機能です");
-        return;
-      }
-    
-      renderStatusList(json.data);
-    } */
 
     // 2026/04/07 修正
     function renderStatusList(data) {
@@ -1171,29 +939,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
     
       document.getElementById("statusList").innerHTML = html;
     }
-    
-    /* function renderStatusList(data) {
-      let html = "";
-    
-      data.forEach(item => {
-        html += `<div class="card">`;
-        html += `<div class="name">${item.name}</div>`;
-        html += `<div class="status ${item.statusClass}">${item.status}</div>`;
-        html += `<div class="place">📍 ${item.place}</div>`;
-    
-        if (item.status === "退勤") {
-          html += `<div>労働時間：${item.workMinutes} 分</div>`;
-          html += `<div>休憩時間：${item.breakMinutes} 分</div>`;
-          html += `<div>残業時間：${item.overtimeMinutes} 分</div>`;
-        } else {
-          html += `<div class="detail">休憩時間：${item.breakMinutes} 分</div>`;
-        }
-    
-        html += `</div>`;
-      });
-    
-      document.getElementById("statusList").innerHTML = html;
-    } */
 
     async function showStatusList(userId) {
       // ▼ メイン画面を隠す
