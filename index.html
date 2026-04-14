@@ -333,10 +333,8 @@
     }
 
     function formatDate(dateStr) {
-      // Safari 対策：ISO を手動で分解する
-      const [datePart] = dateStr.split("T"); // "2026-04-11"
-      const [year, month, day] = datePart.split("-").map(Number);
-    
+      // "2026/04/13" を安全に分解
+      const [year, month, day] = dateStr.split("/").map(Number);
       const d = new Date(year, month - 1, day);
     
       const dd = ("0" + d.getDate()).slice(-2);
@@ -370,10 +368,9 @@
     
       return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
     } */
-
+    
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
-      alert("renderTimeCard: NEW VERSION");
       const container = document.getElementById("timeCardContent");
       
       container.innerHTML = `
@@ -391,7 +388,7 @@
     
           ${rows.map((r, index) => `
             <tr class="accordion-row" data-index="${index}">
-              <td class="date-cell" data-date="${typeof r.date} / ${r.date}"></td>
+              <td class="date-cell" data-date="${r.date}"></td>
               <td>${formatTime(r.clockIn)}</td>
               <td>${formatTime(r.clockOut)}</td>
               <td>${r.workMinutes}分</td>
