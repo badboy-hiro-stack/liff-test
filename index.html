@@ -986,36 +986,18 @@
     }
 
     async function loadStatusList(userId) {
-      alert("① loadStatusList START userId=" + userId);
     
       const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
-      alert("② URL作成完了：" + url);
-    
       const res = await fetch(url);
-      alert("③ fetch 完了");
-    
       const text = await res.text();
-      alert("④ 生レスポンス：" + text);
     
       let json;
       try {
         json = JSON.parse(text);
-        alert("⑤ JSON パース成功");
       } catch (err) {
         alert("⑤ JSON パース失敗：" + err);
         return;
       }
-
-      // ▼ debugSheetName を表示
-      if (json.finished && json.finished.length > 0 && json.finished[0].debugSheetName) {
-        alert("勤務シート名：" + json.finished[0].debugSheetName);
-      } else if (json.working && json.working.length > 0 && json.working[0].debugSheetName) {
-        alert("勤務シート名：" + json.working[0].debugSheetName);
-      } else {
-        alert("debugSheetName が見つかりませんでした");
-      }
-      
-      alert("⑥ json.status = " + json.status);
     
       if (json.status === "forbidden") {
         alert("⑦ forbidden：管理者ではありません");
@@ -1023,8 +1005,7 @@
       }
 
       renderStatusList(json);
-      
-      alert("⑩ renderStatusList 完了");
+
     }
     /* async function loadStatusList(userId) {
       const params = new URLSearchParams();
