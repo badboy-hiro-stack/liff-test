@@ -333,6 +333,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
     }
 
     function formatDate(dateStr) {
+      alert("formatDate が呼ばれた！ dateStr=" + dateStr);
       // "2026/04/13" を安全に分解
       const [year, month, day] = dateStr.split("/").map(Number);
       const d = new Date(year, month - 1, day);
