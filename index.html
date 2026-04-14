@@ -414,8 +414,11 @@ alert("1件目のrow[0] = " + json.data[0].date);
     alert("date-cell 数 = " + document.querySelectorAll(".date-cell").length);
 
       // ▼ 日付セルに formatDate を適用
-      document.querySelectorAll(".date-cell").forEach(cell => {
+      /* document.querySelectorAll(".date-cell").forEach(cell => {
         cell.innerHTML = formatDate(cell.dataset.date);
+      }); */
+      document.querySelectorAll(".date-cell").forEach(cell => {
+        alert("data-date = [" + cell.dataset.date + "]");
       });
     
       // ▼ アコーディオン動作
