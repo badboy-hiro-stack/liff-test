@@ -954,6 +954,9 @@ alert("1件目のrow[0] = " + json.data[0].date);
         if (json.action === "clock_in") {
           statusBox.innerText = "出勤中";
           statusBox.style.color = "green";
+
+          // ★ これを追加（最重要）
+          statusBox.style.display = "inline-block";
         }
       }
     
@@ -1033,7 +1036,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
       // メイン画面を表示
       document.querySelector(".grid").style.display = "grid";
       document.getElementById("btnStatus").style.display = "block";
-      document.getElementById("status").style.display = "block";
+      document.getElementById("status").style.display = "inline-block";
       document.getElementById("result").style.display = "block";
       // ★ 管理者だけボタンを表示
       if (isAdminUser) {
@@ -1219,7 +1222,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
       // ▼ メイン画面を再表示
       document.querySelector(".grid").style.display = "grid";
       document.getElementById("btnStatus").style.display = "block";
-      document.getElementById("status").style.display = "block";
+      document.getElementById("status").style.display = "inline-block";
       document.getElementById("result").style.display = "block";
       // ★ 管理者だけボタンを表示
       if (isAdminUser) {
