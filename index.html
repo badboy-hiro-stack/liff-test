@@ -904,7 +904,8 @@ alert("1件目のrow[0] = " + json.data[0].date);
         }
   
         if (json.action === "clock_out") {
-          statusBox.innerText = "";
+          statusBox.innerText = "退勤済み";
+          statusBox.style.color = "red";
         }
     
         // ▼ 結果表示
