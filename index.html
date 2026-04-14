@@ -332,7 +332,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
       renderTimeCard(json.data, json.total, year, month);
     }
 
-    function formatDate(dateStr) {
+    function formatDateForTimeCard(dateStr) {
       alert("formatDate が呼ばれた！ dateStr=" + dateStr);
       // "2026/04/13" を安全に分解
       const [year, month, day] = dateStr.split("/").map(Number);
@@ -416,14 +416,14 @@ alert("1件目のrow[0] = " + json.data[0].date);
 
       // ▼ 日付セルに formatDate を適用
       document.querySelectorAll(".date-cell").forEach(cell => {
-        cell.innerHTML = formatDate(cell.dataset.date);
+        cell.innerHTML = formatDateForTimeCard(cell.dataset.date);
       });
       document.querySelectorAll(".date-cell").forEach(cell => {
         alert("data-date = [" + cell.dataset.date + "]");
       });
       document.querySelectorAll(".date-cell").forEach(cell => {
         const before = cell.innerHTML;
-        const after = formatDate(cell.dataset.date);
+        const after = formatDateForTimeCard(cell.dataset.date);
         alert("before=[" + before + "]\nafter=[" + after + "]");
       });
     
