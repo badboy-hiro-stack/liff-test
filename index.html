@@ -267,23 +267,6 @@
         });
       }, 400);  // ← 150ms が最も安定
     }
-    
-/*     function clockOutTasks(tasks) {
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },  // ★ 追加
-        body: JSON.stringify({
-          type: "作業内容",
-          rowIndex: latestRowIndex,   // ★ ここが重要
-          tasks: tasks
-        })
-      })
-      .then(res => res.json())
-      .then(json => {
-        alert("作業内容を記録しました");
-        backToMain();
-      });
-    } */
 
     // タイムカード画面表示処理
     async function showTimeCard() {
@@ -322,7 +305,7 @@
       const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       const json = await res.json();
-alert("1件目のrow[0] = " + json.data[0].date);
+
       if (json.status !== "success") {
         alert(json.message);
         return;
@@ -333,7 +316,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
     }
 
     function formatDateForTimeCard(dateStr) {
-      alert("formatDate が呼ばれた！ dateStr=" + dateStr);
+
       // "2026/04/13" を安全に分解
       const [year, month, day] = dateStr.split("/").map(Number);
       const d = new Date(year, month - 1, day);
@@ -348,27 +331,7 @@ alert("1件目のrow[0] = " + json.data[0].date);
       return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
     }
 
-    /* function formatDate(dateStr) {
-      // ISO形式 "2026-04-11T15:00:00.000Z" を Date に変換
-      const d = new Date(dateStr);
-    
-      if (isNaN(d)) {
-        return `<span style="color:red;">Invalid</span>`;
-      }
-    
-      // 日付（1〜31）
-      const dd = ("0" + d.getDate()).slice(-2);
-    
-      // 曜日
-      const youbi = ["日","月","火","水","木","金","土"][d.getDay()];
-    
-      // 色分け
-      const color =
-        youbi === "土" ? "blue" :
-        youbi === "日" ? "red"  : "inherit";
-    
-      return `<span style="font-weight:bold;">${dd}</span><span style="color:${color};">（${youbi}）</span>`;
-    } */
+
     
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
@@ -411,20 +374,10 @@ alert("1件目のrow[0] = " + json.data[0].date);
         <p>休憩時間：${total.break}分</p>
         <p>残業時間：${total.over}分</p>
       `;
-      
-    alert("date-cell 数 = " + document.querySelectorAll(".date-cell").length);
 
       // ▼ 日付セルに formatDate を適用
       document.querySelectorAll(".date-cell").forEach(cell => {
         cell.innerHTML = formatDateForTimeCard(cell.dataset.date);
-      });
-      document.querySelectorAll(".date-cell").forEach(cell => {
-        alert("data-date = [" + cell.dataset.date + "]");
-      });
-      document.querySelectorAll(".date-cell").forEach(cell => {
-        const before = cell.innerHTML;
-        const after = formatDateForTimeCard(cell.dataset.date);
-        alert("before=[" + before + "]\nafter=[" + after + "]");
       });
     
       // ▼ アコーディオン動作
@@ -436,39 +389,6 @@ alert("1件目のrow[0] = " + json.data[0].date);
         });
       });
     }
-
-    /* function renderTimeCard(rows, total, year, month) {
-      const container = document.getElementById("timeCardContent");
-      container.innerHTML = `
-        <h2>${year}年${month}月の勤務状況</h2>
-    
-        <table border="1">
-          <tr>
-            <th>日付</th>
-            <th>出勤</th>
-            <th>退勤</th>
-            <th>労働</th>
-            <th>休憩</th>
-            <th>残業</th>
-          </tr>
-          ${rows.map(r => `
-            <tr>
-              <td>${formatDate(r.date)}</td>
-              <td>${formatTime(r.clockIn)}</td>
-              <td>${formatTime(r.clockOut)}</td>
-              <td>${r.workMinutes}分</td>
-              <td>${r.breakMinutes}分</td>
-              <td>${r.overMinutes}分</td>
-            </tr>
-          `).join("")}
-        </table>
-    
-        <h3>合計</h3>
-        <p>労働時間：${total.work}分</p>
-        <p>休憩時間：${total.break}分</p>
-        <p>残業時間：${total.over}分</p>
-      `;
-    } */
 
     // 月選択ドロップダウンを生成
     function setupMonthSelect() {
