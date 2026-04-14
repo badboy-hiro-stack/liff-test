@@ -410,7 +410,9 @@ alert("1件目のrow[0] = " + json.data[0].date);
         <p>休憩時間：${total.break}分</p>
         <p>残業時間：${total.over}分</p>
       `;
-    
+      
+    alert("date-cell 数 = " + document.querySelectorAll(".date-cell").length);
+
       // ▼ 日付セルに formatDate を適用
       document.querySelectorAll(".date-cell").forEach(cell => {
         cell.innerHTML = formatDate(cell.dataset.date);
