@@ -34,7 +34,7 @@
     </div>
 
     <div class="row">
-    　<button class="menu-btn worker" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+    　<button class="btn time" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
     
     <div class="row">
@@ -54,6 +54,119 @@
     <div id="messageArea"></div>
   </div>
 
+  <!-- 本日の作業内容画面 -->
+  <div id="taskScreen" style="display:none; padding:20px;">
+    <h2>本日の作業内容</h2>
+  
+    <p>今日行った作業を選択してください<br>（複数選択可）</p>
+  
+    <div class="task-list">
+      <label class="task-item">
+        <input type="checkbox" id="taskSort">
+        <span>仕分け</span>
+      </label>
+    
+      <label class="task-item">
+        <input type="checkbox" id="taskUnload">
+        <span>荷バラシ</span>
+      </label>
+    
+      <label class="task-item">
+        <input type="checkbox" id="taskInspect">
+        <span>検品</span>
+      </label>
+    </div>
+  
+    <button class="update-button" onclick="submitTasks()">作業内容を送信</button>
+    <button class="back-button" onclick="backToMain()">戻る</button>
+  </div>
+  <!-- 本日の作業内容画面ここまで -->
+
+  <!-- ▼ 2. 勤務状態一覧画面（timeCard） -->
+  <div id="timeCard" style="display:none; margin-top:20px;">
+
+    <!-- 戻るボタン（timeCard 内に移動） -->
+    <button class="back-button" id="btnBack">戻る</button>
+
+    <!-- 月選択 -->
+    <div style="margin-bottom:10px;">
+      <select class="month-select" id="monthSelect" onchange="changeMonth()"></select>
+    </div>
+
+    <!-- タイムカード内容 -->
+    <div id="timeCardContent"></div>
+
+  </div>
+  <!-- ▲ 勤務状態一覧画面ここまで -->
+
+  <!-- ▼ 3. ステータス一覧画面（管理者） -->
+  <div id="statusListScreen" style="display:none;">
+
+    <button class="back-button" id="btnStatusBack">戻る</button>
+
+    <div id="statusList"></div>
+
+  </div>
+  <!-- ▲ ステータス一覧画面ここまで -->
+
+  <!-- ▼ 4. 打刻修正画面（管理者） -->
+  <div id="editScreen" style="display:none; padding:20px;">
+  <div id="debug" style="white-space: pre-wrap; color: red; font-size: 12px;"></div>
+    <h2>打刻修正</h2>
+
+    <!-- 戻る -->
+    <button id="editBackButton" class="editBackButton">戻る</button>
+
+    <!-- 日付選択 -->
+    <div class="edit-block">
+      <label>日付</label>
+      <input type="date" id="editDate" onchange="loadAttendanceForEdit()">
+    </div>
+
+    <!-- 従業員選択 -->
+    <div class="edit-block">
+      <label>従業員</label>
+      <select id="editEmployee" onchange="loadAttendanceForEdit()"></select>
+    </div>
+
+    <!-- 勤務を選択 -->
+    <div class="edit-block">
+      <label>勤務番号</label>
+      <select id="editWorkIndex" onchange="loadSelectedWork()">
+        <option value="">勤務を選択</option>
+      </select>
+    </div>
+
+    <!-- 現在のデータ表示 -->
+    <div class="edit-block">
+      <label>現在の打刻データ</label>
+      <div id="currentData" class="current-box">
+        データを選択してください
+      </div>
+    </div>
+
+    <!-- 修正入力欄 -->
+    <div class="edit-block">
+      <label>出勤時間</label>
+      <input type="time" id="editClockIn">
+    </div>
+
+    <div class="edit-block">
+      <label>退勤時間</label>
+      <input type="time" id="editClockOut">
+    </div>
+
+    <div class="edit-block">
+      <label>休憩時間（分）</label>
+      <input type="number" id="editBreakMinutes" min="0">
+    </div>
+
+    <!-- 更新ボタン -->
+    <button id="updateButton" class="update-button" onclick="updateAttendance()">更新</button>
+
+  </div>
+  <!-- ▲ 打刻修正画面ここまで -->
+  
   <!-- ▼ 申請メニュー -->
   <div id="screen-applyMenu" class="screen" style="display:none;">
     <h2 class="title">勤怠・休暇管理</h2>
