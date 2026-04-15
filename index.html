@@ -948,9 +948,15 @@
       if (json.status === "work") {
         statusBox.innerText = "勤務中";
         statusBox.style.color = "green";
+      
       } else if (json.status === "break") {
         statusBox.innerText = "休憩中";
         statusBox.style.color = "orange";
+      
+      } else if (json.status === "finished") {
+        statusBox.innerText = "退勤済み";
+        statusBox.style.color = "gray";
+      
       } else {
         statusBox.innerText = "";
       }
