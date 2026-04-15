@@ -458,7 +458,20 @@
     // ▼ LIFF 初期化
     async function init() {
       await liff.init({ liffId });
+
+      const params = new URLSearchParams(location.search);
+      const screen = params.get("screen");
     
+      if (screen === "register") {
+        showScreen("screen-register");
+      } else if (screen === "driver") {
+        showScreen("screen-driverMenu");
+      } else if (screen === "worker") {
+        showScreen("screen-workerMenu");
+      } else {
+        showScreen("screen-mainMenu"); // デフォルト
+      }
+      
       if (!liff.isLoggedIn()) {
         liff.login();
         return;
