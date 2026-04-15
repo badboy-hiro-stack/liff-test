@@ -336,6 +336,14 @@
     // タイムカード画面の描画
     function renderTimeCard(rows, total, year, month) {
       const container = document.getElementById("timeCardContent");
+
+      // ▼ 検品回数カウント
+      let kempinCount = 0;
+      rows.forEach(r => {
+        if (r.tasks && r.tasks.includes("検品")) {
+          kempinCount++;
+        }
+      });
       
       container.innerHTML = `
         <h2>${year}年${month}月の勤務状況</h2>
@@ -373,6 +381,7 @@
         <p>労働時間：${total.work}分</p>
         <p>休憩時間：${total.break}分</p>
         <p>残業時間：${total.over}分</p>
+        <p>検品回数：${kempinCount}回</p>
       `;
 
       // ▼ 日付セルに formatDate を適用
