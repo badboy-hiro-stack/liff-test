@@ -986,7 +986,20 @@
     }
 
     async function loadStatusList(userId) {
-    
+      
+      // ▼ ① まず前のデータを消して「更新中」を表示
+      const box = document.getElementById("statusList");
+      box.innerHTML = `
+        <div style="
+          padding: 20px;
+          font-size: 24px;
+          text-align: center;
+          color: #555;
+        ">
+          データ更新中…
+        </div>
+      `;
+      
       const url = `${gasUrl}?action=getStatusList&userId=${userId}`;
       const res = await fetch(url);
       const text = await res.text();
@@ -995,12 +1008,12 @@
       try {
         json = JSON.parse(text);
       } catch (err) {
-        alert("⑤ JSON パース失敗：" + err);
+        box.innerHTML = `<div style="color:red;">データ取得に失敗しました</div>`;
         return;
       }
     
       if (json.status === "forbidden") {
-        alert("⑦ forbidden：管理者ではありません");
+        box.innerHTML = `<div style="color:red;">管理者専用機能です</div>`;
         return;
       }
 
