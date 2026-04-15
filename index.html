@@ -49,27 +49,36 @@
   <div id="screen-workerMenu" class="screen" style="display:none;">
     <h2 class="title">作業員メニュー</h2>
 
-    <div class="menu-container">
-      <button class="menu-btn worker" onclick="showScreen('screen-dakoku')">出勤・退勤・休憩</button>
-      <button class="menu-btn worker" onclick="showScreen('screen-taskReport')">作業内容の報告</button>
-      <button class="menu-btn worker" onclick="showScreen('screen-timecard')">勤務状況の確認</button>
-      <button class="menu-btn worker" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+    <div class="grid">
+      <button class="btn big" id="btnIn">出勤</button>
+      <button class="btn big" id="btnOut">退勤</button>
+      <button class="btn big" id="btnBreakStart">休憩開始</button>
+      <button class="btn big" id="btnBreakEnd">休憩終了</button>
     </div>
-  </div>
 
-  <!-- ▼ 打刻画面 -->
-  <div id="screen-dakoku" class="screen" style="display:none;">
-    <h2>出勤・退勤・休憩（打刻）</h2>
-  </div>
+    <div class="row">
+      <button class="btn time" id="btnStatus">勤務状態</button>
+    </div>
 
-  <!-- ▼ 作業内容報告 -->
-  <div id="screen-taskReport" class="screen" style="display:none;">
-    <h2>作業内容の報告</h2>
-  </div>
+    <div class="row">
+    　<button class="menu-btn worker" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+    </div>
+    
+    <div class="row">
+      <button class="btnadmin" id="adminButton" style="display:none;">ステータス一覧</button>
+    </div>
 
-  <!-- ▼ 勤務状況の確認 -->
-  <div id="screen-timecard" class="screen" style="display:none;">
-    <h2>勤務状況の確認</h2>
+    <div class="row">
+      <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
+    </div>
+
+    <div class="row">
+      <button class="btnadmin" id="adminEditButton" style="display:none;">打刻修正</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <p id="result"></p>
+    <div id="messageArea"></div>
   </div>
 
   <!-- ▼ 申請メニュー -->
