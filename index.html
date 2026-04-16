@@ -172,13 +172,13 @@
     <h2 class="title">勤怠・休暇管理</h2>
 
     <div class="menu-container">
-      <button class="menu-btn apply" onclick="openApplyForm('有給休暇')">有給休暇の申請</button>
-      <button class="menu-btn apply" onclick="openApplyForm('代休')">代休の申請</button>
-      <button class="menu-btn apply" onclick="openApplyForm('欠勤')">欠勤の申請</button>
-      <button class="menu-btn apply" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
-      <button class="menu-btn apply" onclick="openApplyForm('その他')">その他の申請</button>
-      <button class="menu-btn apply" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
-      <button class="menu-btn apply" id="btnBack">戻る</button>
+      <button class="btn time" onclick="openApplyForm('有給休暇')">有給休暇の申請</button>
+      <button class="btn time" onclick="openApplyForm('代休')">代休の申請</button>
+      <button class="btn time" onclick="openApplyForm('欠勤')">欠勤の申請</button>
+      <button class="btn time" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
+      <button class="btn time" onclick="openApplyForm('その他')">その他の申請</button>
+      <button class="btn time" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
+      <button class="back-button" id="btnBack">戻る</button>
     </div>
   </div>
 
@@ -1257,6 +1257,7 @@
       document.getElementById("btnStatus").style.display = "block";
       document.getElementById("status").style.display = "inline-block";
       document.getElementById("result").style.display = "block";
+      document.getElementById("btnApplyMenu").style.display = "block";
       // ★ 管理者だけボタンを表示
       if (isAdminUser) {
         document.getElementById("adminButton").style.display = "block";
