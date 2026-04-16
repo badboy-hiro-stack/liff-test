@@ -34,7 +34,7 @@
     </div>
 
     <div class="row">
-      <button class="btn time" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+      <button class="btn time" id="btnApplyMenu" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
     
     <div class="row">
@@ -361,7 +361,7 @@
       document.getElementById("adminButton").style.display = "none";
       document.getElementById("statusListScreen").style.display = "none";
       document.getElementById("btnStatusBack").style.display = "none";
-      document.getElementById("screen-applyMenu").style.display = "none";
+      document.getElementById("btnApplyMenu").style.display = "none";
 
       // ▼ 打刻修正（管理者）を隠す
       document.getElementById("adminEditButton").style.display = "none";
@@ -1233,7 +1233,7 @@
       document.getElementById("status").style.display = "none";
       document.getElementById("result").style.display = "none";
       document.getElementById("adminButton").style.display = "none";
-      document.getElementById("screen-applyMenu").style.display = "none";
+      document.getElementById("btnApplyMenu").style.display = "none";
 
       // ▼ 打刻修正（管理者）を隠す
       document.getElementById("adminEditButton").style.display = "none";
