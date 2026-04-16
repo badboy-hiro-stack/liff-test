@@ -272,7 +272,7 @@
       currentWorkRow = rowIndex;  // ← ここで保持（latestRowIndex は不要）
     
       // ▼ メイン画面を隠して作業画面を表示
-      document.getElementById("mainScreen").style.display = "none";
+      document.getElementById("screen-workerMenu").style.display = "none";
       document.getElementById("taskScreen").style.display = "block";
     
       // ▼ チェックボックスを一旦リセット
@@ -298,7 +298,7 @@
     
     function backToMain() {
       document.getElementById("taskScreen").style.display = "none";
-      document.getElementById("mainScreen").style.display = "block";
+      document.getElementById("screen-workerMenu").style.display = "block";
     }
 
     async function handleClockOutWithTasks() {
@@ -361,6 +361,7 @@
       document.getElementById("adminButton").style.display = "none";
       document.getElementById("statusListScreen").style.display = "none";
       document.getElementById("btnStatusBack").style.display = "none";
+      document.getElementById("screen-applyMenu").style.display = "none";
 
       // ▼ 打刻修正（管理者）を隠す
       document.getElementById("adminEditButton").style.display = "none";
@@ -690,7 +691,7 @@
         if (json.status === "success") {
           // 先に画面を戻す（send() が result を必要とするため）
           document.getElementById("taskScreen").style.display = "none";
-          document.getElementById("mainScreen").style.display = "block";
+          document.getElementById("screen-workerMenu").style.display = "block";
         
           // 退勤処理
           send("退勤");
@@ -757,7 +758,7 @@
     
           // ▼ 画面を戻す
           document.getElementById("taskScreen").style.display = "none";
-          document.getElementById("mainScreen").style.display = "block";
+          document.getElementById("screen-workerMenu").style.display = "block";
     
           currentWorkRow = null;
     
@@ -1232,6 +1233,7 @@
       document.getElementById("status").style.display = "none";
       document.getElementById("result").style.display = "none";
       document.getElementById("adminButton").style.display = "none";
+      document.getElementById("screen-applyMenu").style.display = "none";
 
       // ▼ 打刻修正（管理者）を隠す
       document.getElementById("adminEditButton").style.display = "none";
@@ -1449,7 +1451,7 @@
       document.getElementById("editScreen").style.display = "none";
     
       // メイン画面に戻る（あなたの構成に合わせて変更可能）
-      document.getElementById("mainScreen").style.display = "block";
+      document.getElementById("screen-workerMenu").style.display = "block";
     }
 
     // 従業員リストを読み込む関数
