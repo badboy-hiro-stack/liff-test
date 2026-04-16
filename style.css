@@ -360,3 +360,141 @@ select {
   transform: scale(0.95);
   background: #1e8f23;
 }
+
+.menu-btn.worker {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  background: #ffb74d; /* 作業員カラー（オレンジ） */
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.menu-btn.worker:active {
+  background: #e6952f;
+}
+
+.menu-btn.driver {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  background: #4caf50; /* 運転手カラー（緑） */
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.menu-btn.driver:active {
+  background: #3e8e41;
+}
+
+.menu-btn.apply {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  background: #4da3ff; /* 申請メニューの共通カラー（青） */
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.menu-btn.apply:active {
+  background: #1d7fe0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: #4da3ff;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.submit-btn:active {
+  background: #1d7fe0;
+}
+
+.back-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ccc;
+  color: black;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+  .approval-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.approval-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.approval-info {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.approval-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.approve-btn {
+  flex: 1;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.reject-btn {
+  flex: 1;
+  padding: 10px;
+  background: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
