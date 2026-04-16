@@ -1432,9 +1432,10 @@
 
     function showEditScreen() {
       // 他の画面を非表示
-      document.getElementById("mainScreen").style.display = "none";
+      /* document.getElementById("mainScreen").style.display = "none";
       document.getElementById("statusListScreen").style.display = "none";
-      document.getElementById("timeCard").style.display = "none";
+      document.getElementById("timeCard").style.display = "none"; */
+      document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
     
       // 修正画面を表示
       document.getElementById("editScreen").style.display = "block";
