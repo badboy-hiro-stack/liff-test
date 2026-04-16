@@ -362,34 +362,40 @@ select {
 }
 
 .menu-btn.worker {
-  width: 100%;
-  padding: 18px;
-  font-size: 20px;
-  border-radius: 10px;
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
   border: none;
   background: #ffb74d; /* 作業員カラー（オレンジ） */
   color: white;
-  font-weight: bold;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
 }
 
 .menu-btn.worker:active {
+  transform: scale(0.95);
   background: #e6952f;
 }
 
 .menu-btn.driver {
-  width: 100%;
-  padding: 18px;
-  font-size: 20px;
-  border-radius: 10px;
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
   border: none;
   background: #4caf50; /* 運転手カラー（緑） */
   color: white;
-  font-weight: bold;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
 }
 
 .menu-btn.driver:active {
+  transform: scale(0.95);
   background: #3e8e41;
 }
 
