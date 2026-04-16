@@ -86,7 +86,7 @@
   <div id="timeCard" style="display:none; margin-top:20px;">
 
     <!-- 戻るボタン（timeCard 内に移動） -->
-    <button class="back-button" id="btnBack">戻る</button>
+    <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
 
     <!-- 月選択 -->
     <div style="margin-bottom:10px;">
@@ -102,7 +102,7 @@
   <!-- ▼ 3. ステータス一覧画面（管理者） -->
   <div id="statusListScreen" style="display:none;">
 
-    <button class="back-button" id="btnStatusBack">戻る</button>
+    <button class="back-button" id="btnStatusBack" onclick="showScreen('screen-workerMenu')">戻る</button>
 
     <div id="statusList"></div>
 
@@ -115,7 +115,7 @@
     <h2>打刻修正</h2>
 
     <!-- 戻る -->
-    <button id="editBackButton" class="editBackButton">戻る</button>
+    <button id="editBackButton" class="editBackButton" onclick="showScreen('screen-workerMenu')">戻る</button>
 
     <!-- 日付選択 -->
     <div class="edit-block">
@@ -178,7 +178,7 @@
       <button class="btn time" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
       <button class="btn time" onclick="openApplyForm('その他')">その他の申請</button>
       <button class="btn time" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
-      <button class="back-button" id="btnBack">戻る</button>
+      <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
     </div>
   </div>
 
