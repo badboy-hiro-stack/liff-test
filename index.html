@@ -14,9 +14,38 @@
   </div>
 
   <!-- ▼ 従業員登録メニュー -->
-  <div id="screen-register" class="screen" style="display:none;">
-    <h2 class="title">従業員登録</h2>
+  <div id="screen-register" class="screen" style="display:none; padding:20px;">
+  <h2>従業員登録</h2>
+
+  <div class="form-group">
+    <label>姓</label>
+    <input type="text" id="regLastName">
   </div>
+
+  <div class="form-group">
+    <label>名</label>
+    <input type="text" id="regFirstName">
+  </div>
+
+  <div class="form-group">
+    <label>部署</label>
+    <select id="regDept">
+      <option value="">選択してください</option>
+      <option value="運転手">運転手</option>
+      <option value="作業員">作業員</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>入社日</label>
+    <input type="date" id="regJoinDate">
+  </div>
+
+  <button class="submit-btn" onclick="submitRegister()">登録する</button>
+  <button class="back-btn" onclick="showScreen('screen-mainMenu')">← 戻る</button>
+
+  <p id="regResult"></p>
+</div>
   
   <!-- ▼ 作業員メニュー -->
   <div id="screen-workerMenu" class="screen" style="display:none;">
@@ -268,6 +297,49 @@
     }
 
     let currentWorkRow = null;
+
+    // 従業員登録　LIFF → GAS 送信処理
+    async function submitRegister() {
+      const lastName = document.getElementById("regLastName").value;
+      const firstName = document.getElementById("regFirstName").value;
+      const dept = document.getElementById("regDept").value;
+      const joinDate = document.getElementById("regJoinDate").value;
+    
+      // ▼ 入力チェック
+      if (!lastName || !firstName || !dept || !joinDate) {
+        alert("未入力の項目があります。");
+        return;
+      }
+    
+      const profile = await liff.getProfile();
+      const lineId = profile.userId;
+    
+      const payload = {
+        mode: "register",
+        lineId,
+        lastName,
+        firstName,
+        dept,
+        joinDate
+      };
+    
+      const res = await fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    
+      const result = await res.json();
+      document.getElementById("regResult").innerText = result.message;
+    
+      // ▼ 登録成功後に部署で自動遷移
+      if (result.success) {
+        if (dept === "運転手") {
+          showScreen("screen-driverMenu");
+        } else {
+          showScreen("screen-workerMenu");
+        }
+      }
+    }
     
     function showTaskScreen(tasks, rowIndex) {
       currentWorkRow = rowIndex;  // ← ここで保持（latestRowIndex は不要）
