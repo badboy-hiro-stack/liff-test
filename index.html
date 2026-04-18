@@ -13,7 +13,39 @@
     <h2>画面切り替え中</h2>
   </div>
 
-  <!-- ▼ 従業員登録メニュー -->
+  <!-- ▼ 管理者用Menu -->
+  <div id="screen-adminMenu" class="screen" style="display:none; padding:20px;">
+    <h2>管理者Menu</h2>
+  
+    <button class="btnadmin" onclick="showScreen('screen-statusList')">ステータス一覧</button>
+    <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
+    <button class="btnadmin" onclick="showScreen('screen-employeeManage')">従業員管理</button>
+  
+    <button class="back-btn" onclick="showScreen('screen-mainMenu')">← 戻る</button>
+    <button class="back-btn" onclick="goBackByRole()">← 戻る</button>
+  </div>
+
+  <!-- ▼ 従業員管理画面 -->
+  <div id="screen-employeeManage" class="screen" style="display:none; padding:20px;">
+    <h2>従業員管理</h2>
+  
+    <div class="form-group">
+      <label>従業員を選択</label>
+      <select id="empSelect"></select>
+    </div>
+  
+    <div class="form-group">
+      <label>退社日</label>
+      <input type="date" id="empLeaveDate">
+    </div>
+  
+    <button class="submit-btn" onclick="submitLeave()">退社処理を実行</button>
+    <button class="back-btn" onclick="showScreen('screen-adminMenu')">← 戻る</button>
+  
+    <p id="empManageResult"></p>
+  </div>
+  
+  <!-- ▼ 従業員登録Menu -->
   <div id="screen-register" class="screen" style="display:none; padding:20px;">
   <h2>従業員登録</h2>
 
@@ -42,14 +74,19 @@
   </div>
 
   <button class="submit-btn" onclick="submitRegister()">登録する</button>
-  <button class="back-btn" onclick="showScreen('screen-mainMenu')">← 戻る</button>
+  <button class="back-btn" onclick="closeRegister()">閉じる</button>
 
   <p id="regResult"></p>
+
+  <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+          onclick="openAdminMenu()">
+    管理者Menu
+  </button>
 </div>
   
-  <!-- ▼ 作業員メニュー -->
+  <!-- ▼ 作業員Menu -->
   <div id="screen-workerMenu" class="screen" style="display:none;">
-    <h2 class="title">作業員メニュー</h2>
+    <h2 class="title">作業員Menu</h2>
 
     <div class="grid">
       <button class="btn big" id="btnIn">出勤</button>
@@ -65,22 +102,20 @@
     <div class="row">
       <button class="btn time" id="btnApplyMenu" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
-    
-    <div class="row">
-      <button class="btnadmin" id="adminButton" style="display:none;">ステータス一覧</button>
-    </div>
 
     <div class="row">
       <button class="btn force" id="btnForceIn" style="display:none;">再出勤する</button>
     </div>
 
-    <div class="row">
-      <button class="btnadmin" id="adminEditButton" style="display:none;">打刻修正</button>
-    </div>
-
     <div class="status" id="status"></div>
     <p id="result"></p>
     <div id="messageArea"></div>
+    
+  <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+          onclick="openAdminMenu()">
+    管理者Menu
+  </button>
+    
   </div>
 
   <!-- 本日の作業内容画面 -->
@@ -207,7 +242,7 @@
       <button class="menu-btn worker" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('その他')">その他の申請</button>
       <button class="menu-btn worker" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
-      <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
+      <button class="back-btn" id="btnBack" onclick="goBackByRole()">← 戻る</button>
     </div>
   </div>
 
@@ -244,9 +279,9 @@
     <h2>申請履歴</h2>
   </div>
 
-  <!-- ▼ 運転手メニュー -->
+  <!-- ▼ 運転手Menu -->
   <div id="screen-driverMenu" class="screen" style="display:none;">
-    <h2 class="title">運転手メニュー</h2>
+    <h2 class="title">運転手Menu</h2>
 
     <div class="menu-container">
       <button class="menu-btn driver" onclick="showScreen('screen-driverOperation')">運行関連</button>
@@ -254,6 +289,12 @@
       <button class="menu-btn driver" onclick="showScreen('screen-driverCheck')">車両点検票</button>
       <button class="menu-btn driver" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
+
+    <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+            onclick="openAdminMenu()">
+      管理者Menu
+    </button>
+    
   </div>
 
   <div id="screen-driverOperation" class="screen" style="display:none;">
@@ -272,7 +313,7 @@
   <div id="screen-adminApproval" class="screen" style="display:none; padding:20px;">
     <h2 class="title">申請承認（管理者）</h2>
     <div id="approvalList"></div>
-    <button class="back-btn" onclick="showScreen('screen-mainMenu')">← メインメニューに戻る</button>
+    <button class="back-btn" onclick="showScreen('screen-adminMenu')">← 管理者Menuに戻る</button>
   </div>
 
 </body>
@@ -608,10 +649,51 @@
       );
     }
 
+    // LIFF を閉じる処理
+    function closeRegister() {
+      liff.closeWindow();
+    }
+
+    // 共通画面用の戻る処理
+    function goBackByRole() {
+      if (isAdminUser) {
+        showScreen("screen-adminMenu");
+      } else if (userDept === "運転手") {
+        showScreen("screen-driverMenu");
+      } else {
+        showScreen("screen-workerMenu");
+      }
+    }
+    
     // ▼ 画面切り替え関数
     function showScreen(id) {
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
+    }
+
+    // 管理者チェック + 部署で振り分けするならopenAdminMenuからshowAdminMenuに変更
+    function showAdminMenu() {
+      if (!isAdminUser) {
+        // 管理者でない場合は部署で振り分け
+        if (userDept === "運転手") {
+          showScreen("screen-driverMenu");
+        } else {
+          showScreen("screen-workerMenu");
+        }
+        return;
+      }
+    
+      // 管理者なら管理者メニューへ
+      showScreen("screen-adminMenu");
+    }
+    
+    // 管理者メニューを開くときに再チェック
+    function openAdminMenu() {
+      if (!isAdminUser) {
+        alert("管理者のみアクセス可能です。");
+        return;
+      }
+      showScreen("screen-adminMenu");
     }
     
     // ▼ LIFF 初期化
@@ -656,11 +738,9 @@
       
       // ★ 管理者だけボタンを表示
       if (isAdminUser) {
-        document.getElementById("adminButton").style.display = "block";
-        document.getElementById("adminEditButton").style.display = "block";
-      } else {
-        document.getElementById("adminButton").style.display = "none";
-        document.getElementById("adminEditButton").style.display = "none";
+        document.querySelectorAll("#btnAdminMenu").forEach(btn => {
+          btn.style.display = "block";
+        });
       }
       
       setupMonthSelect();
@@ -1552,6 +1632,47 @@
         });
     }
 
+    // 従業員一覧の読み込み
+    async function loadEmployeeList() {
+      const res = await fetch(GAS_URL + "?action=getEmployeeListForManage");
+      const list = await res.json();
+    
+      const select = document.getElementById("empSelect");
+      select.innerHTML = "";
+    
+      list.forEach(emp => {
+        const option = document.createElement("option");
+        option.value = emp.lineId;
+        option.textContent = emp.fullName + "（" + emp.dept + "）";
+        select.appendChild(option);
+      });
+    }
+
+    // 退社処理を送信
+    async function submitLeave() {
+      const lineId = document.getElementById("empSelect").value;
+      const leaveDate = document.getElementById("empLeaveDate").value;
+    
+      if (!leaveDate) {
+        alert("退社日を入力してください");
+        return;
+      }
+    
+      const payload = {
+        mode: "leave",
+        lineId,
+        leaveDate
+      };
+    
+      const res = await fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    
+      const result = await res.json();
+      document.getElementById("empManageResult").innerText = result.message;
+    }
+    
     // ▼ LIFF 初期化
     init();
 
