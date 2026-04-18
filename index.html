@@ -133,7 +133,8 @@
     </div>
 
     <div class="row">
-      <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
+      <button class="btn time" id="btnStatus" onclick="showScreen('timeCard')">勤務状態</button>
+
     </div>
 
     <div class="row">
@@ -184,7 +185,7 @@
   <!-- 本日の作業内容画面ここまで -->
 
   <!-- ▼ 2. 勤務状態一覧画面（timeCard） -->
-  <div id="timeCard" style="display:none; margin-top:20px;">
+  <div id="timeCard" class="screen" style="display:none; margin-top:20px;">
 
     <!-- 戻るボタン（timeCard 内に移動） -->
     <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
