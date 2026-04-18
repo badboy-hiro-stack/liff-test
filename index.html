@@ -47,43 +47,80 @@
   
   <!-- ▼ 従業員登録Menu -->
   <div id="screen-register" class="screen" style="display:none; padding:20px;">
-  <h2>従業員登録</h2>
-
-  <div class="form-group">
-    <label>姓</label>
-    <input type="text" id="regLastName">
-  </div>
-
-  <div class="form-group">
-    <label>名</label>
-    <input type="text" id="regFirstName">
-  </div>
-
-  <div class="form-group">
-    <label>部署</label>
-    <select id="regDept">
-      <option value="">選択してください</option>
-      <option value="運転手">運転手</option>
-      <option value="作業員">作業員</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label>入社日</label>
-    <input type="date" id="regJoinDate">
-  </div>
-
-  <button class="submit-btn" onclick="submitRegister()">登録する</button>
-  <button class="back-btn" onclick="closeRegister()">閉じる</button>
-
-  <p id="regResult"></p>
-
-  <button id="btnAdminMenu" class="btnadmin" style="display:none;"
-          onclick="openAdminMenu()">
-    管理者Menu
-  </button>
-</div>
+    <h2>従業員登録</h2>
   
+    <div class="form-group">
+      <label>姓</label>
+      <input type="text" id="regLastName">
+    </div>
+  
+    <div class="form-group">
+      <label>名</label>
+      <input type="text" id="regFirstName">
+    </div>
+  
+    <div class="form-group">
+      <label>部署</label>
+      <select id="regDept">
+        <option value="">選択してください</option>
+        <option value="運転手">運転手</option>
+        <option value="作業員">作業員</option>
+      </select>
+    </div>
+  
+    <div class="form-group">
+      <label>入社日</label>
+      <input type="date" id="regJoinDate">
+    </div>
+  
+    <button class="submit-btn" onclick="submitRegister()">登録する</button>
+    <button class="back-btn" onclick="closeRegister()">閉じる</button>
+  
+    <p id="regResult"></p>
+  
+    <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+            onclick="openAdminMenu()">
+      管理者Menu
+    </button>
+  </div>
+
+  <div id="screen-employeeEdit" class="screen" style="display:none; padding:20px;">
+    <h2>従業員情報編集</h2>
+  
+    <div class="form-group">
+      <label>従業員を選択</label>
+      <select id="editEmpSelect" onchange="loadEmployeeDetail()"></select>
+    </div>
+  
+    <div class="form-group">
+      <label>姓</label>
+      <input type="text" id="editLastName">
+    </div>
+  
+    <div class="form-group">
+      <label>名</label>
+      <input type="text" id="editFirstName">
+    </div>
+  
+    <div class="form-group">
+      <label>部署</label>
+      <select id="editDept">
+        <option value="運転手">運転手</option>
+        <option value="作業員">作業員</option>
+      </select>
+    </div>
+  
+    <div class="form-group">
+      <label>入社日</label>
+      <input type="date" id="editJoinDate">
+    </div>
+  
+    <button class="submit-btn" onclick="submitEmployeeEdit()">保存する</button>
+    <button class="back-btn" onclick="showAdminMenu()">← 管理者メニューへ戻る</button>
+  
+    <p id="editEmpResult"></p>
+  </div>
+
   <!-- ▼ 作業員Menu -->
   <div id="screen-workerMenu" class="screen" style="display:none;">
     <h2 class="title">作業員Menu</h2>
@@ -96,7 +133,7 @@
     </div>
 
     <div class="row">
-      <button class="btn time" id="btnStatus">勤務状態</button>
+      <button class="btn time" id="btnStatus" onclick="showTimeCard()">勤務状態</button>
     </div>
 
     <div class="row">
@@ -1672,7 +1709,63 @@
       const result = await res.json();
       document.getElementById("empManageResult").innerText = result.message;
     }
+
+    // 従業員一覧を読み込む
+    async function loadEmployeeListForEdit() {
+      const res = await fetch(GAS_URL + "?action=getEmployeeListForManage");
+      const list = await res.json();
     
+      const select = document.getElementById("editEmpSelect");
+      select.innerHTML = "";
+    
+      list.forEach(emp => {
+        const option = document.createElement("option");
+        option.value = emp.lineId;
+        option.textContent = emp.fullName + "（" + emp.dept + "）";
+        select.appendChild(option);
+      });
+    
+      // 最初の従業員の情報を読み込む
+      if (list.length > 0) {
+        loadEmployeeDetail();
+      }
+    }
+
+    // 選択した従業員の情報を読み込む
+    async function loadEmployeeDetail() {
+      const lineId = document.getElementById("editEmpSelect").value;
+    
+      const res = await fetch(GAS_URL + "?action=getEmployeeDetail&lineId=" + lineId);
+      const emp = await res.json();
+    
+      document.getElementById("editLastName").value = emp.lastName;
+      document.getElementById("editFirstName").value = emp.firstName;
+      document.getElementById("editDept").value = emp.dept;
+      document.getElementById("editJoinDate").value = emp.joinDate;
+    }
+
+    // 編集内容を保存
+    async function submitEmployeeEdit() {
+      const lineId = document.getElementById("editEmpSelect").value;
+    
+      const payload = {
+        mode: "editEmployee",
+        lineId,
+        lastName: document.getElementById("editLastName").value,
+        firstName: document.getElementById("editFirstName").value,
+        dept: document.getElementById("editDept").value,
+        joinDate: document.getElementById("editJoinDate").value
+      };
+    
+      const res = await fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    
+      const result = await res.json();
+      document.getElementById("editEmpResult").innerText = result.message;
+    }
+
     // ▼ LIFF 初期化
     init();
 
