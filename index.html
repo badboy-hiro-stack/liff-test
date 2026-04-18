@@ -733,6 +733,12 @@
       }
       showScreen("screen-adminMenu");
     }
+
+    // ▼ グローバル変数
+    let userId = "";
+    let currentUserId = "";
+    let isAdminUser = false;
+    let userDept = "";
     
     // ▼ LIFF 初期化
     async function init() {
@@ -758,7 +764,7 @@
  
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
-      const userId = profile.userId;
+      userId = profile.userId;
       currentUserId = profile.userId;
 
       // ▼ UI 初期化
@@ -767,7 +773,6 @@
 
       // ▼ 管理者判定　2026/03/23追記
       const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
-      // const url = `${gasUrl}?action=checkAdminSimple&userId=${userId}`;
       const res = await fetch(url);
       const json = await res.json();
 
@@ -780,6 +785,9 @@
           btn.style.display = "block";
         });
       }
+
+      // ▼ 勤務状態ボタンの紐付け（ここで確実に userId が使える）
+      document.getElementById("btnStatus").onclick = () => showTimeCard();
       
       setupMonthSelect();
     
