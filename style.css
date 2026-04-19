@@ -416,6 +416,7 @@ select {
 }
 
 .form-group {
+  text-align: left;
   margin-bottom: 15px;
   font-size: 36px;
 }
@@ -428,7 +429,7 @@ select {
 }
 
 input, textarea {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   font-size: 36px;
   border-radius: 8px;
@@ -436,18 +437,21 @@ input, textarea {
 }
 
 .submit-btn {
-  width: 100%;
-  padding: 15px;
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
+  border: none;
   background: #4da3ff;
   color: white;
-  font-size: 36px;
-  border: none;
-  border-radius: 10px;
-  margin-top: 10px;
-  font-weight: bold;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
 }
 
 .submit-btn:active {
+  transform: scale(0.95);
   background: #1d7fe0;
 }
 
