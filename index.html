@@ -385,7 +385,7 @@
       const joinDate = document.getElementById("regJoinDate").value;
     
       // ▼ 入力チェック
-      if (!lastName || !firstName || !dept || !joinDate) {
+      if (!lastName || !firstName || !dept) {
         alert("未入力の項目があります。");
         return;
       }
@@ -404,6 +404,7 @@
     
       const res = await fetch(GAS_URL, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
     
