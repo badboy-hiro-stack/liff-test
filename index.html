@@ -501,35 +501,14 @@
 
     // タイムカード画面表示処理
     async function showTimeCard() {
-      // ▼ タイムカードの中身を初期化（最重要）
-      // document.getElementById("timeCardContent").innerHTML = "";
-      
-      // ▼ メイン画面を隠す
-      document.querySelector(".grid").style.display = "none";
-      document.getElementById("btnStatus").style.display = "none";
-      document.getElementById("btnForceIn").style.display = "none";
-      document.getElementById("status").style.display = "none";
-      document.getElementById("result").style.display = "none";
-      document.getElementById("adminButton").style.display = "none";
-      document.getElementById("statusListScreen").style.display = "none";
-      document.getElementById("btnStatusBack").style.display = "none";
-      document.getElementById("btnApplyMenu").style.display = "none";
-
-      // 勤怠・休暇管理（申請）を隠す
-      document.getElementById("btnApplyMenu").style.display = "none";
-
-      // ▼ 打刻修正（管理者）を隠す
-      document.getElementById("adminEditButton").style.display = "none";
-      
-      // ▼ タイムカード画面を表示
-      document.getElementById("timeCard").style.display = "block";
+      // ▼ 画面切り替え（screen を使う構成に統一）
+      showScreen("timeCard");
     
-      // ▼ ★ 戻るボタンを表示
-      document.getElementById("btnBack").style.display = "block";
-      
-      // ▼ LINE ID を取得
-      const profile = await liff.getProfile();
-      const lineId = profile.userId;
+      // ▼ 月選択の初期化
+      initMonthSelect();
+    
+      // ▼ userId はグローバル変数を使う
+      const lineId = userId;
     
       // ▼ 今月の年月を取得
       const now = new Date();
@@ -540,7 +519,7 @@
       const url = `${gasUrl}?action=getMonthlySummary&lineId=${lineId}&year=${year}&month=${month}`;
       const res = await fetch(url);
       const json = await res.json();
-
+    
       if (json.status !== "success") {
         alert(json.message);
         return;
