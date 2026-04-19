@@ -777,10 +777,10 @@
       setupMonthSelect();
 
       // ▼ 部署取得
-      const deptUrl = `${gasUrl}?action=getDept&userId=${userId}`;
+      /* const deptUrl = `${gasUrl}?action=getDept&userId=${userId}`;
       const deptRes = await fetch(deptUrl);
       const deptJson = await deptRes.json();
-      userDept = deptJson.dept;
+      userDept = deptJson.dept; */
       
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
