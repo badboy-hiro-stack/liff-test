@@ -188,7 +188,7 @@
   <div id="timeCard" class="screen" style="display:none; margin-top:20px;">
 
     <!-- 戻るボタン（timeCard 内に移動） -->
-    <button class="back-button" id="btnBack" onclick="goBackByRole()">戻る</button>
+    <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
 
     <!-- 月選択 -->
     <div style="margin-bottom:10px;">
@@ -202,7 +202,7 @@
   <!-- ▲ 勤務状態一覧画面ここまで -->
 
   <!-- ▼ 3. ステータス一覧画面（管理者） -->
-  <div id="statusListScreen" style="display:none;">
+  <div id="statusListScreen" class="screen" style="display:none; margin-top:20px;">
 
     <button class="back-button" id="btnStatusBack" onclick="showScreen('screen-workerMenu')">戻る</button>
 
@@ -463,7 +463,6 @@
         return;
       }
       // ③ ★ rowIndex を受け取って保存
-      // latestRowIndex = result.rowIndex;
       latestRowIndex = result.data.rowIndex;
 
       // ④ 退勤成功 → 作業内容画面へ
@@ -1247,28 +1246,6 @@
       }
     }
 
-    // ▼ 戻るボタンの処理（グローバル）
-    document.getElementById("btnBack").onclick = () => {
-      // タイムカード画面を隠す
-      document.getElementById("timeCard").style.display = "none";
-      document.getElementById("btnBack").style.display = "none";
-  
-      // メイン画面を表示
-      document.querySelector(".grid").style.display = "grid";
-      document.getElementById("btnStatus").style.display = "block";
-      document.getElementById("status").style.display = "inline-block";
-      document.getElementById("result").style.display = "block";
-      document.getElementById("btnApplyMenu").style.display = "block";
-      // ★ 管理者だけボタンを表示
-      if (isAdminUser) {
-        document.getElementById("adminButton").style.display = "block";
-        document.getElementById("adminEditButton").style.display = "block";
-      } else {
-        document.getElementById("adminButton").style.display = "none";
-        document.getElementById("adminEditButton").style.display = "none";
-      }
-    };
-
     // 日付を YYYY/MM/DD に整形
     function formatDate(dateString) {
       const d = new Date(dateString);
@@ -1410,46 +1387,14 @@
       document.getElementById("statusList").innerHTML = html;
     } */
 
-    async function showStatusList(userId) {
-      // ▼ メイン画面を隠す
-      document.querySelector(".grid").style.display = "none";
-      document.getElementById("btnStatus").style.display = "none";
-      document.getElementById("btnForceIn").style.display = "none";
-      document.getElementById("status").style.display = "none";
-      document.getElementById("result").style.display = "none";
-      document.getElementById("adminButton").style.display = "none";
-      document.getElementById("btnApplyMenu").style.display = "none";
+    async function showStatusList() {
 
-      // ▼ 打刻修正（管理者）を隠す
-      document.getElementById("adminEditButton").style.display = "none";
-    
-      // ▼ ステータス一覧画面を表示
-      document.getElementById("statusListScreen").style.display = "block";
-      document.getElementById("btnStatusBack").style.display = "block";
+      // ▼ 画面切り替え
+      showScreen("statusListScreen");
     
       // ▼ データ読み込み
       await loadStatusList(userId);
     }
-
-    document.getElementById("btnStatusBack").onclick = () => {
-      document.getElementById("statusListScreen").style.display = "none";
-      document.getElementById("btnStatusBack").style.display = "none";
-    
-      // ▼ メイン画面を再表示
-      document.querySelector(".grid").style.display = "grid";
-      document.getElementById("btnStatus").style.display = "block";
-      document.getElementById("status").style.display = "inline-block";
-      document.getElementById("result").style.display = "block";
-      document.getElementById("btnApplyMenu").style.display = "block";
-      // ★ 管理者だけボタンを表示
-      if (isAdminUser) {
-        document.getElementById("adminButton").style.display = "block";
-        document.getElementById("adminEditButton").style.display = "block";
-      } else {
-        document.getElementById("adminButton").style.display = "none";
-        document.getElementById("adminEditButton").style.display = "none";
-      }
-    };
 
     // 日付＋従業員を選んだら GAS に問い合わせ
     let currentList = [];  // ← グローバルに保存しておく
