@@ -417,18 +417,20 @@ select {
 
 .form-group {
   margin-bottom: 15px;
+  font-size: 36px;
 }
 
 .form-group label {
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
+  font-size: 36px;
 }
 
 input, textarea {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 36px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
@@ -438,7 +440,7 @@ input, textarea {
   padding: 15px;
   background: #4da3ff;
   color: white;
-  font-size: 18px;
+  font-size: 36px;
   border: none;
   border-radius: 10px;
   margin-top: 10px;
@@ -454,7 +456,7 @@ input, textarea {
   padding: 12px;
   background: #ccc;
   color: black;
-  font-size: 16px;
+  font-size: 36px;
   border: none;
   border-radius: 10px;
   margin-top: 10px;
@@ -469,13 +471,13 @@ input, textarea {
 }
 
 .approval-title {
-  font-size: 18px;
+  font-size: 36px;
   font-weight: bold;
   margin-bottom: 8px;
 }
 
 .approval-info {
-  font-size: 14px;
+  font-size: 36px;
   margin-bottom: 5px;
 }
 
