@@ -188,7 +188,7 @@
   <div id="timeCard" class="screen" style="display:none; margin-top:20px;">
 
     <!-- 戻るボタン（timeCard 内に移動） -->
-    <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
+    <button class="back-button" id="btnBack" onclick="goBackByRole()">戻る</button>
 
     <!-- 月選択 -->
     <div style="margin-bottom:10px;">
@@ -501,11 +501,14 @@
 
     // タイムカード画面表示処理
     async function showTimeCard() {
+
       // ▼ 画面切り替え（screen を使う構成に統一）
       showScreen("timeCard");
     
-      // ▼ 月選択の初期化
-      initMonthSelect();
+      // ▼ 月選択の初期化（初回のみ生成）
+      if (document.getElementById("monthSelect").options.length === 0) {
+        setupMonthSelect();
+      }
     
       // ▼ userId はグローバル変数を使う
       const lineId = userId;
