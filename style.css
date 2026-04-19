@@ -416,12 +416,12 @@ select {
 }
 
 .form-group {
-  text-align: left;
   margin-bottom: 15px;
   font-size: 36px;
 }
 
 .form-group label {
+  text-align: left;
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
