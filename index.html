@@ -402,7 +402,7 @@
         joinDate
       };
     
-      const res = await fetch(GAS_URL, {
+      const res = await fetch(gasUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
