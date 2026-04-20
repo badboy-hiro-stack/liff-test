@@ -415,16 +415,23 @@
           body: JSON.stringify(payload)
         });
     
-        alert("⑤ fetch 完了 status=" + res.status);
+        const text = await res.text();   // ★ res.json() を使わない
+        alert("⑤ fetch 完了 text=" + text);
     
-        const result = await res.json();
+        let result;
+        try {
+          result = JSON.parse(text);     // ★ 自分でパースする
+        } catch (err) {
+          alert("⑥ JSON パース失敗: " + err);
+          return;
+        }
     
-        alert("⑥ GAS から返ってきた: " + JSON.stringify(result));
+        alert("⑦ GAS から返ってきた: " + JSON.stringify(result));
     
         document.getElementById("regResult").innerText = result.message;
     
         if (result.success) {
-          alert("⑦ 登録成功");
+          alert("⑧ 登録成功");
           if (dept === "運転手") {
             showScreen("screen-driverMenu");
           } else {
