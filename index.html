@@ -380,25 +380,24 @@
     // 従業員登録　LIFF → GAS 送信処理
     async function submitRegister() {
       alert("① submitRegister が呼ばれた");
-      
+    
       const lastName = document.getElementById("regLastName").value;
       const firstName = document.getElementById("regFirstName").value;
       const dept = document.getElementById("regDept").value;
       const joinDate = document.getElementById("regJoinDate").value;
-
+    
       alert("② 入力取得OK");
-      
-      // ▼ 入力チェック
+    
       if (!lastName || !firstName || !dept) {
-        alert("未入力の項目があります。");
+        alert("未入力があります");
         return;
       }
     
       const profile = await liff.getProfile();
       const lineId = profile.userId;
-
+    
       alert("③ プロフィール取得OK");
-      
+    
       const payload = {
         mode: "register",
         lineId,
@@ -407,31 +406,35 @@
         dept,
         joinDate
       };
-
-      alert("④ payload 作成OK");
-      
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      alert("⑤ fetch 完了");
-      
-      const result = await res.json();
-
-      alert("⑥ GAS から返ってきた: " + JSON.stringify(result));
-      
-      document.getElementById("regResult").innerText = result.message;
     
-      // ▼ 登録成功後に部署で自動遷移
-      if (result.success) {
-        alert("⑦ 登録成功")
-        if (dept === "運転手") {
-          showScreen("screen-driverMenu");
-        } else {
-          showScreen("screen-workerMenu");
+      alert("④ payload 作成OK");
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+    
+        alert("⑤ fetch 完了 status=" + res.status);
+    
+        const result = await res.json();
+    
+        alert("⑥ GAS から返ってきた: " + JSON.stringify(result));
+    
+        document.getElementById("regResult").innerText = result.message;
+    
+        if (result.success) {
+          alert("⑦ 登録成功");
+          if (dept === "運転手") {
+            showScreen("screen-driverMenu");
+          } else {
+            showScreen("screen-workerMenu");
+          }
         }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
       }
     }
     
