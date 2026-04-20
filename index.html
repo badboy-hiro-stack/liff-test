@@ -78,7 +78,7 @@
   
     <p id="regResult"></p>
   
-    <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+    <button id="btnAdminMenu_register" class="btnAdminMenu" style="display:none;"
             onclick="openAdminMenu()">
       管理者Menu
     </button>
@@ -149,7 +149,7 @@
     <p id="result"></p>
     <div id="messageArea"></div>
     
-  <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+  <button id="btnAdminMenu_worker" class="btnAdminMenu" style="display:none;"
           onclick="openAdminMenu()">
     管理者Menu
   </button>
@@ -328,7 +328,7 @@
       <button class="menu-btn driver" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
 
-    <button id="btnAdminMenu" class="btnadmin" style="display:none;"
+    <button id="btnAdminMenu_driver" class="btnAdminMenu" style="display:none;"
             onclick="openAdminMenu()">
       管理者Menu
     </button>
@@ -782,7 +782,7 @@
       
       // ★ 管理者だけボタンを表示
       if (isAdminUser) {
-        document.querySelectorAll("#btnAdminMenu").forEach(btn => {
+        document.querySelectorAll(".btnAdminMenu").forEach(btn => {
           btn.style.display = "block";
         });
       }
