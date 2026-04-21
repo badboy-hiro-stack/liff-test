@@ -711,6 +711,11 @@
     function showScreen(id) {
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
+    
+      // ★ 従業員管理画面を開いたときにリストを読み込む
+      if (id === "screen-employeeManage") {
+        loadEmployeeList();
+      }
     }
 
     // 管理者チェック + 部署で振り分けするならopenAdminMenuからshowAdminMenuに変更
