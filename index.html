@@ -1644,7 +1644,7 @@
 
     // 従業員一覧の読み込み
     async function loadEmployeeList() {
-      const res = await fetch(GAS_URL + "?action=getEmployeeListForManage");
+      const res = await fetch(gasUrl + "?action=getEmployeeListForManage");
       const list = await res.json();
     
       const select = document.getElementById("empSelect");
@@ -1674,7 +1674,7 @@
         leaveDate
       };
     
-      const res = await fetch(GAS_URL, {
+      const res = await fetch(gasUrl, {
         method: "POST",
         body: JSON.stringify(payload)
       });
@@ -1685,7 +1685,7 @@
 
     // 従業員一覧を読み込む
     async function loadEmployeeListForEdit() {
-      const res = await fetch(GAS_URL + "?action=getEmployeeListForManage");
+      const res = await fetch(gasUrl + "?action=getEmployeeListForManage");
       const list = await res.json();
     
       const select = document.getElementById("editEmpSelect");
@@ -1708,7 +1708,7 @@
     async function loadEmployeeDetail() {
       const lineId = document.getElementById("editEmpSelect").value;
     
-      const res = await fetch(GAS_URL + "?action=getEmployeeDetail&lineId=" + lineId);
+      const res = await fetch(gasUrl + "?action=getEmployeeDetail&lineId=" + lineId);
       const emp = await res.json();
     
       document.getElementById("editLastName").value = emp.lastName;
@@ -1730,7 +1730,7 @@
         joinDate: document.getElementById("editJoinDate").value
       };
     
-      const res = await fetch(GAS_URL, {
+      const res = await fetch(gasUrl, {
         method: "POST",
         body: JSON.stringify(payload)
       });
