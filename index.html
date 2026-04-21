@@ -1644,6 +1644,7 @@
 
     // 従業員一覧の読み込み
     async function loadEmployeeList() {
+      alert("gasUrl=" + gasUrl);
       const res = await fetch(gasUrl + "?action=getEmployeeListForManage");
       const list = await res.json();
     
