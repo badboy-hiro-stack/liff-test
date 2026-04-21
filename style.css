@@ -114,6 +114,26 @@
     background: #1da1c4;
   }
 
+   /* 管理者限定ボタン（Menu用） */
+  .btnAdmin {
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 90%;
+    padding: 30px;
+    font-size: 36px;
+    border-radius: 14px;
+    border: none;
+    background: #22bce6;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: 0.15s ease;
+  }
+
+  .btnAdmin:active {
+    transform: scale(0.95);
+    background: #1da1c4;
+  }
+
   #result {
     font-size: 40px;
     margin-top: 20px;
