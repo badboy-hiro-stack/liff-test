@@ -358,7 +358,7 @@
 
   <script>
     const liffId = "2009445215-yPBcEdg0";
-    const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
     
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
@@ -411,8 +411,7 @@
       try {
         const res = await fetch(gasUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: formData   // ← application/json を使わない
         });
     
         const text = await res.text();   // ★ res.json() を使わない
