@@ -115,7 +115,7 @@
   }
 
    /* 管理者限定ボタン（Menu用） */
-  .btnAdmin {
+  .btnadmin {
     margin: 0 auto;
     margin-top: 30px;
     width: 90%;
@@ -129,7 +129,7 @@
     transition: 0.15s ease;
   }
 
-  .btnAdmin:active {
+  .btnadmin:active {
     transform: scale(0.95);
     background: #1da1c4;
   }
