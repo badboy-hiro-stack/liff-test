@@ -397,6 +397,7 @@
     
       alert("③ プロフィール取得OK");
     
+      // ★ payload を作る
       const payload = {
         mode: "register",
         lineId,
@@ -409,17 +410,24 @@
       alert("④ payload 作成OK");
     
       try {
+        // ★★★ ここが重要：formData を先に宣言する
+        const formData = new FormData();
+        for (const key in payload) {
+          formData.append(key, payload[key]);
+        }
+    
+        // ★ application/json を使わない（Android 対策）
         const res = await fetch(gasUrl, {
           method: "POST",
-          body: formData   // ← application/json を使わない
+          body: formData
         });
     
-        const text = await res.text();   // ★ res.json() を使わない
+        const text = await res.text();
         alert("⑤ fetch 完了 text=" + text);
     
         let result;
         try {
-          result = JSON.parse(text);     // ★ 自分でパースする
+          result = JSON.parse(text);
         } catch (err) {
           alert("⑥ JSON パース失敗: " + err);
           return;
