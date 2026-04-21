@@ -212,7 +212,7 @@
   <!-- ▲ ステータス一覧画面ここまで -->
 
   <!-- ▼ 4. 打刻修正画面（管理者） -->
-  <div id="editScreen" style="display:none; padding:20px;">
+  <div id="editScreen" class="screen" style="display:none; padding:20px;">
   <div id="debug" style="white-space: pre-wrap; color: red; font-size: 12px;"></div>
     <h2>打刻修正</h2>
 
@@ -378,14 +378,11 @@
 
     // 従業員登録　LIFF → GAS 送信処理
     async function submitRegister() {
-      alert("① submitRegister が呼ばれた");
     
       const lastName = document.getElementById("regLastName").value;
       const firstName = document.getElementById("regFirstName").value;
       const dept = document.getElementById("regDept").value;
       const joinDate = document.getElementById("regJoinDate").value;
-    
-      alert("② 入力取得OK");
     
       if (!lastName || !firstName || !dept) {
         alert("未入力があります");
@@ -394,8 +391,6 @@
     
       const profile = await liff.getProfile();
       const lineId = profile.userId;
-    
-      alert("③ プロフィール取得OK");
     
       // ★ payload を作る
       const payload = {
@@ -406,8 +401,6 @@
         dept,
         joinDate
       };
-    
-      alert("④ payload 作成OK");
     
       try {
         // ★★★ ここが重要：formData を先に宣言する
@@ -423,7 +416,6 @@
         });
     
         const text = await res.text();
-        alert("⑤ fetch 完了 text=" + text);
     
         let result;
         try {
@@ -433,12 +425,9 @@
           return;
         }
     
-        alert("⑦ GAS から返ってきた: " + JSON.stringify(result));
-    
         document.getElementById("regResult").innerText = result.message;
     
         if (result.success) {
-          alert("⑧ 登録成功");
           if (dept === "運転手") {
             showScreen("screen-driverMenu");
           } else {
@@ -726,7 +715,15 @@
 
     // 管理者チェック + 部署で振り分けするならopenAdminMenuからshowAdminMenuに変更
     function showAdminMenu() {
-      if (!isAdminUser) {
+      // 管理者でない場合は部署で振り分け
+      if (userDept === "運転手") {
+        showScreen("screen-driverMenu");
+      } else {
+        showScreen("screen-workerMenu");
+      }
+      return;
+    }
+      /* if (!isAdminUser) {
         // 管理者でない場合は部署で振り分け
         if (userDept === "運転手") {
           showScreen("screen-driverMenu");
@@ -738,7 +735,7 @@
     
       // 管理者なら管理者メニューへ
       showScreen("screen-adminMenu");
-    }
+    } */
     
     // 管理者メニューを開くときに再チェック
     function openAdminMenu() {
