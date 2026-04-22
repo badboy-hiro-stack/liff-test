@@ -794,6 +794,8 @@
  
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
+      const adminName = profile.displayName;
+      
       userId = profile.userId;
       currentUserId = profile.userId;
 
@@ -1690,7 +1692,8 @@
       const payload = {
         mode: "leave",
         lineId,
-        leaveDate
+        leaveDate,
+        adminName
       };
     
       const res = await fetch(gasUrl, {
