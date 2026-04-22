@@ -769,6 +769,8 @@
     let currentUserId = "";
     let isAdminUser = false;
     let userDept = "";
+
+    let adminName = "";   // ★ まず外側で宣言
     
     // ▼ LIFF 初期化
     async function init() {
@@ -794,7 +796,7 @@
  
       // ▼ プロフィール取得
       const profile = await liff.getProfile();
-      const adminName = profile.displayName;
+      adminName = profile.displayName;
       
       userId = profile.userId;
       currentUserId = profile.userId;
