@@ -19,7 +19,7 @@
   
     <button class="btnadmin" onclick="showScreen('screen-statusList')">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
-    <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退社処理</button>
+    <button class="btnadmin" onclick="('screen-employeeRetire')">従業員退社処理</button>
   
     <button class="back-button" onclick="goBackByRole()">← 戻る</button>
   </div>
@@ -39,7 +39,7 @@
     </div>
   
     <button class="submit-btn" onclick="submitLeave()">退社処理を実行</button>
-    <button class="back-button" onclick="showScreen('screen-adminMenu')">← 戻る</button>
+    <button class="back-button" onclick="('screen-adminMenu')">← 戻る</button>
   
     <p id="empManageResult"></p>
   </div>
@@ -133,12 +133,12 @@
     </div>
 
     <div class="row">
-      <button class="btn time" id="btnStatus" onclick="showScreen('timeCard')">勤務状態</button>
+      <button class="btn time" id="btnStatus" onclick="('timeCard')">勤務状態</button>
 
     </div>
 
     <div class="row">
-      <button class="btn time" id="btnApplyMenu" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+      <button class="btn time" id="btnApplyMenu" onclick="('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
 
     <div class="row">
@@ -188,7 +188,7 @@
   <div id="timeCard" class="screen" style="display:none; margin-top:20px;">
 
     <!-- 戻るボタン（timeCard 内に移動） -->
-    <button class="back-button" id="btnBack" onclick="showScreen('screen-workerMenu')">戻る</button>
+    <button class="back-button" id="btnBack" onclick="('screen-workerMenu')">戻る</button>
 
     <!-- 月選択 -->
     <div style="margin-bottom:10px;">
@@ -204,7 +204,7 @@
   <!-- ▼ 3. ステータス一覧画面（管理者） -->
   <div id="statusListScreen" class="screen" style="display:none; margin-top:20px;">
 
-    <button class="back-button" id="btnStatusBack" onclick="showScreen('screen-adminMenu')">戻る</button>
+    <button class="back-button" id="btnStatusBack" onclick="('screen-adminMenu')">戻る</button>
 
     <div id="statusList"></div>
 
@@ -217,7 +217,7 @@
     <h2>打刻修正</h2>
 
     <!-- 戻る -->
-    <button id="editBackButton" class="editBackButton" onclick="showScreen('screen-adminMenu')">戻る</button>
+    <button id="editBackButton" class="editBackButton" onclick="('screen-adminMenu')">戻る</button>
 
     <!-- 日付選択 -->
     <div class="edit-block">
@@ -279,7 +279,7 @@
       <button class="menu-btn worker" onclick="openApplyForm('欠勤')">欠勤の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('その他')">その他の申請</button>
-      <button class="menu-btn worker" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
+      <button class="menu-btn worker" onclick="('screen-applyHistory')">自分の申請履歴</button>
       <button class="back-button" id="btnBack" onclick="goBackByRole()">← 戻る</button>
     </div>
   </div>
@@ -309,7 +309,7 @@
     </div>
 
     <button class="submit-btn" onclick="submitApply()">申請を送信する</button>
-    <button class="back-button" onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
+    <button class="back-button" onclick="('screen-applyMenu')">← 申請メニューに戻る</button>
   </div>
 
   <!-- ▼ 申請履歴 -->
@@ -322,10 +322,10 @@
     <h2 class="title">運転手Menu</h2>
 
     <div class="menu-container">
-      <button class="menu-btn driver" onclick="showScreen('screen-driverOperation')">運行関連</button>
-      <button class="menu-btn driver" onclick="showScreen('screen-driverReport')">作業日報</button>
-      <button class="menu-btn driver" onclick="showScreen('screen-driverCheck')">車両点検票</button>
-      <button class="menu-btn driver" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
+      <button class="menu-btn driver" onclick="('screen-driverOperation')">運行関連</button>
+      <button class="menu-btn driver" onclick="('screen-driverReport')">作業日報</button>
+      <button class="menu-btn driver" onclick="('screen-driverCheck')">車両点検票</button>
+      <button class="menu-btn driver" onclick="('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
 
     <button id="btnAdminMenu_driver" class="btnAdminMenu" style="display:none;"
@@ -351,7 +351,7 @@
   <div id="screen-adminApproval" class="screen" style="display:none; padding:20px;">
     <h2 class="title">申請承認（管理者）</h2>
     <div id="approvalList"></div>
-    <button class="back-button" onclick="showScreen('screen-adminMenu')">← 管理者Menuに戻る</button>
+    <button class="back-button" onclick="('screen-adminMenu')">← 管理者Menuに戻る</button>
   </div>
 
 </body>
@@ -698,10 +698,25 @@
 
     // 共通画面用の戻る処理
     function goBackByRole() {
-      if (userDept === "運転手") {
-        showScreen("screen-driverMenu");
+      // ▼ 通常従業員
+      if (!isAdminUser) {
+        if (userDept === "運転手") {
+          showScreen("screen-driverMenu");
+        } else {
+          showScreen("screen-workerMenu");
+        }
+        return;
+      }
+
+      // ▼ 管理者（兼務ユーザー）
+      if (lastScreen) {
+        showScreen(lastScreen);
       } else {
-        showScreen("screen-workerMenu");
+        if (userDept === "運転手") {
+          showScreen("screen-driverMenu");
+        } else {
+          showScreen("screen-workerMenu");
+        }
       }
     }
 
@@ -727,8 +742,8 @@
         }
       });
     
-      // ★ 直前の画面を保存（current が null の場合は上書きしない）
-      if (current && current.id !== id) {
+      // ★ 管理者Menuを開くときは lastScreen を更新しない
+      if (current && current.id !== id && id !== "screen-adminMenu") {
         lastScreen = current.id;
       }
     
