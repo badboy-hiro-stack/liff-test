@@ -718,21 +718,29 @@
     
     // ▼ 画面切り替え関数
     function showScreen(id) {
-      // 今表示している画面を記録
-      const current = document.querySelector(".screen:not([style*='display: none'])");
-      if (current) {
-        lastScreen = current.id;   // ★ 直前の画面を保存
+      // 現在表示中の画面を確実に取得
+      const screens = document.querySelectorAll(".screen");
+      let current = null;
+    
+      screens.forEach(s => {
+        if (s.style.display !== "none") {
+          current = s;
+        }
+      });
+    
+      // ★ 直前の画面を保存（current が null の場合は上書きしない）
+      if (current && current.id !== id) {
+        lastScreen = current.id;
       }
-      
-      document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
+    
+      // 画面切り替え
+      screens.forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
     
       // ★ 従業員退社処理画面を開いた時
       if (id === "screen-employeeRetire") {
-        // 退社画面の初期化
         document.getElementById("empLeaveDate").value = "";
         document.getElementById("empManageResult").textContent = "";
-        // 従業員リストを読み込む
         loadEmployeeList();
       }
     }
