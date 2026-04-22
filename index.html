@@ -743,8 +743,9 @@
       const screens = document.querySelectorAll(".screen");
       let current = null;
     
+      // ★ 現在表示中の画面を確実に取得（style.display ではなく offsetParent を使う）
       screens.forEach(s => {
-        if (s.style.display !== "none") {
+        if (s.offsetParent !== null) {   // ← これが最も確実
           current = s;
         }
       });
@@ -762,7 +763,12 @@
       // 画面切り替え
       screens.forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
-    
+
+      // ★ ステータス一覧画面を開いた時
+      if (id === "screen-statusList") {
+        showStatusList(userId);
+      }
+      
       // ★ 従業員退社処理画面を開いた時
       if (id === "screen-employeeRetire") {
         document.getElementById("empLeaveDate").value = "";
@@ -908,7 +914,7 @@
       document.getElementById("timeCard").style.display = "none";
     
       // ▼ ステータス一覧
-      document.getElementById("adminButton").onclick = () => showStatusList(userId);
+      // document.getElementById("adminButton").onclick = () => showStatusList(userId);
 
       // ▼ 管理者用「打刻修正」画面を開く
       document.getElementById("adminEditButton").onclick = () => {
