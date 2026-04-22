@@ -709,15 +709,16 @@
       }
 
       // ▼ 管理者（兼務ユーザー）
-      if (lastScreen) {
-        showScreen(lastScreen);
-      } else {
-        if (userDept === "運転手") {
-          showScreen("screen-driverMenu");
-        } else {
-          showScreen("screen-workerMenu");
-        }
+      const current = document.querySelector(".screen:not([style*='display: none'])");
+    
+      // ★ 管理者Menuの戻る → entryScreen に戻る
+      if (current.id === "screen-adminMenu") {
+        showScreen(entryScreen);
+        return;
       }
+    
+      // ★ それ以外の画面は lastScreen に戻る
+      showScreen(lastScreen);
     }
 
     /* function goBackByRole() {
@@ -741,7 +742,12 @@
           current = s;
         }
       });
-    
+
+      // ★ 管理者Menuに入る瞬間だけ entryScreen を記録する
+      if (id === "screen-adminMenu" && current) {
+        entryScreen = current.id;
+      }
+      
       // ★ 管理者Menuを開くときは lastScreen を更新しない
       if (current && current.id !== id && id !== "screen-adminMenu") {
         lastScreen = current.id;
@@ -798,7 +804,8 @@
     let isAdminUser = false;
     let userDept = "";
     let lastScreen = "";
-    let adminName = "";   // ★ まず外側で宣言
+    let adminName = "";
+    let entryScreen = "";
     
     // ▼ LIFF 初期化
     async function init() {
