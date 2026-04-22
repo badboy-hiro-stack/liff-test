@@ -698,10 +698,9 @@
 
     // 共通画面用の戻る処理
     function goBackByRole() {
-      if (lastScreen) {
-        showScreen(lastScreen);
+      if (userDept === "運転手") {
+        showScreen("screen-driverMenu");
       } else {
-        // 念のためのフォールバック
         showScreen("screen-workerMenu");
       }
     }
