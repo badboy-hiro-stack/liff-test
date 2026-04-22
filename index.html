@@ -698,14 +698,14 @@
 
     // 共通画面用の戻る処理
     function goBackByRole() {
-      if (isAdminUser) {
-        showScreen("screen-adminMenu");
-      } else if (userDept === "運転手") {
-        showScreen("screen-driverMenu");
+      if (lastScreen) {
+        showScreen(lastScreen);
       } else {
+        // 念のためのフォールバック
         showScreen("screen-workerMenu");
       }
     }
+
     /* function goBackByRole() {
       if (isAdminUser) {
         showScreen("screen-adminMenu");
@@ -718,6 +718,12 @@
     
     // ▼ 画面切り替え関数
     function showScreen(id) {
+      // 今表示している画面を記録
+      const current = document.querySelector(".screen:not([style*='display: none'])");
+      if (current) {
+        lastScreen = current.id;   // ★ 直前の画面を保存
+      }
+      
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
     
