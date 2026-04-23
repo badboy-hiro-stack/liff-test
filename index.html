@@ -741,6 +741,54 @@
     
     // ▼ 画面切り替え関数
     function showScreen(id) {
+      alert("showScreen START: " + id);
+    
+      const screens = document.querySelectorAll(".screen");
+      let current = null;
+    
+      screens.forEach(s => {
+        if (s.offsetParent !== null) {
+          current = s;
+        }
+      });
+    
+      alert("current screen: " + (current ? current.id : "NONE"));
+    
+      // 管理者Menuに入る瞬間だけ entryScreen を記録
+      if (id === "screen-adminMenu" && current) {
+        entryScreen = current.id;
+        alert("entryScreen set to: " + entryScreen);
+      }
+    
+      // lastScreen を更新
+      if (current && current.id !== id) {
+        lastScreen = current.id;
+        alert("lastScreen updated to: " + lastScreen);
+      }
+    
+      // 画面切り替え
+      screens.forEach(s => s.style.display = "none");
+      document.getElementById(id).style.display = "block";
+    
+      alert("screen switched to: " + id);
+    
+      // ステータス一覧
+      if (id === "statusListScreen") {
+        alert("Calling showStatusList()");
+        showStatusList(userId);
+      }
+    
+      // 従業員退社処理
+      if (id === "screen-employeeRetire") {
+        alert("Init employeeRetire");
+        document.getElementById("empLeaveDate").value = "";
+        document.getElementById("empManageResult").textContent = "";
+        loadEmployeeList();
+      }
+    
+      alert("showScreen END: " + id);
+    }
+    /* function showScreen(id) {
       // 現在表示中の画面を確実に取得
       const screens = document.querySelectorAll(".screen");
       let current = null;
@@ -777,7 +825,7 @@
         document.getElementById("empManageResult").textContent = "";
         loadEmployeeList();
       }
-    }
+    } */
 
     // 管理者チェック + 部署で振り分けするならopenAdminMenuからshowAdminMenuに変更
     function showAdminMenu() {
@@ -1496,9 +1544,16 @@
 
       // ▼ 画面切り替え
       // showScreen("statusListScreen");
-    
+      
+      // デバッグ用
+      alert("showStatusList START");
+      alert("Loading status list for user: " + userId);
+      
       // ▼ データ読み込み
       await loadStatusList(userId);
+
+      // デバッグ用
+      alert("showStatusList END");
     }
 
     // 日付＋従業員を選んだら GAS に問い合わせ
