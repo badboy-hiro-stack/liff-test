@@ -17,7 +17,7 @@
   <div id="screen-adminMenu" class="screen" style="display:none; padding:20px;">
     <h2>管理者Menu</h2>
   
-    <button class="btnadmin" onclick="showScreen('screen-statusList')">ステータス一覧</button>
+    <button class="btnadmin" onclick="showScreen('screen-statusListScreen')">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退社処理</button>
   
@@ -39,7 +39,7 @@
     </div>
   
     <button class="submit-btn" onclick="submitLeave()">退社処理を実行</button>
-    <button class="back-button" onclick="showScreen('screen-adminMenu')">← 戻る</button>
+    <button class="back-button" onclick="goBackByRole()">← 戻る</button>
   
     <p id="empManageResult"></p>
   </div>
