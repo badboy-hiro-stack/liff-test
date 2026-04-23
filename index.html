@@ -757,8 +757,8 @@
         entryScreen = current.id;
       }
       
-      // ★ 管理者Menuを開くときは lastScreen を更新しない
-      if (current && current.id !== id && id !== "screen-adminMenu") {
+      // ★ lastScreen を更新（管理者Menuも含めて更新する）
+      if (current && current.id !== id) {
         lastScreen = current.id;
       }
     
@@ -767,7 +767,7 @@
       document.getElementById(id).style.display = "block";
 
       // ★ ステータス一覧画面を開いた時
-      if (id === "screen-statusList") {
+      if (id === "screen-statusListScreen") {
         showStatusList(userId);
       }
       
