@@ -19,16 +19,19 @@
   
     <button class="btnadmin" onclick="openStatusList()">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
-    <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退社処理</button>
-  
+    <button class="btnadmin" onclick="showScreen('screen-employeeEdit')">従業員情報編集</button>
+    
+    <p></p>
+    <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退職処理</button>
+    <p></p>
     <button class="back-button" onclick="showScreen('screen-workerMenu')">作業員Menuへ</button>
     <button class="back-button" onclick="showScreen('screen-driverMenu')">運転手Menuへ</button>
 
   </div>
 
-  <!-- ▼ 従業員退社処理画面 -->
+  <!-- ▼ 従業員退職処理画面 -->
   <div id="screen-employeeRetire" class="screen" style="display:none; padding:20px;">
-    <h2>従業員退社処理</h2>
+    <h2>従業員退職処理</h2>
   
     <div class="form-group">
       <label>従業員を選択</label>
@@ -36,11 +39,11 @@
     </div>
   
     <div class="form-group">
-      <label>退社日</label>
+      <label>退職日</label>
       <input type="date" id="empLeaveDate">
     </div>
   
-    <button class="submit-btn" onclick="submitLeave()">退社処理を実行</button>
+    <button class="submit-btn" onclick="submitLeave()">退職処理を実行</button>
     <button class="back-button" onclick="showScreen('screen-adminMenu')">← 戻る</button>
   
     <p id="empManageResult"></p>
@@ -115,6 +118,11 @@
     <div class="form-group">
       <label>入社日</label>
       <input type="date" id="editJoinDate">
+    </div>
+
+    <div class="form-group">
+      <label>有休保有数</label>
+      <input type="number" id="editPaidLeave" min="0">
     </div>
   
     <button class="submit-btn" onclick="submitEmployeeEdit()">保存する</button>
@@ -731,18 +739,7 @@
       showScreen(lastScreen);
     }
 
-    /* function goBackByRole() {
-      if (isAdminUser) {
-        showScreen("screen-adminMenu");
-      } else if (userDept === "運転手") {
-        showScreen("screen-driverMenu");
-      } else {
-        showScreen("screen-workerMenu");
-      }
-    } */
-
     function openStatusList() {
-      alert("openStatusList START");
     
       // 全画面を非表示
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
@@ -750,18 +747,13 @@
       // ステータス一覧画面を表示
       document.getElementById("statusListScreen").style.display = "block";
     
-      alert("statusListScreen 表示完了");
-    
       // データ読み込み
       showStatusList(userId);
     
-      alert("openStatusList END");
     }
     
     // ▼ 画面切り替え関数
     function showScreen(id) {
-      alert("showScreen START: " + id);
-    
       const screens = document.querySelectorAll(".screen");
       let current = null;
     
@@ -771,80 +763,34 @@
         }
       });
     
-      alert("current screen: " + (current ? current.id : "NONE"));
-    
       // 管理者Menuに入る瞬間だけ entryScreen を記録
       if (id === "screen-adminMenu" && current) {
         entryScreen = current.id;
-        alert("entryScreen set to: " + entryScreen);
       }
     
       // lastScreen を更新
       if (current && current.id !== id) {
         lastScreen = current.id;
-        alert("lastScreen updated to: " + lastScreen);
       }
     
       // 画面切り替え
       screens.forEach(s => s.style.display = "none");
       document.getElementById(id).style.display = "block";
     
-      alert("screen switched to: " + id);
-    
       // ステータス一覧
       if (id === "statusListScreen") {
-        alert("Calling showStatusList()");
         showStatusList(userId);
       }
     
-      // 従業員退社処理
+      // 従業員退職処理
       if (id === "screen-employeeRetire") {
         alert("Init employeeRetire");
         document.getElementById("empLeaveDate").value = "";
         document.getElementById("empManageResult").textContent = "";
         loadEmployeeList();
       }
-    
-      alert("showScreen END: " + id);
     }
-    /* function showScreen(id) {
-      // 現在表示中の画面を確実に取得
-      const screens = document.querySelectorAll(".screen");
-      let current = null;
-    
-      // ★ 現在表示中の画面を確実に取得（style.display ではなく offsetParent を使う）
-      screens.forEach(s => {
-        if (s.offsetParent !== null) {   // ← これが最も確実
-          current = s;
-        }
-      });
 
-      // ★ 管理者Menuに入る瞬間だけ entryScreen を記録する
-      if (id === "screen-adminMenu" && current) {
-        entryScreen = current.id;
-      }
-      
-      // ★ lastScreen を更新（管理者Menuも含めて更新する）
-      if (current && current.id !== id) {
-        lastScreen = current.id;
-      }
-    
-      // 画面切り替え
-      screens.forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
-
-      // ★ ステータス一覧画面を開いた時
-      if (id === "screen-statusListScreen") {
-        showStatusList(userId);
-      }
-      
-      // ★ 従業員退社処理画面を開いた時
-      if (id === "screen-employeeRetire") {
-        document.getElementById("empLeaveDate").value = "";
-        document.getElementById("empManageResult").textContent = "";
-        loadEmployeeList();
-      }
-    } */
 
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
     function goBackFromApplyMenu() {
@@ -865,19 +811,6 @@
       }
       return;
     }
-      /* if (!isAdminUser) {
-        // 管理者でない場合は部署で振り分け
-        if (userDept === "運転手") {
-          showScreen("screen-driverMenu");
-        } else {
-          showScreen("screen-workerMenu");
-        }
-        return;
-      }
-    
-      // 管理者なら管理者メニューへ
-      showScreen("screen-adminMenu");
-    } */
     
     // 管理者メニューを開くときに再チェック
     function openAdminMenu() {
@@ -949,12 +882,6 @@
       document.getElementById("btnStatus").onclick = () => showTimeCard();
       
       setupMonthSelect();
-
-      // ▼ 部署取得
-      /* const deptUrl = `${gasUrl}?action=getDept&userId=${userId}`;
-      const deptRes = await fetch(deptUrl);
-      const deptJson = await deptRes.json();
-      userDept = deptJson.dept; */
       
       // ▼ 出勤・退勤・休憩ボタン
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
@@ -1067,31 +994,9 @@
       .catch(err => {
         console.log("軽微な通信エラー:", err);
       });
-      /* fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ 作業内容保存成功 → 退勤処理へ
-          sendClockOut();
-
-        } else {
-          document.getElementById("messageArea").textContent =
-            "作業内容の保存に失敗しました。";
-        }
-      })
-      .catch(err => {
-        console.log("軽微な通信エラー:", err);
-      }); */
     }
 
     function sendClockOut() {
-      alert("① sendClockOut が呼ばれたよー");
-    
       const params = new URLSearchParams();
       params.append("type", "退勤");
       params.append("lineId", userId);
@@ -1102,11 +1007,9 @@
         body: params
       })
       .then(res => {
-        alert("② fetch の then(res) まで来た");
         return res.text();  // ← JSON ではなく text で受け取る
       })
       .then(text => {
-        alert("③ 生レスポンス受信: " + text);
     
         let json;
         try {
@@ -1135,34 +1038,6 @@
         alert("⑧ fetch の catch に入りました");
       });
     }
-    /* function sendClockOut() {
-      alert("sendClockOut が呼ばれた");
-      const params = new URLSearchParams();
-      params.append("type", "退勤");
-      params.append("lineId", userId);
-    
-      fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === "success") {
-    
-          // ▼ ここで画面を戻す
-          document.getElementById("taskScreen").style.display = "none";
-          document.getElementById("mainScreen").style.display = "block";
-
-          // ▼ rowIndex をリセット（翌日の誤動作防止）
-          currentWorkRow = null;
-          
-          alert("退勤処理が完了しました");
-        } else {
-          alert("退勤処理に失敗しました");
-        }
-      })
-    } */
     
     // 退勤前に作業内容の有無を確認
     function clockOut() {
@@ -1356,44 +1231,6 @@
       document.getElementById("result").innerText = json.message;
     }
 
-    /* async function sendForceClockIn(lineId, lat, lng) {
-      const payload = {
-        action: "clock_in",
-        type: "出勤",
-        lineId: lineId,
-        lat: lat,
-        lng: lng,
-        force: true
-      };
-    
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    
-      const json = await res.json();
-    
-      // ▼ 再出勤ボタンを隠す
-      document.getElementById("btnForceIn").style.display = "none";
-    
-      // ▼ ステータス更新（send() と同じ成功条件）
-      const statusBox = document.getElementById("status");
-    
-      if (
-        json.status === "success" ||
-        json.status === "complete" ||
-        json.status === "continue"
-      ) {
-        if (json.action === "clock_in") {
-          statusBox.innerText = "出勤中";
-          statusBox.style.color = "green";
-        }
-      }
-    
-      // ▼ 結果表示
-      document.getElementById("result").innerText = json.message;
-    } */
-
     // 現在のステータスを読み込む関数を追加　送信方式の変更
     async function loadCurrentStatus(lineId) {
       const params = new URLSearchParams();
@@ -1479,26 +1316,6 @@
       renderStatusList(json);
 
     }
-    /* async function loadStatusList(userId) {
-      const params = new URLSearchParams();
-      params.append("action", "getStatusList");
-      params.append("userId", userId);
-    
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-      });
-    
-      const json = await res.json();
-    
-      if (json.status === "forbidden") {
-        alert("管理者専用機能です");
-        return;
-      }
-    
-      renderStatusList(json.data);
-    } */
 
     // 2026/04/07 修正
     function renderStatusList(data) {
@@ -1544,40 +1361,12 @@
     
       document.getElementById("statusList").innerHTML = html;
     }
-    
-    /* function renderStatusList(data) {
-      let html = "";
-    
-      data.forEach(item => {
-        html += `<div class="card">`;
-        html += `<div class="name">${item.name}</div>`;
-        html += `<div class="status ${item.statusClass}">${item.status}</div>`;
-        html += `<div class="place">📍 ${item.place}</div>`;
-    
-        if (item.status === "退勤") {
-          html += `<div>労働時間：${item.workMinutes} 分</div>`;
-          html += `<div>休憩時間：${item.breakMinutes} 分</div>`;
-          html += `<div>残業時間：${item.overtimeMinutes} 分</div>`;
-        } else {
-          html += `<div class="detail">休憩時間：${item.breakMinutes} 分</div>`;
-        }
-    
-        html += `</div>`;
-      });
-    
-      document.getElementById("statusList").innerHTML = html;
-    } */
 
     async function showStatusList() {
-      
-      // デバッグ用
-      alert("showStatusList START");
       
       // ▼ データ読み込み
       await loadStatusList(userId);
 
-      // デバッグ用
-      alert("showStatusList END");
     }
 
     // 日付＋従業員を選んだら GAS に問い合わせ
@@ -1752,31 +1541,9 @@
       loadEmployees();
     }
 
-    /* function showEditScreen() {
-      // 他の画面を非表示
-      // document.getElementById("mainScreen").style.display = "none";
-      // document.getElementById("statusListScreen").style.display = "none";
-      // document.getElementById("timeCard").style.display = "none"; 
-      document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-    
-      // 修正画面を表示
-      document.getElementById("editScreen").style.display = "block";
-      
-      // F-Serviceの従業員のみ対応
-      loadEmployees();
-    } */
-
     function hideEditScreen() {
       showScreen("screen-workerMenu");
     }
-
-    /* function hideEditScreen() {
-      // 修正画面を非表示
-      document.getElementById("editScreen").style.display = "none";
-    
-      // メイン画面に戻る（あなたの構成に合わせて変更可能）
-      document.getElementById("screen-workerMenu").style.display = "block";
-    } */
 
     // 従業員リストを読み込む関数
     function loadEmployees() {
@@ -1818,13 +1585,13 @@
       });
     }
 
-    // 退社処理を送信
+    // 退職処理を送信
     async function submitLeave() {
       const lineId = document.getElementById("empSelect").value;
       const leaveDate = document.getElementById("empLeaveDate").value;
     
       if (!leaveDate) {
-        alert("退社日を入力してください");
+        alert("退職日を入力してください");
         return;
       }
     
@@ -1872,32 +1639,40 @@
       const res = await fetch(gasUrl + "?action=getEmployeeDetail&lineId=" + lineId);
       const emp = await res.json();
     
-      document.getElementById("editLastName").value = emp.lastName;
-      document.getElementById("editFirstName").value = emp.firstName;
-      document.getElementById("editDept").value = emp.dept;
-      document.getElementById("editJoinDate").value = emp.joinDate;
+      document.getElementById("editLastName").value = emp.lastName ?? "";
+      document.getElementById("editFirstName").value = emp.firstName ?? "";
+      document.getElementById("editDept").value = emp.dept ?? "作業員";
+      document.getElementById("editJoinDate").value = emp.joinDate ?? "";
+      document.getElementById("editPaidLeave").value = emp.paidLeave ?? 0;
     }
 
     // 編集内容を保存
     async function submitEmployeeEdit() {
-      const lineId = document.getElementById("editEmpSelect").value;
+      try {
+        const lineId = document.getElementById("editEmpSelect").value;
     
-      const payload = {
-        mode: "editEmployee",
-        lineId,
-        lastName: document.getElementById("editLastName").value,
-        firstName: document.getElementById("editFirstName").value,
-        dept: document.getElementById("editDept").value,
-        joinDate: document.getElementById("editJoinDate").value
-      };
+        const payload = {
+          mode: "editEmployee",
+          lineId,
+          lastName: document.getElementById("editLastName").value,
+          firstName: document.getElementById("editFirstName").value,
+          dept: document.getElementById("editDept").value,
+          joinDate: document.getElementById("editJoinDate").value,
+          paidLeave: Number(document.getElementById("editPaidLeave").value)
+        };
     
-      const res = await fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
     
-      const result = await res.json();
-      document.getElementById("editEmpResult").innerText = result.message;
+        const result = await res.json();
+        document.getElementById("editEmpResult").innerText = result.message;
+    
+      } catch (e) {
+        document.getElementById("editEmpResult").innerText =
+          "更新中にエラーが発生しました：" + e;
+      }
     }
 
     // ▼ LIFF 初期化
