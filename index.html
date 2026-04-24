@@ -17,7 +17,8 @@
   <div id="screen-adminMenu" class="screen" style="display:none; padding:20px;">
     <h2>管理者Menu</h2>
   
-    <button class="btnadmin" onclick="showScreen('screen-statusListScreen')">ステータス一覧</button>
+    <!-- <button class="btnadmin" onclick="showScreen('screen-statusListScreen')">ステータス一覧</button> -->
+    <button class="btnadmin" onclick="openStatusList()">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退社処理</button>
   
@@ -738,6 +739,23 @@
         showScreen("screen-workerMenu");
       }
     } */
+
+    function openStatusList() {
+      alert("openStatusList START");
+    
+      // 全画面を非表示
+      document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
+    
+      // ステータス一覧画面を表示
+      document.getElementById("statusListScreen").style.display = "block";
+    
+      alert("statusListScreen 表示完了");
+    
+      // データ読み込み
+      showStatusList(userId);
+    
+      alert("openStatusList END");
+    }
     
     // ▼ 画面切り替え関数
     function showScreen(id) {
@@ -1541,13 +1559,9 @@
     } */
 
     async function showStatusList() {
-
-      // ▼ 画面切り替え
-      // showScreen("statusListScreen");
       
       // デバッグ用
       alert("showStatusList START");
-      alert("Loading status list for user: " + userId);
       
       // ▼ データ読み込み
       await loadStatusList(userId);
