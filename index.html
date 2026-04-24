@@ -19,7 +19,7 @@
   
     <button class="btnadmin" onclick="openStatusList()">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
-    <button class="btnadmin" onclick="showScreen('screen-employeeEdit')">従業員情報編集</button>
+    <button class="btnadmin" onclick="showEmployeeEditScreen()">従業員情報編集</button>
     
     <p></p>
     <button class="btnadmin-Retire" onclick="showScreen('screen-employeeRetire')">従業員退職処理</button>
@@ -791,6 +791,11 @@
       }
     }
 
+    // ▼ 従業員編集画面を開くときの関数
+    function showEmployeeEditScreen() {
+      showScreen("screen-employeeEdit");
+      loadEmployeeListForEdit();
+    }
 
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
     function goBackFromApplyMenu() {
