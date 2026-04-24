@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>新世代のGPS打刻システム</title>
+  <title>運行支援システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link rel="stylesheet" href="style.css?v=20260319">
 </head>
@@ -17,12 +17,13 @@
   <div id="screen-adminMenu" class="screen" style="display:none; padding:20px;">
     <h2>管理者Menu</h2>
   
-    <!-- <button class="btnadmin" onclick="showScreen('screen-statusListScreen')">ステータス一覧</button> -->
     <button class="btnadmin" onclick="openStatusList()">ステータス一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showScreen('screen-employeeRetire')">従業員退社処理</button>
   
-    <button class="back-button" onclick="goBackByRole()">← 戻る</button>
+    <button class="back-button" onclick="showScreen('screen-workerMenu')">作業員Menuへ</button>
+    <button class="back-button" onclick="showScreen('screen-driverMenu')">運転手Menuへ</button>
+
   </div>
 
   <!-- ▼ 従業員退社処理画面 -->
@@ -40,7 +41,7 @@
     </div>
   
     <button class="submit-btn" onclick="submitLeave()">退社処理を実行</button>
-    <button class="back-button" onclick="goBackByRole()">← 戻る</button>
+    <button class="back-button" onclick="showScreen('screen-adminMenu')">← 戻る</button>
   
     <p id="empManageResult"></p>
   </div>
@@ -281,7 +282,7 @@
       <button class="menu-btn worker" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('その他')">その他の申請</button>
       <button class="menu-btn worker" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
-      <button class="back-button" id="btnBack" onclick="goBackByRole()">← 戻る</button>
+      <button class="back-button" id="btnBack" onclick="goBackFromApplyMenu()">← 戻る</button>
     </div>
   </div>
 
@@ -844,6 +845,15 @@
         loadEmployeeList();
       }
     } */
+
+    // 勤怠・休暇管理画面の戻るボタンは部署で決める
+    function goBackFromApplyMenu() {
+      if (userDept === "運転手") {
+        showScreen("screen-driverMenu");
+      } else {
+        showScreen("screen-workerMenu");
+      }
+    }
 
     // 管理者チェック + 部署で振り分けするならopenAdminMenuからshowAdminMenuに変更
     function showAdminMenu() {
