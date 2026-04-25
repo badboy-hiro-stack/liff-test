@@ -884,6 +884,12 @@
         });
       }
 
+      // userDept(部署)をセット
+      const emp = await fetch(`${gasUrl}?action=getEmployeeDetail&lineId=${userId}`);
+      const empJson = await emp.json();
+      userDept = empJson.dept || "";
+      alert("userDept = " + userDept);
+      
       // ▼ 勤務状態ボタンの紐付け（ここで確実に userId が使える）
       document.getElementById("btnStatus").onclick = () => showTimeCard();
       
