@@ -799,6 +799,7 @@
 
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
     function goBackFromApplyMenu() {
+      alert("userDept = " + userDept);
       if (userDept === "運転手") {
         showScreen("screen-driverMenu");
       } else {
