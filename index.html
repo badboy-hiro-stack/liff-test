@@ -838,8 +838,25 @@
     
     // ▼ LIFF 初期化
     async function init() {
-      await liff.init({ liffId });
+      await initLiff();
+      handleScreenParam();
+      await ensureLogin();
+      await loadProfile();
+      await loadEmployeeInfo();
+      await checkAdminStatus();
+      setupUI();
+      applyAdminUI();
+      setupEventHandlers();
+      await loadInitialStatus();
+    }
 
+    // LIFF 初期化関数
+    async function initLiff() {
+      await liff.init({ liffId });
+    }
+
+    // URL パラメータ処理
+    function handleScreenParam() {
       const params = new URLSearchParams(location.search);
       const screen = params.get("screen");
     
@@ -852,57 +869,72 @@
       } else {
         showScreen("screen-mainMenu"); // デフォルト
       }
-      
+    }
+
+    // ログイン処理
+    async function ensureLogin() {
       if (!liff.isLoggedIn()) {
         liff.login();
-        return;
+        throw new Error("ログイン中断");
       }
- 
-      // ▼ プロフィール取得
+    }
+
+    // プロフィール取得
+    async function loadProfile() {
       const profile = await liff.getProfile();
       adminName = profile.displayName;
-      
       userId = profile.userId;
       currentUserId = profile.userId;
+    }
 
-      // ▼ UI 初期化
-      document.getElementById("btnForceIn").style.display = "none";
-      loadCurrentStatus(userId);
+    // 従業員情報取得
+    async function loadEmployeeInfo() {
+      const res = await fetch(`${gasUrl}?action=getEmployeeDetail&lineId=${userId}`);
+      const emp = await res.json();
+      userDept = emp.dept || "";
+    }
 
-      // ▼ 管理者判定　2026/03/23追記
+    // 管理者判定
+    async function checkAdminStatus() {
       const url = `${gasUrl}?action=checkAdmin&userId=${userId}`;
       const res = await fetch(url);
       const json = await res.json();
-
-      // ★ 判定結果を保存
       isAdminUser = json.isAdmin;
-      
-      // ★ 管理者だけボタンを表示
+    }
+
+    // 管理者用ボタン表示
+    function applyAdminUI() {
       if (isAdminUser) {
         document.querySelectorAll(".btnAdminMenu").forEach(btn => {
           btn.style.display = "block";
         });
       }
+    }
 
-      // userDept(部署)をセット
-      const emp = await fetch(`${gasUrl}?action=getEmployeeDetail&lineId=${userId}`);
-      const empJson = await emp.json();
-      userDept = empJson.dept || "";
-      alert("userDept = " + userDept);
-      
-      // ▼ 勤務状態ボタンの紐付け（ここで確実に userId が使える）
-      document.getElementById("btnStatus").onclick = () => showTimeCard();
-      
-      setupMonthSelect();
-      
-      // ▼ 出勤・退勤・休憩ボタン
+    // UI 初期化
+    function setupUI() {
+      // 最初に非表示にする UI
+      document.getElementById("btnForceIn").style.display = "none";
+    
+      // タイムカード画面は最初は非表示
+      document.getElementById("timeCard").style.display = "none";
+    }
+
+    // ボタンイベント設定
+    function setupEventHandlers() {
+
+      // ▼ タイムカード画面
+      document.getElementById("btnStatus").onclick = () => showTimeCard(userId);
+    
+      // ▼ 出勤
       document.getElementById("btnIn").onclick = () => send("出勤", userId);
-      
+    
+      // ▼ 退勤
       document.getElementById("btnOut").onclick = () => {
         const params = new URLSearchParams();
         params.append("action", "getLatestWorkRowForClockOut");
         params.append("lineId", userId);
-      
+    
         fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -918,37 +950,29 @@
           }
         })
         .catch(err => {
-          // 通信エラーはユーザーに見せない
           console.log("退勤ボタン通信エラー:", err);
         });
       };
-      
+    
+      // ▼ 休憩開始・終了
       document.getElementById("btnBreakStart").onclick = () => send("休憩開始", userId);
       document.getElementById("btnBreakEnd").onclick = () => send("休憩終了", userId);
     
-      // ▼ タイムカード画面
-      document.getElementById("btnStatus").onclick = () => showTimeCard(userId);
-      document.getElementById("timeCard").style.display = "none";
+      // ▼ 管理者用「打刻修正」画面
+      document.getElementById("adminEditButton").onclick = () => showEditScreen();
+      document.getElementById("editBackButton").onclick = () => hideEditScreen();
     
-      // ▼ ステータス一覧
-      // document.getElementById("adminButton").onclick = () => showStatusList(userId);
-
-      // ▼ 管理者用「打刻修正」画面を開く
-      document.getElementById("adminEditButton").onclick = () => {
-        showEditScreen();
-      };
-      
-      // ▼ 戻るボタン
-      document.getElementById("editBackButton").onclick = () => {
-        hideEditScreen();
-      };
-      
-      // 打刻修正　更新ボタンのクリックイベント
-      // document.getElementById("updateAttendance").onclick = updateAttendance;
-
-      // 日付 or 従業員が変更されたらデータを読み込む
+      // ▼ 日付 or 従業員が変更されたらデータを読み込む
       document.getElementById("editDate").onchange = loadAttendanceForEdit;
       document.getElementById("editEmployee").onchange = loadAttendanceForEdit;
+    
+      // ▼ 月選択
+      setupMonthSelect();
+    }
+
+    // 初期ステータス読み込み
+    async function loadInitialStatus() {
+      loadCurrentStatus(userId);
     }
 
     // ▼ 作業内容送信ボタン
