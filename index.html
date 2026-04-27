@@ -304,10 +304,15 @@
     </div>
 
     <div class="form-group">
-      <label>日付</label>
-      <input id="applyDate" type="date">
+      <label>開始日</label>
+      <input id="applyStartDate" type="date">
     </div>
-
+    
+    <div class="form-group">
+      <label>終了日</label>
+      <input id="applyEndDate" type="date">
+    </div>
+    
     <div class="form-group" id="timeGroup" style="display:none;">
       <label>時間（遅刻・早退の場合）</label>
       <input id="applyTime" type="time">
@@ -471,7 +476,8 @@
       document.getElementById("applyFormTitle").innerText = type + "の申請";
     
       // 日付・時間・理由を初期化
-      document.getElementById("applyDate").value = "";
+      document.getElementById("applyStartDate").value = "";
+      document.getElementById("applyEndDate").value = "";
       document.getElementById("applyTime").value = "";
       document.getElementById("applyReason").value = "";
     
@@ -1743,7 +1749,8 @@
     // 申請の送信
     async function submitApply() {
       const type = document.getElementById("applyType").value;
-      const date = document.getElementById("applyDate").value;
+      const start = document.getElementById("applyStartDate").value;
+      const end = document.getElementById("applyEndDate").value;
       const time = document.getElementById("applyTime").value;
       const reason = document.getElementById("applyReason").value;
     
@@ -1759,7 +1766,8 @@
       params.append("action", "submitApply");
       params.append("lineId", userId);
       params.append("type", type);
-      params.append("date", date);
+      params.append("start", start);
+      params.append("end", endDate);
       params.append("time", sendTime);
       params.append("reason", reason);
     
