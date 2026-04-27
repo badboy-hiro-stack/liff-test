@@ -289,7 +289,7 @@
       <button class="menu-btn worker" onclick="openApplyForm('欠勤')">欠勤の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('その他')">その他の申請</button>
-      <button class="menu-btn worker" onclick="showScreen('screen-applyHistory')">自分の申請履歴</button>
+      <button class="menu-btn worker" onclick="openApplyHistory()">自分の申請履歴</button>
       <button class="back-button" id="btnBack" onclick="goBackFromApplyMenu()">← 戻る</button>
     </div>
   </div>
@@ -325,7 +325,11 @@
   <!-- ▼ 申請履歴 -->
   <div id="screen-applyHistory" class="screen" style="display:none;">
     <h2>申請履歴</h2>
-    <p>作成中または準備中です。</p>
+    
+    <div id="applyHistoryList">
+      <!-- ここに JS で履歴カードを追加する -->
+    </div>
+    
     <button class="back-button" onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
   </div>
 
@@ -1709,6 +1713,120 @@
         document.getElementById("editEmpResult").innerText =
           "更新中にエラーが発生しました：" + e;
       }
+    }
+
+    // 申請の送信
+    async function submitApply() {
+      const type = document.getElementById("applyType").value;
+      const date = document.getElementById("applyDate").value;
+      const time = document.getElementById("applyTime").value;
+      const reason = document.getElementById("applyReason").value;
+    
+      if (!date) {
+        alert("日付を入力してください");
+        return;
+      }
+    
+      // 遅刻・早退以外は time を空にする
+      const sendTime = (type === "遅刻・早退") ? time : "";
+    
+      const params = new URLSearchParams();
+      params.append("action", "submitApply");
+      params.append("lineId", userId);
+      params.append("type", type);
+      params.append("date", date);
+      params.append("time", sendTime);
+      params.append("reason", reason);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        if (json.result === "success") {
+          alert("申請を送信しました！");
+          showScreen("screen-applyMenu");
+        } else {
+          alert("申請に失敗しました：" + json.message);
+        }
+    
+      } catch (err) {
+        console.error("submitApply エラー:", err);
+        alert("通信エラーが発生しました");
+      }
+    }
+
+    // 申請履歴の呼び出し
+    async function openApplyHistory() {
+      showScreen("screen-applyHistory");
+      await loadApplyHistory();
+    }
+
+    // 申請履歴カードの作成
+    async function loadApplyHistory() {
+      const box = document.getElementById("applyHistoryList");
+      box.innerHTML = "読み込み中…";
+    
+      const params = new URLSearchParams();
+      params.append("action", "getMyApplies");
+      params.append("lineId", userId);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        if (json.result !== "success") {
+          box.innerHTML = "データ取得に失敗しました";
+          return;
+        }
+    
+        const list = json.data;
+    
+        if (list.length === 0) {
+          box.innerHTML = "<p>申請履歴はありません。</p>";
+          return;
+        }
+    
+        // カード生成
+        box.innerHTML = list.map(item => `
+          <div class="apply-card">
+            <div><strong>${item.type}</strong></div>
+            <div>日付：${item.date}</div>
+            ${item.time ? `<div>時間：${item.time}</div>` : ""}
+            <div>理由：${item.reason}</div>
+            <div>申請日時：${formatDateTime(item.applyAt)}</div>
+            <div>ステータス：${item.status}</div>
+            ${item.comment ? `<div>コメント：${item.comment}</div>` : ""}
+            ${item.approvedAt ? `<div>承認日時：${formatDateTime(item.approvedAt)}</div>` : ""}
+            ${item.approver ? `<div>承認者：${item.approver}</div>` : ""}
+          </div>
+        `).join("");
+    
+      } catch (err) {
+        console.error(err);
+        box.innerHTML = "通信エラーが発生しました";
+      }
+    }
+
+    // 申請用の日時フォーマット関数
+    function formatDateTime(dt) {
+      if (!dt) return "";
+      const d = new Date(dt);
+      const y = d.getFullYear();
+      const m = ("0" + (d.getMonth() + 1)).slice(-2);
+      const day = ("0" + d.getDate()).slice(-2);
+      const h = ("0" + d.getHours()).slice(-2);
+      const min = ("0" + d.getMinutes()).slice(-2);
+      return `${y}/${m}/${day} ${h}:${min}`;
     }
 
     // ▼ LIFF 初期化
