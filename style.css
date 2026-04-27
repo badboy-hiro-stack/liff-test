@@ -551,3 +551,12 @@ input, textarea {
   border-radius: 8px;
   font-weight: bold;
 }
+
+.apply-card {
+  background: #fff;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 36px;
+}
