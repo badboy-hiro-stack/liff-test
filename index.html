@@ -461,7 +461,32 @@
         alert("fetch エラー: " + err);
       }
     }
+
+    // 申請フォーム画面
+    function openApplyForm(type) {
+      // 申請種別をセット
+      document.getElementById("applyType").value = type;
     
+      // タイトルを変更
+      document.getElementById("applyFormTitle").innerText = type + "の申請";
+    
+      // 日付・時間・理由を初期化
+      document.getElementById("applyDate").value = "";
+      document.getElementById("applyTime").value = "";
+      document.getElementById("applyReason").value = "";
+    
+      // 遅刻・早退の場合だけ時間入力を表示
+      const timeGroup = document.getElementById("timeGroup");
+      if (type === "遅刻・早退") {
+        timeGroup.style.display = "block";
+      } else {
+        timeGroup.style.display = "none";
+      }
+    
+      // 申請フォーム画面へ切り替え
+      showScreen("screen-applyForm");
+    }
+
     function showTaskScreen(tasks, rowIndex) {
       currentWorkRow = rowIndex;  // ← ここで保持（latestRowIndex は不要）
     
