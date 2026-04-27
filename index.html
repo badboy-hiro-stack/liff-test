@@ -1758,7 +1758,10 @@
         alert("日付を入力してください");
         return;
       }
-    
+
+      // 終了日が空なら開始日と同じにする
+      const endDate = end || start;
+      
       // 遅刻・早退以外は time を空にする
       const sendTime = (type === "遅刻・早退") ? time : "";
     
