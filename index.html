@@ -1748,6 +1748,7 @@
 
     // 申請の送信
     async function submitApply() {
+      alert("submitApply が呼ばれた");
       const type = document.getElementById("applyType").value;
       const start = document.getElementById("applyStartDate").value;
       const end = document.getElementById("applyEndDate").value;
@@ -1794,6 +1795,7 @@
         console.error("submitApply エラー:", err);
         alert("通信エラーが発生しました");
       }
+      alert("submitApply の最後まで到達");
     }
 
     // 申請履歴の呼び出し
