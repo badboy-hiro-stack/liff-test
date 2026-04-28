@@ -573,4 +573,7 @@ input, textarea {
   gap: 6px;           /* ラジオと文字の間隔 */
   font-size: 36px;    /* スマホで見やすい */
   white-space: nowrap; /* 改行させない */
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
