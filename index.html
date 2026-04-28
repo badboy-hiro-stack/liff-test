@@ -327,6 +327,31 @@
     <button class="back-button" onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
   </div>
 
+  <div id="late-early-form">
+
+    <!-- 種別 -->
+    <label>● 種別</label>
+    <div>
+      <label><input type="radio" name="lateEarlyType" value="遅刻" checked> 遅刻</label>
+      <label><input type="radio" name="lateEarlyType" value="早退"> 早退</label>
+    </div>
+  
+    <!-- 勤務日 -->
+    <label>● 勤務日</label>
+    <input type="date" id="applyDate">
+  
+    <!-- 時刻（動的に切り替わる） -->
+    <div id="timeSection"></div>
+  
+    <!-- 理由 -->
+    <label>● 理由</label>
+    <textarea id="applyReason" placeholder="理由を入力してください"></textarea>
+  
+    <button onclick="submitApply()">申請を送信する</button>
+    <button onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
+  
+  </div>
+
   <!-- ▼ 申請履歴 -->
   <div id="screen-applyHistory" class="screen" style="display:none;">
     <h2>申請履歴</h2>
@@ -384,6 +409,36 @@
 </body>
 
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const radios = document.getElementsByName("lateEarlyType");
+      radios.forEach(r => r.addEventListener("change", updateTimeUI));
+    
+      updateTimeUI(); // 初期表示
+    });
+    
+    function updateTimeUI() {
+      const selected = document.querySelector("input[name='lateEarlyType']:checked").value;
+      const timeSection = document.getElementById("timeSection");
+    
+      if (selected === "遅刻") {
+        timeSection.innerHTML = `
+          <label>● 時刻</label>
+          正規の出勤時間：<br>
+          <input type="time" id="officialTime" value="09:00"><br><br>
+          実際の出勤時間：<br>
+          <input type="time" id="actualTime">
+        `;
+      } else {
+        timeSection.innerHTML = `
+          <label>● 時刻</label>
+          正規の退勤時間：<br>
+          <input type="time" id="officialTime" value="18:00"><br><br>
+          実際の退勤時間：<br>
+          <input type="time" id="actualTime">
+        `;
+      }
+    }
+    
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
     
@@ -1746,33 +1801,39 @@
       }
     }
 
-    // 申請の送信
+    // 遅刻・早退の申請送信
     async function submitApply() {
-      alert("submitApply が呼ばれた");
-      const type = document.getElementById("applyType").value;
-      const start = document.getElementById("applyStartDate").value;
-      const end = document.getElementById("applyEndDate").value;
-      const time = document.getElementById("applyTime").value;
+    
+      // ▼ 種別（遅刻 or 早退）
+      const type = document.querySelector("input[name='lateEarlyType']:checked").value;
+    
+      // ▼ 勤務日
+      const date = document.getElementById("applyDate").value;
+    
+      // ▼ 時刻（正規・実際）
+      const official = document.getElementById("officialTime").value;
+      const actual   = document.getElementById("actualTime").value;
+    
+      // ▼ 理由
       const reason = document.getElementById("applyReason").value;
     
-      if (!start) {
-        alert("開始日を入力してください");
+      if (!date) {
+        alert("勤務日を入力してください");
         return;
       }
-
-      // 終了日が空なら開始日と同じにする
-      const endDate = end || start;
-      
-      // 遅刻・早退以外は time を空にする
-      const sendTime = (type === "遅刻・早退") ? time : "";
+    
+      if (!actual) {
+        alert("実際の時刻を入力してください");
+        return;
+      }
     
       const params = new URLSearchParams();
       params.append("action", "submitApply");
       params.append("lineId", userId);
-      params.append("type", type);
-      params.append("start", start);
-      params.append("end", endDate);
-      params.append("time", sendTime);
+      params.append("type", type);        // 遅刻 or 早退
+      params.append("date", date);        // 勤務日
+      params.append("official", official); // 正規の時刻
+      params.append("actual", actual);     // 実際の時刻
       params.append("reason", reason);
     
       try {
@@ -1795,7 +1856,6 @@
         console.error("submitApply エラー:", err);
         alert("通信エラーが発生しました");
       }
-      alert("submitApply の最後まで到達");
     }
 
     // 申請履歴の呼び出し
