@@ -282,73 +282,53 @@
   <!-- ▼ 申請メニュー -->
   <div id="screen-applyMenu" class="screen" style="display:none;">
     <h2 class="title">勤怠・休暇管理</h2>
-
+  
     <div class="menu-container">
       <button class="menu-btn worker" onclick="openApplyForm('有給休暇')">有給休暇の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('代休')">代休の申請</button>
       <button class="menu-btn worker" onclick="openApplyForm('欠勤')">欠勤の申請</button>
-      <button class="menu-btn worker" onclick="openApplyForm('遅刻・早退')">遅刻・早退の申請</button>
+  
+      <!-- ★ 遅刻・早退は専用画面へ遷移 -->
+      <button class="menu-btn worker" onclick="showLateEarlyForm()">遅刻・早退の申請</button>
+  
       <button class="menu-btn worker" onclick="openApplyForm('その他')">その他の申請</button>
       <button class="menu-btn worker" onclick="openApplyHistory()">自分の申請履歴</button>
       <button class="back-button" id="btnBack" onclick="goBackFromApplyMenu()">← 戻る</button>
     </div>
   </div>
-
-  <!-- ▼ 申請フォーム -->
+  
+  <!-- ▼ 通常の申請フォーム -->
   <div id="screen-applyForm" class="screen" style="display:none; padding:20px;">
-    <h2 id="applyFormTitle" class="title">申請フォーム</h2>
-
+    …（既存のまま）…
+  </div>
+  
+  <!-- ▼ 遅刻・早退専用フォーム（★新しい screen） -->
+  <div id="screen-lateEarly" class="screen" style="display:none; padding:20px;">
+  
+    <h2 class="title">遅刻・早退の申請</h2>
+  
     <div class="form-group">
-      <label>申請種別</label>
-      <input id="applyType" type="text" readonly>
+      <label>● 種別</label>
+      <div>
+        <label><input type="radio" name="lateEarlyType" value="遅刻" checked> 遅刻</label>
+        <label><input type="radio" name="lateEarlyType" value="早退"> 早退</label>
+      </div>
     </div>
-
+  
     <div class="form-group">
-      <label>開始日</label>
-      <input id="applyStartDate" type="date">
+      <label>● 勤務日</label>
+      <input type="date" id="applyDate">
     </div>
-    
+  
+    <div class="form-group" id="timeSection"></div>
+  
     <div class="form-group">
-      <label>終了日</label>
-      <input id="applyEndDate" type="date">
+      <label>● 理由</label>
+      <textarea id="applyReason" placeholder="理由を入力してください"></textarea>
     </div>
-    
-    <div class="form-group" id="timeGroup" style="display:none;">
-      <label>時間（遅刻・早退の場合）</label>
-      <input id="applyTime" type="time">
-    </div>
-
-    <div class="form-group">
-      <label>理由</label>
-      <textarea id="applyReason" rows="4" placeholder="理由を入力してください"></textarea>
-    </div>
-
+  
     <button class="submit-btn" onclick="submitApply()">申請を送信する</button>
     <button class="back-button" onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
-  </div>
-
-  <div id="late-early-form">
-
-    <!-- 種別 -->
-    <label>● 種別</label>
-    <div>
-      <label><input type="radio" name="lateEarlyType" value="遅刻" checked> 遅刻</label>
-      <label><input type="radio" name="lateEarlyType" value="早退"> 早退</label>
-    </div>
-  
-    <!-- 勤務日 -->
-    <label>● 勤務日</label>
-    <input type="date" id="applyDate">
-  
-    <!-- 時刻（動的に切り替わる） -->
-    <div id="timeSection"></div>
-  
-    <!-- 理由 -->
-    <label>● 理由</label>
-    <textarea id="applyReason" placeholder="理由を入力してください"></textarea>
-  
-    <button onclick="submitApply()">申請を送信する</button>
-    <button onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
   
   </div>
 
@@ -415,6 +395,11 @@
     
       updateTimeUI(); // 初期表示
     });
+
+    function showLateEarlyForm() {
+      showScreen("screen-lateEarly");
+      updateTimeUI(); // ← このタイミングで時刻欄を描画
+    }
     
     function updateTimeUI() {
       const selected = document.querySelector("input[name='lateEarlyType']:checked").value;
