@@ -1883,7 +1883,7 @@
         box.innerHTML = list.map(item => `
           <div class="apply-card">
             <div><strong>${item.type}</strong></div>
-            <div>期間：${item.start} 〜 ${item.end}</div>
+            <div>期間：${formatDate(item.start)} 〜 ${formatDate(item.end)}</div>
             ${item.time ? `<div>時間：${item.time}</div>` : ""}
             <div>理由：${item.reason}</div>
             <div>申請日時：${formatDateTime(item.applyAt)}</div>
