@@ -1040,11 +1040,14 @@
     let lastScreen = "";
     let adminName = "";
     let entryScreen = "";
+    // ★ 追加
+    let cachedStatus = null;
+    let cachedIsAdmin = null;
     
     // ▼ LIFF 初期化
     async function init() {
       await initLiff();
-      handleScreenParam();
+      // handleScreenParam();
       await ensureLogin();
       await loadProfile();
       await loadEmployeeInfo();
@@ -1053,6 +1056,58 @@
       applyAdminUI();
       await loadInitialStatus();
       setupEventHandlers();
+      handleScreenParam();
+      // preloadUserData();
+    }
+
+    async function preloadUserData() {
+      // 1. 管理者判定をキャッシュ
+      await checkAdminStatus();
+      cachedIsAdmin = isAdminUser;
+    
+      // 2. 勤務ステータスをキャッシュ
+      const status = await getStatusOnly(userId); // ← loadCurrentStatus の UI 更新なし版
+      cachedStatus = status;
+    }
+
+    // UI を更新しないステータス取得関数
+    async function getStatusOnly(lineId) {
+      const params = new URLSearchParams();
+      params.append("type", "status");
+      params.append("lineId", lineId);
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+    
+      const json = await res.json();
+      return json.status; // "work" / "break" / "finished" / null
+    }
+
+    function openWorkerMenu() {
+      showScreen("screen-workerMenu");
+    
+      // ステータス即表示
+      const statusBox = document.getElementById("status");
+      if (cachedStatus === "work") {
+        statusBox.innerText = "勤務中";
+        statusBox.style.color = "green";
+      } else if (cachedStatus === "break") {
+        statusBox.innerText = "休憩中";
+        statusBox.style.color = "orange";
+      } else if (cachedStatus === "finished") {
+        statusBox.innerText = "退勤済み";
+        statusBox.style.color = "gray";
+      } else {
+        statusBox.innerText = "未出勤";
+        statusBox.style.color = "red";
+      }
+      
+      // 管理者メニュー即表示
+      document.getElementById("btnAdminMenu").style.display =
+        cachedIsAdmin ? "block" : "none";
     }
 
     // LIFF 初期化関数
