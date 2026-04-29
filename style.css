@@ -597,6 +597,7 @@ input, textarea {
   color: white;
   padding: 8px 12px;
   border-radius: 6px;
+  font-size: 36px;
   border: none;
 }
 
@@ -605,5 +606,6 @@ input, textarea {
   color: white;
   padding: 8px 12px;
   border-radius: 6px;
+  font-size: 36px;
   border: none;
 }
