@@ -602,6 +602,11 @@ input, textarea {
   border: none;
 }
 
+.approve-btn:active {
+  transform: scale(0.95);
+  background: #0033ff;
+}
+
 .reject-btn {
   background: #dc3545;
   color: white;
@@ -609,4 +614,9 @@ input, textarea {
   border-radius: 6px;
   font-size: 36px;
   border: none;
+}
+
+.reject-btn:active {
+  transform: scale(0.95);
+  background: #91010f;
 }
