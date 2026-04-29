@@ -590,6 +590,7 @@ input, textarea {
   margin-top: 10px;
   display: flex;
   gap: 10px;
+  font-size: 36px;
 }
 
 .approve-btn {
