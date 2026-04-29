@@ -1128,11 +1128,11 @@
       const screen = params.get("screen");
     
       if (screen === "register") {
-        showScreen("screen-register");
+        checkAccessAndOpen("screen-register");
       } else if (screen === "driver") {
-        showScreen("screen-driverMenu");
+        checkAccessAndOpen("screen-driverMenu");
       } else if (screen === "worker") {
-        showScreen("screen-workerMenu");
+        checkAccessAndOpen("screen-workerMenu");
       } else {
         showScreen("screen-mainMenu"); // デフォルト
       }
@@ -1176,6 +1176,45 @@
           btn.style.display = "block";
         });
       }
+    }
+
+    function checkAccessAndOpen(screenName) {
+
+      // ★ 管理者はすべての制限を無効化
+      if (isAdminUser === true) {
+        showScreen(screenName);
+        return;
+      }
+    
+      // ケース1：従業員登録が未登録
+      if (!userDept || userDept === "") {
+        showCustomAlert("従業員登録が完了していません。従業員登録に移動します。");
+        setTimeout(() => {
+          showScreen("screen-register");
+        }, 3000);
+        return;
+      }
+    
+      // ケース2：運転手 → 作業員Menu を開いた
+      if (userDept === "運転手" && screenName === "screen-workerMenu") {
+        showCustomAlert("部署が違います。運転手Menuに移動します。");
+        setTimeout(() => {
+          showScreen("screen-driverMenu");
+        }, 3000);
+        return;
+      }
+    
+      // ケース3：作業員 → 運転手Menu を開いた
+      if (userDept === "作業員" && screenName === "screen-driverMenu") {
+        showCustomAlert("部署が違います。作業員Menuに移動します。");
+        setTimeout(() => {
+          showScreen("screen-workerMenu");
+        }, 3000);
+        return;
+      }
+    
+      // OK → 表示
+      showScreen(screenName);
     }
 
     // UI 初期化
