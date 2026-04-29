@@ -18,6 +18,7 @@
     <h2>管理者Menu</h2>
   
     <button class="btnadmin" onclick="openStatusList()">ステータス一覧</button>
+    <button class="btnadmin" onclick="openApproveList()">承認待ち一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showEmployeeEditScreen()">従業員情報編集</button>
     
@@ -371,6 +372,16 @@
     <button class="back-button" onclick="showScreen('screen-applyMenu')">← 申請メニューに戻る</button>
   </div>
 
+  <!-- ▼ 承認待ち一覧画面 -->
+  <div id="screen-approveList" class="screen" style="display:none; padding:20px;">
+  
+    <h2 class="title">承認待ち申請</h2>
+  
+    <div id="approveListContainer"></div>
+  
+    <button class="back-button" onclick="showScreen('screen-adminMenu')">← 管理者メニューに戻る</button>
+  </div>
+
   <!-- ▼ 運転手Menu -->
   <div id="screen-driverMenu" class="screen" style="display:none;">
     <h2 class="title">運転手Menu</h2>
@@ -417,6 +428,7 @@
 </body>
 
   <script>
+    
     document.addEventListener("DOMContentLoaded", () => {
       const radios = document.getElementsByName("lateEarlyType");
       radios.forEach(r => r.addEventListener("change", updateTimeUI));
@@ -437,7 +449,7 @@
         timeSection.innerHTML = `
           <label>● 時刻</label>
           正規の出勤時間：<br>
-          <input type="time" id="officialTime" value="09:00"><br><br>
+          <input type="time" id="officialTime"><br><br>
           実際の出勤時間：<br>
           <input type="time" id="actualTime">
         `;
@@ -445,7 +457,7 @@
         timeSection.innerHTML = `
           <label>● 時刻</label>
           正規の退勤時間：<br>
-          <input type="time" id="officialTime" value="18:00"><br><br>
+          <input type="time" id="officialTime"><br><br>
           実際の退勤時間：<br>
           <input type="time" id="actualTime">
         `;
@@ -532,6 +544,95 @@
     
       } catch (err) {
         alert("fetch エラー: " + err);
+      }
+    }
+
+    // 承認待ち一覧を表示
+    async function openApproveList() {
+      showScreen("screen-approveList");
+    
+      const params = new URLSearchParams();
+      params.append("action", "getPendingApplies");
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+    
+      const json = await res.json();
+      const list = json.list || [];
+    
+      const container = document.getElementById("approveListContainer");
+      container.innerHTML = "";
+    
+      if (list.length === 0) {
+        container.innerHTML = "<p>承認待ちの申請はありません。</p>";
+        return;
+      }
+    
+      list.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "apply-card";
+    
+        card.innerHTML = `
+          <div><strong>${item.name}</strong>（${item.dept}）</div>
+          <div>種別：${item.type}</div>
+          <div>期間：${formatDate(item.start)} 〜 ${formatDate(item.end)}</div>
+          ${item.time ? `<div>時刻：${item.time}</div>` : ""}
+          <div>理由：${item.reason}</div>
+    
+          <div class="approve-buttons">
+            <button class="approve-btn" onclick="approveApply(${item.id})">承認</button>
+            <button class="reject-btn" onclick="rejectApply(${item.id})">却下</button>
+          </div>
+        `;
+    
+        container.appendChild(card);
+      });
+    }
+
+    // 承認ボタンの処理
+    async function approveApply(id) {
+      const params = new URLSearchParams();
+      params.append("action", "approveApply");
+      params.append("id", id);
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+    
+      const json = await res.json();
+    
+      if (json.result === "success") {
+        alert("承認しました");
+        openApproveList(); // 再読み込み
+      }
+    }
+
+    // 却下ボタンの処理
+    async function rejectApply(id) {
+      const comment = prompt("却下理由を入力してください：");
+      if (!comment) return;
+    
+      const params = new URLSearchParams();
+      params.append("action", "rejectApply");
+      params.append("id", id);
+      params.append("comment", comment);
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+    
+      const json = await res.json();
+    
+      if (json.result === "success") {
+        alert("却下しました");
+        openApproveList(); // 再読み込み
       }
     }
 
