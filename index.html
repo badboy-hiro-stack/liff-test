@@ -431,6 +431,13 @@
     <button class="back-button" onclick="showScreen('screen-adminMenu')">← 管理者Menuに戻る</button>
   </div>
 
+  // 画面表示制限
+  <div id="customAlert" class="custom-alert">
+    <div class="custom-alert-content">
+      <p id="customAlertMessage"></p>
+    </div>
+  </div>
+
 </body>
 
   <script>
@@ -1176,6 +1183,19 @@
           btn.style.display = "block";
         });
       }
+    }
+
+    function showCustomAlert(message) {
+      const alertBox = document.getElementById("customAlert");
+      const msg = document.getElementById("customAlertMessage");
+    
+      msg.innerText = message;
+      alertBox.style.display = "flex";
+    
+      // 3秒後に自動で閉じる
+      setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 3000);
     }
 
     function checkAccessAndOpen(screenName) {
