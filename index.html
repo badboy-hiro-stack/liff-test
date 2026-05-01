@@ -412,18 +412,6 @@
     <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
   </div>
 
-  <div id="screen-driverReport" class="screen" style="display:none;">
-    <h2>作業日報</h2>
-    <p>作成中または準備中です。</p>
-    <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
-  </div>
-
-  <div id="screen-driverCheck" class="screen" style="display:none;">
-    <h2>車両点検票</h2>
-    <p>作成中または準備中です。</p>
-    <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
-  </div>
-
   <!-- 運行日報画面 -->
   <div id="screen-driverReport" class="screen" style="display:none;">
   
@@ -476,6 +464,12 @@
   
       <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
   
+  </div>
+
+  <div id="screen-driverCheck" class="screen" style="display:none;">
+    <h2>車両点検票</h2>
+    <p>作成中または準備中です。</p>
+    <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
   </div>
 
   // 積み込みイベント
