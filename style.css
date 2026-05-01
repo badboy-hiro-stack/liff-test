@@ -664,3 +664,19 @@ input, textarea {
   0% { transform: scale(0.8); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+.card h3 {
+    margin-top: 0;
+    border-left: 4px solid #4CAF50;
+    padding-left: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 5px 0;
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
