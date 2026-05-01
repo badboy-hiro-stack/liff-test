@@ -427,7 +427,7 @@
           <label>出庫時刻</label>
           <input type="text" id="startTime" readonly placeholder="自動取得"><br>
   
-          <button onclick="setStartTime()">出庫時刻を記録</button>
+          <button class="time-btn" onclick="setStartTime()">出庫時刻を記録</button>
   
           <label>備考</label>
           <textarea id="startNote" placeholder="任意入力"></textarea>
@@ -451,7 +451,7 @@
           <h3>④ 入庫</h3>
   
           <label>入庫メーター</label>
-          <input type="number" id="endMeter" placeholder="例：436900">
+          <input type="number" id="endMeter" placeholder="例：436900"><br>
   
           <label>入庫時刻</label>
           <input type="text" id="endTime" readonly placeholder="自動取得">
@@ -478,17 +478,17 @@
       <h3>② 積み込み</h3>
   
       <label>積み地（GPS自動）</label>
-      <input type="text" class="loadingPlace" readonly placeholder="自動取得">
+      <input type="text" class="loadingPlace" readonly placeholder="自動取得"><br>
   
       <label>出庫メーター</label>
-      <input type="number" class="loadingMeter" placeholder="例：436600">
+      <input type="number" class="loadingMeter" placeholder="例：436600"><br>
   
       <label>出庫時刻</label>
       <input type="text" class="loadingTime" readonly placeholder="自動取得">
-      <button onclick="setLoadingTime(this)">積み込み時刻を記録</button>
+      <button class="time-btn" onclick="setLoadingTime(this)">積み込み時刻を記録</button>
   
       <label>数量</label>
-      <input type="number" class="loadingQty" placeholder="例：18">
+      <input type="number" class="loadingQty" placeholder="例：18"><br>
   
       <label>単位</label>
       <select class="loadingUnit">
@@ -498,7 +498,7 @@
       </select>
   
       <label>店名</label>
-      <input type="text" class="loadingStore" placeholder="例：平成店">
+      <input type="text" class="loadingStore" placeholder="例：平成店"><br>
   
       <label>備考</label>
       <textarea class="loadingNote" placeholder="任意入力"></textarea>
@@ -513,17 +513,17 @@
       <h3>③ 降ろし</h3>
   
       <label>降ろし地（GPS自動）</label>
-      <input type="text" class="unloadingPlace" readonly placeholder="自動取得">
+      <input type="text" class="unloadingPlace" readonly placeholder="自動取得"><br>
   
       <label>入庫メーター</label>
-      <input type="number" class="unloadingMeter" placeholder="例：436700">
+      <input type="number" class="unloadingMeter" placeholder="例：436700><br>
   
       <label>入庫時刻</label>
       <input type="text" class="unloadingTime" readonly placeholder="自動取得">
-      <button onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
+      <button class="time-btn" onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
   
       <label>数量</label>
-      <input type="number" class="unloadingQty" placeholder="例：6">
+      <input type="number" class="unloadingQty" placeholder="例：6"><br>
   
       <label>単位</label>
       <select class="unloadingUnit">
