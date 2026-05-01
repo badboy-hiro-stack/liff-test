@@ -424,6 +424,123 @@
     <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
   </div>
 
+  <!-- 運行日報画面 -->
+  <div id="screen-driverReport" class="screen" style="display:none;">
+  
+      <h2>運行日報</h2>
+  
+      <!-- 出庫イベント -->
+      <div class="card">
+          <h3>① 出庫</h3>
+  
+          <label>出庫メーター</label>
+          <input type="number" id="startMeter" placeholder="例：436613">
+  
+          <label>出庫時刻</label>
+          <input type="text" id="startTime" readonly placeholder="自動取得">
+  
+          <button onclick="setStartTime()">出庫時刻を記録</button>
+  
+          <label>備考</label>
+          <textarea id="startNote" placeholder="任意入力"></textarea>
+      </div>
+  
+  
+      <!-- 積み込みイベント一覧 -->
+      <div id="loadingEvents"></div>
+  
+      <button onclick="addLoadingEvent()">＋ 積み込みイベントを追加</button>
+  
+  
+      <!-- 降ろしイベント一覧 -->
+      <div id="unloadingEvents"></div>
+  
+      <button onclick="addUnloadingEvent()">＋ 降ろしイベントを追加</button>
+  
+  
+      <!-- 入庫イベント -->
+      <div class="card">
+          <h3>④ 入庫</h3>
+  
+          <label>入庫メーター</label>
+          <input type="number" id="endMeter" placeholder="例：436900">
+  
+          <label>入庫時刻</label>
+          <input type="text" id="endTime" readonly placeholder="自動取得">
+  
+          <button onclick="setEndTime()">入庫時刻を記録</button>
+  
+          <label>備考</label>
+          <textarea id="endNote" placeholder="任意入力"></textarea>
+      </div>
+  
+      <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
+  
+  </div>
+
+  // 積み込みイベント
+  <div class="card loading-event">
+    <h3>② 積み込み</h3>
+
+    <label>積み地（GPS自動）</label>
+    <input type="text" class="loadingPlace" readonly placeholder="自動取得">
+
+    <label>出庫メーター</label>
+    <input type="number" class="loadingMeter" placeholder="例：436600">
+
+    <label>出庫時刻</label>
+    <input type="text" class="loadingTime" readonly placeholder="自動取得">
+    <button onclick="setLoadingTime(this)">積み込み時刻を記録</button>
+
+    <label>数量</label>
+    <input type="number" class="loadingQty" placeholder="例：18">
+
+    <label>単位</label>
+    <select class="loadingUnit">
+        <option value="P">P（パレット）</option>
+        <option value="台">台（台車）</option>
+        <option value="C">C（カート）</option>
+    </select>
+
+    <label>店名</label>
+    <input type="text" class="loadingStore" placeholder="例：平成店">
+
+    <label>備考</label>
+    <textarea class="loadingNote" placeholder="任意入力"></textarea>
+
+    <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
+  </div>
+
+  // 降ろしイベント
+  <div class="card unloading-event">
+    <h3>③ 降ろし</h3>
+
+    <label>降ろし地（GPS自動）</label>
+    <input type="text" class="unloadingPlace" readonly placeholder="自動取得">
+
+    <label>入庫メーター</label>
+    <input type="number" class="unloadingMeter" placeholder="例：436700">
+
+    <label>入庫時刻</label>
+    <input type="text" class="unloadingTime" readonly placeholder="自動取得">
+    <button onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
+
+    <label>数量</label>
+    <input type="number" class="unloadingQty" placeholder="例：6">
+
+    <label>単位</label>
+    <select class="unloadingUnit">
+        <option value="P">P（パレット）</option>
+        <option value="台">台（台車）</option>
+        <option value="C">C（カート）</option>
+    </select>
+
+    <label>備考</label>
+    <textarea class="unloadingNote" placeholder="任意入力"></textarea>
+
+    <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
+  </div>
+  
   <!-- ▼ 管理者承認画面 -->
   <div id="screen-adminApproval" class="screen" style="display:none; padding:20px;">
     <h2 class="title">申請承認（管理者）</h2>
