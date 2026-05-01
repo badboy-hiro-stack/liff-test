@@ -472,68 +472,72 @@
     <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
   </div>
 
-  <!-- 積み込みイベント -->
-  <div class="card loading-event">
-    <h3>② 積み込み</h3>
-
-    <label>積み地（GPS自動）</label>
-    <input type="text" class="loadingPlace" readonly placeholder="自動取得">
-
-    <label>出庫メーター</label>
-    <input type="number" class="loadingMeter" placeholder="例：436600">
-
-    <label>出庫時刻</label>
-    <input type="text" class="loadingTime" readonly placeholder="自動取得">
-    <button onclick="setLoadingTime(this)">積み込み時刻を記録</button>
-
-    <label>数量</label>
-    <input type="number" class="loadingQty" placeholder="例：18">
-
-    <label>単位</label>
-    <select class="loadingUnit">
-        <option value="P">P（パレット）</option>
-        <option value="台">台（台車）</option>
-        <option value="C">C（カート）</option>
-    </select>
-
-    <label>店名</label>
-    <input type="text" class="loadingStore" placeholder="例：平成店">
-
-    <label>備考</label>
-    <textarea class="loadingNote" placeholder="任意入力"></textarea>
-
-    <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
-  </div>
-
-  <!-- 降ろしイベント -->
-  <div class="card unloading-event">
-    <h3>③ 降ろし</h3>
-
-    <label>降ろし地（GPS自動）</label>
-    <input type="text" class="unloadingPlace" readonly placeholder="自動取得">
-
-    <label>入庫メーター</label>
-    <input type="number" class="unloadingMeter" placeholder="例：436700">
-
-    <label>入庫時刻</label>
-    <input type="text" class="unloadingTime" readonly placeholder="自動取得">
-    <button onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
-
-    <label>数量</label>
-    <input type="number" class="unloadingQty" placeholder="例：6">
-
-    <label>単位</label>
-    <select class="unloadingUnit">
-        <option value="P">P（パレット）</option>
-        <option value="台">台（台車）</option>
-        <option value="C">C（カート）</option>
-    </select>
-
-    <label>備考</label>
-    <textarea class="unloadingNote" placeholder="任意入力"></textarea>
-
-    <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
-  </div>
+  <!-- 積み込みイベントテンプレート -->
+  <template id="loadingEventTemplate">
+    <div class="card loading-event">
+      <h3>② 積み込み</h3>
+  
+      <label>積み地（GPS自動）</label>
+      <input type="text" class="loadingPlace" readonly placeholder="自動取得">
+  
+      <label>出庫メーター</label>
+      <input type="number" class="loadingMeter" placeholder="例：436600">
+  
+      <label>出庫時刻</label>
+      <input type="text" class="loadingTime" readonly placeholder="自動取得">
+      <button onclick="setLoadingTime(this)">積み込み時刻を記録</button>
+  
+      <label>数量</label>
+      <input type="number" class="loadingQty" placeholder="例：18">
+  
+      <label>単位</label>
+      <select class="loadingUnit">
+          <option value="P">P（パレット）</option>
+          <option value="台">台（台車）</option>
+          <option value="C">C（カート）</option>
+      </select>
+  
+      <label>店名</label>
+      <input type="text" class="loadingStore" placeholder="例：平成店">
+  
+      <label>備考</label>
+      <textarea class="loadingNote" placeholder="任意入力"></textarea>
+  
+      <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
+    </div>
+  </template>
+  
+  <!-- 降ろしイベントテンプレート -->
+  <template id="unloadingEventTemplate">
+    <div class="card unloading-event">
+      <h3>③ 降ろし</h3>
+  
+      <label>降ろし地（GPS自動）</label>
+      <input type="text" class="unloadingPlace" readonly placeholder="自動取得">
+  
+      <label>入庫メーター</label>
+      <input type="number" class="unloadingMeter" placeholder="例：436700">
+  
+      <label>入庫時刻</label>
+      <input type="text" class="unloadingTime" readonly placeholder="自動取得">
+      <button onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
+  
+      <label>数量</label>
+      <input type="number" class="unloadingQty" placeholder="例：6">
+  
+      <label>単位</label>
+      <select class="unloadingUnit">
+          <option value="P">P（パレット）</option>
+          <option value="台">台（台車）</option>
+          <option value="C">C（カート）</option>
+      </select>
+  
+      <label>備考</label>
+      <textarea class="unloadingNote" placeholder="任意入力"></textarea>
+  
+      <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
+    </div>
+  </template>
   
   <!-- ▼ 管理者承認画面 -->
   <div id="screen-adminApproval" class="screen" style="display:none; padding:20px;">
@@ -552,7 +556,51 @@
 </body>
 
   <script>
+    // 出庫時刻
+    function setStartTime() {
+        document.getElementById("startTime").value = getNowTime();
+    }
     
+    // 入庫時刻
+    function setEndTime() {
+        document.getElementById("endTime").value = getNowTime();
+    }
+    
+    // 積み込み時刻
+    function setLoadingTime(btn) {
+        btn.parentElement.querySelector(".loadingTime").value = getNowTime();
+    }
+    
+    // 降ろし時刻
+    function setUnloadingTime(btn) {
+        btn.parentElement.querySelector(".unloadingTime").value = getNowTime();
+    }
+    
+    // 現在時刻（HH:MM）
+    function getNowTime() {
+        const d = new Date();
+        return d.toTimeString().slice(0,5);
+    }
+    
+    // 積み込みイベント追加
+    function addLoadingEvent() {
+        const template = document.getElementById("loadingEventTemplate");
+        const clone = template.content.cloneNode(true);
+        document.getElementById("loadingEvents").appendChild(clone);
+    }
+    
+    // 降ろしイベント追加
+    function addUnloadingEvent() {
+        const template = document.getElementById("unloadingEventTemplate");
+        const clone = template.content.cloneNode(true);
+        document.getElementById("unloadingEvents").appendChild(clone);
+    }
+    
+    // イベント削除
+    function deleteEvent(btn) {
+        btn.parentElement.remove();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       const radios = document.getElementsByName("lateEarlyType");
       radios.forEach(r => r.addEventListener("change", updateTimeUI));
