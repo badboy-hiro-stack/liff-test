@@ -667,7 +667,7 @@ input, textarea {
 
 label {
     display: block;
-    text-align: left;
+    /* text-align: left; */
     font-weight: bold; /* 任意：見やすくなる */
 }
 
