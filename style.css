@@ -687,7 +687,7 @@ input, textarea {
   font-size: 36px;
   border-radius: 14px;
   border: none;
-  background: #4e60cc;
+  background: #8fc31f;
   color: white;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   transition: 0.15s ease;
@@ -695,7 +695,7 @@ input, textarea {
 
 .events-btn:active {
   transform: scale(0.95);
-  background: #2860cc;
+  background: #638c0b;
 }
 
 .events1-btn {
@@ -706,7 +706,7 @@ input, textarea {
   font-size: 36px;
   border-radius: 14px;
   border: none;
-  background: #50cc92;
+  background: #8fc31f;
   color: white;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   transition: 0.15s ease;
@@ -714,8 +714,9 @@ input, textarea {
 
 .events1-btn:active {
   transform: scale(0.95);
-  background: #28cc92;
+  background: #638c0b;
 }
+
 .delete-btn {
   margin: 0 auto;
   margin-top: 30px;
@@ -724,7 +725,7 @@ input, textarea {
   font-size: 36px;
   border-radius: 14px;
   border: none;
-  background: #f44336;
+  background: #009e96;
   color: white;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   transition: 0.15s ease;
@@ -732,5 +733,24 @@ input, textarea {
 
 .delete-btn:active {
   transform: scale(0.95);
-  background: #c90e00;
+  background: #00736d;
+}
+
+.time-btn {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
+  border: none;
+  background: #f39800;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
+}
+
+.time-btn:active {
+  transform: scale(0.95);
+  background: #ac6a00;
 }
