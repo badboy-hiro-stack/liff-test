@@ -665,18 +665,72 @@ input, textarea {
   100% { transform: scale(1); opacity: 1; }
 }
 
+/* .card {
+    background: #fff;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+} */
+
 .card h3 {
     margin-top: 0;
     border-left: 4px solid #4CAF50;
     padding-left: 8px;
 }
 
-button {
-    padding: 8px 12px;
-    margin: 5px 0;
+.events-btn {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
+  border: none;
+  background: #4e60cc;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
 }
 
+.events-btn:active {
+  transform: scale(0.95);
+  background: #2860cc;
+}
+
+.events1-btn {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
+  border: none;
+  background: #50cc92;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
+}
+
+.events1-btn:active {
+  transform: scale(0.95);
+  background: #28cc92;
+}
 .delete-btn {
-    background: #f44336;
-    color: white;
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 90%;
+  padding: 30px;
+  font-size: 36px;
+  border-radius: 14px;
+  border: none;
+  background: #f44336;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: 0.15s ease;
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
+  background: #c90e00;
 }
