@@ -427,7 +427,7 @@
           <label>出庫時刻</label>
           <input type="text" id="startTime" readonly placeholder="自動取得"><br>
   
-          <button class="time-btn" onclick="setStartTime()">出庫時刻を記録</button>
+          <button class="time-btn" onclick="setStartTime()">出庫時刻を記録</button><br>
   
           <label>備考</label>
           <textarea id="startNote" placeholder="任意入力"></textarea>
@@ -456,7 +456,7 @@
           <label>入庫時刻</label>
           <input type="text" id="endTime" readonly placeholder="自動取得">
   
-          <button onclick="setEndTime()">入庫時刻を記録</button>
+          <button class="time-btn" onclick="setEndTime()">入庫時刻を記録</button>
   
           <label>備考</label>
           <textarea id="endNote" placeholder="任意入力"></textarea>
@@ -485,7 +485,7 @@
   
       <label>出庫時刻</label>
       <input type="text" class="loadingTime" readonly placeholder="自動取得">
-      <button class="time-btn" onclick="setLoadingTime(this)">積み込み時刻を記録</button>
+      <button class="time-btn" onclick="setLoadingTime(this)">積み込み時刻を記録</button><br>
   
       <label>数量</label>
       <input type="number" class="loadingQty" placeholder="例：18"><br>
@@ -495,7 +495,7 @@
           <option value="P">P（パレット）</option>
           <option value="台">台（台車）</option>
           <option value="C">C（カート）</option>
-      </select>
+      </select><br>
   
       <label>店名</label>
       <input type="text" class="loadingStore" placeholder="例：平成店"><br>
@@ -516,11 +516,11 @@
       <input type="text" class="unloadingPlace" readonly placeholder="自動取得"><br>
   
       <label>入庫メーター</label>
-      <input type="number" class="unloadingMeter" placeholder="例：436700><br>
+      <input type="number" class="unloadingMeter" placeholder="例：436700"><br>
   
       <label>入庫時刻</label>
       <input type="text" class="unloadingTime" readonly placeholder="自動取得">
-      <button class="time-btn" onclick="setUnloadingTime(this)">降ろし時刻を記録</button>
+      <button class="time-btn" onclick="setUnloadingTime(this)">降ろし時刻を記録</button><br>
   
       <label>数量</label>
       <input type="number" class="unloadingQty" placeholder="例：6"><br>
@@ -530,7 +530,7 @@
           <option value="P">P（パレット）</option>
           <option value="台">台（台車）</option>
           <option value="C">C（カート）</option>
-      </select>
+      </select><br>
   
       <label>備考</label>
       <textarea class="unloadingNote" placeholder="任意入力"></textarea>
