@@ -651,6 +651,20 @@
         `;
       }
     }
+
+    function saveStartEvent() {
+      const payload = {
+        mode: "start",
+        driverName: driverName,   // ★ 正式な氏名
+        meter: document.getElementById("startMeter").value,
+        note: document.getElementById("startNote").value
+      };
+  
+      fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    }
     
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
@@ -1336,10 +1350,18 @@
       currentUserId = profile.userId;
     }
 
+    let driverName = "";
+    let userDept = "";
+    
     // 従業員情報取得
     async function loadEmployeeInfo() {
       const res = await fetch(`${gasUrl}?action=getEmployeeDetail&lineId=${userId}`);
       const emp = await res.json();
+      
+      // ★ 正式な氏名を作る
+      driverName = `${emp.lastName}${emp.firstName}`;
+    
+      // 部署
       userDept = emp.dept || "";
     }
 
