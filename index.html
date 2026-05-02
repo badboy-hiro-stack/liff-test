@@ -424,13 +424,10 @@
           <label>出庫メーター</label>
           <input type="number" id="startMeter" placeholder="例：436613"><br>
   
-          <label>出庫時刻</label>
-          <input type="text" id="startTime" readonly placeholder="自動取得"><br>
-  
-          <button class="time-btn" onclick="setStartTime()">出庫時刻を記録</button><br>
-  
           <label>備考</label>
-          <textarea id="startNote" placeholder="任意入力"></textarea>
+          <textarea id="startNote" placeholder="任意入力"></textarea><br>
+  
+          <button class="time-btn" onclick="saveStartEvent()">出庫時刻を記録して保存</button>
       </div>
   
   
@@ -453,25 +450,17 @@
           <label>入庫メーター</label>
           <input type="number" id="endMeter" placeholder="例：436900"><br>
   
-          <label>入庫時刻</label>
-          <input type="text" id="endTime" readonly placeholder="自動取得">
-  
-          <button class="time-btn" onclick="setEndTime()">入庫時刻を記録</button><br>
-  
           <label>備考</label>
-          <textarea id="endNote" placeholder="任意入力"></textarea>
+          <textarea id="endNote" placeholder="任意入力"></textarea><br>
+  
+          <button class="time-btn" onclick="saveEndEvent()">入庫時刻を記録して保存</button>
       </div>
   
       <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
   
   </div>
-
-  <div id="screen-driverCheck" class="screen" style="display:none;">
-    <h2>車両点検票</h2>
-    <p>作成中または準備中です。</p>
-    <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
-  </div>
-
+  
+  
   <!-- 積み込みイベントテンプレート -->
   <template id="loadingEventTemplate">
     <div class="card loading-event">
@@ -480,12 +469,13 @@
       <label>積み地（GPS自動）</label>
       <input type="text" class="loadingPlace" readonly placeholder="自動取得"><br>
   
-      <label>出庫メーター</label>
+      <label>荷積み時メーター</label>
       <input type="number" class="loadingMeter" placeholder="例：436600"><br>
   
-      <label>出庫時刻</label>
-      <input type="text" class="loadingTime" readonly placeholder="自動取得">
-      <button class="time-btn" onclick="setLoadingTime(this)">積み込み時刻を記録</button><br>
+      <label>荷積み開始時刻</label>
+      <input type="text" class="loadingStartTime" readonly placeholder="開始時刻"><br>
+  
+      <button class="time-btn" onclick="setLoadingStartTime(this)">開始時刻を記録</button><br>
   
       <label>数量</label>
       <input type="number" class="loadingQty" placeholder="例：18"><br>
@@ -498,10 +488,12 @@
       </select><br>
   
       <label>店名</label>
-      <input type="text" class="loadingStore" placeholder="例：平成店"><br>
+      <select class="loadingStore"></select><br>
   
       <label>備考</label>
-      <textarea class="loadingNote" placeholder="任意入力"></textarea>
+      <textarea class="loadingNote" placeholder="任意入力"></textarea><br>
+  
+      <button class="time-btn" onclick="saveLoadingEvent(this)">荷積み完了時刻を記録して保存</button>
   
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
@@ -513,31 +505,31 @@
       <h3>③ 荷降ろし</h3>
   
       <label>荷降ろし地（GPS自動）</label>
-      <input type="text" class="unloadingPlace" readonly placeholder="自動取得"><br>
-  
-      <label>入庫メーター</label>
-      <input type="number" class="unloadingMeter" placeholder="例：436700"><br>
-  
-      <label>入庫時刻</label>
-      <input type="text" class="unloadingTime" readonly placeholder="自動取得">
-      <button class="time-btn" onclick="setUnloadingTime(this)">荷降ろし時刻を記録</button><br>
+      <input type="text" class="unloadingPlace" readonly><br>
   
       <label>数量</label>
-      <input type="number" class="unloadingQty" placeholder="例：6"><br>
+      <input type="number" class="unloadingQty" readonly><br>
   
       <label>単位</label>
-      <select class="unloadingUnit">
-          <option value="P">P（パレット）</option>
-          <option value="台">台（台車）</option>
-          <option value="C">C（カート）</option>
-      </select><br>
+      <input type="text" class="unloadingUnit" readonly><br>
   
       <label>備考</label>
-      <textarea class="unloadingNote" placeholder="任意入力"></textarea>
+      <textarea class="unloadingNote" placeholder="任意入力"></textarea><br>
+  
+      <label>荷降ろし開始時刻</label>
+      <input type="text" class="unloadingStartTime" readonly><br>
+  
+      <button class="time-btn" onclick="saveUnloadingEvent(this)">荷降ろし完了時刻を記録して保存</button>
   
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
   </template>
+
+  <div id="screen-driverCheck" class="screen" style="display:none;">
+    <h2>車両点検票</h2>
+    <p>作成中または準備中です。</p>
+    <button class="back-button" onclick="showScreen('screen-driverMenu')">← 戻る</button>
+  </div>
   
   <!-- ▼ 管理者承認画面 -->
   <div id="screen-adminApproval" class="screen" style="display:none; padding:20px;">
@@ -556,6 +548,19 @@
 </body>
 
   <script>
+    function loadStoreMaster(selectElement) {
+      fetch(gasUrl + "?mode=getStoreMaster")
+        .then(r => r.json())
+        .then(list => {
+            list.forEach(name => {
+                const opt = document.createElement("option");
+                opt.value = name;
+                opt.textContent = name;
+                selectElement.appendChild(opt);
+            });
+        });
+    }
+
     // 出庫時刻
     function setStartTime() {
         document.getElementById("startTime").value = getNowTime();
@@ -586,6 +591,13 @@
     function addLoadingEvent() {
         const template = document.getElementById("loadingEventTemplate");
         const clone = template.content.cloneNode(true);
+
+        // ★ 店名プルダウンを読み込む
+        loadStoreMaster(card.querySelector(".loadingStore"));
+
+        // ★ 積み込み開始時刻を自動セット
+        card.querySelector(".loadingStartTime").value = getNowTime();
+      
         document.getElementById("loadingEvents").appendChild(clone);
     }
     
