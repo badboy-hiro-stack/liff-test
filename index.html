@@ -592,11 +592,14 @@
         const template = document.getElementById("loadingEventTemplate");
         const clone = template.content.cloneNode(true);
 
+        // ★ 追加されたカードを取得
+        const card = clone.querySelector(".loading-event");
+
         // ★ 店名プルダウンを読み込む
         loadStoreMaster(card.querySelector(".loadingStore"));
 
         // ★ 積み込み開始時刻を自動セット
-        // card.querySelector(".loadingStartTime").value = getNowTime();
+        card.querySelector(".loadingStartTime").value = getNowTime();
       
         document.getElementById("loadingEvents").appendChild(clone);
     }
