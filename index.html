@@ -651,24 +651,93 @@
         `;
       }
     }
-
-    function saveStartEvent() {
-      const payload = {
-        mode: "start",
-        driverName: driverName,   // ★ 正式な氏名
-        meter: document.getElementById("startMeter").value,
-        note: document.getElementById("startNote").value
-      };
-  
-      fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    }
     
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
+
+    // 出庫イベント送信
+    function saveStartEvent() {
+      const payload = {
+        mode: "start",
+        driverName: driverName,
+        time: document.getElementById("startTime").value,
+        meter: document.getElementById("startMeter").value,
+        note: document.getElementById("startNote").value
+      };
     
+      return fetch(gasUrl, {
+        method: "POST",
+        body: new URLSearchParams(payload)
+      });
+    }
+
+    // 積み込みイベント送信
+    function saveLoadingEvent() {
+      const payload = {
+        mode: "loading",
+        driverName: driverName,
+        time: document.getElementById("loadingTime").value,
+        store: document.getElementById("loadingStore").value,
+        meter: document.getElementById("loadingMeter").value,
+        qty: document.getElementById("loadingQty").value,
+        unit: document.getElementById("loadingUnit").value,
+        note: document.getElementById("loadingNote").value
+      };
+    
+      return fetch(gasUrl, {
+        method: "POST",
+        body: new URLSearchParams(payload)
+      });
+    }
+
+    // 荷卸しイベント送信
+    function saveUnloadingEvent() {
+      const payload = {
+        mode: "unloading",
+        driverName: driverName,
+        time: document.getElementById("unloadingTime").value,
+        store: document.getElementById("unloadingStore").value,
+        meter: document.getElementById("unloadingMeter").value,
+        qty: document.getElementById("unloadingQty").value,
+        unit: document.getElementById("unloadingUnit").value,
+        note: document.getElementById("unloadingNote").value
+      };
+    
+      return fetch(gasUrl, {
+        method: "POST",
+        body: new URLSearchParams(payload)
+      });
+    }
+
+    // 入庫イベント送信
+    function saveEndEvent() {
+      const payload = {
+        mode: "end",
+        driverName: driverName,
+        time: document.getElementById("endTime").value,
+        meter: document.getElementById("endMeter").value,
+        note: document.getElementById("endNote").value
+      };
+    
+      return fetch(gasUrl, {
+        method: "POST",
+        body: new URLSearchParams(payload)
+      });
+    }
+
+    // 運行日報を送信
+    function submitDriverReport() {
+      fetch(gasUrl, {
+        method: "POST",
+        body: new URLSearchParams({
+          mode: "aggregate",
+          driverName: driverName
+        })
+      });
+    
+      alert("運行日報を送信しました！");
+    }
+
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
       return new Promise((resolve, reject) => {
@@ -863,6 +932,72 @@
     
       // 申請フォーム画面へ切り替え
       showScreen("screen-applyForm");
+    }
+
+    function getOperationDate(timeString) {
+      // timeString は "HH:MM" を想定
+      const [hour, minute] = timeString.split(":").map(Number);
+    
+      const now = new Date();
+    
+      // 20:00〜23:59 は翌日扱い
+      if (hour >= 20) {
+        now.setDate(now.getDate() + 1);
+      }
+    
+      // YYYY-MM-DD 形式で返す
+      return now.toISOString().slice(0, 10);
+    }
+    
+    // すべてのイベントを送信
+    async function submitDriverReport() {
+      try {
+        // ▼ 運行日とドライバー名（あなたの変数名に合わせて変更）
+        const date = selectedDate;        // 例： "2026-05-03"
+        const driver = driverName;
+    
+        // ▼ イベント一覧（start / loading / unloading / end）
+        // 例： [{mode:"start", time:"09:00"}, {mode:"loading", store:"◯◯店", ...}, ...]
+        const events = driverEvents;      // ← あなたのイベント配列に合わせて変更
+    
+        // ▼ 1. イベントを1つずつ送信
+        for (const ev of events) {
+          const params = new URLSearchParams();
+    
+          params.append("mode", ev.mode);       // start / loading / unloading / end
+          params.append("date", date);
+          params.append("driverName", driver);
+    
+          // ▼ イベント内容をすべて送信（存在するものだけ）
+          for (const key in ev) {
+            if (key !== "mode") {
+              params.append(key, ev[key]);
+            }
+          }
+    
+          await fetch(gasUrl, {
+            method: "POST",
+            body: params
+          });
+        }
+    
+        // ▼ 2. 全イベント送信後に集計を実行
+        await fetch(gasUrl, {
+          method: "POST",
+          body: new URLSearchParams({
+            mode: "aggregate",
+            date: date,
+            driverName: driver
+          })
+        });
+    
+        // ▼ 3. 完了メッセージ
+        alert("運行日報を送信しました！");
+    
+      } catch (err) {
+        console.error(err);
+        alert("送信中にエラーが発生しました");
+      }
     }
 
     function showTaskScreen(tasks, rowIndex) {
