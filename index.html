@@ -657,6 +657,7 @@
 
     // 出庫イベント送信
     async function saveStartEvent() {
+      alert("saveStartEvent 発火");
       const payload = {
         mode: "start",
         driverName: driverName,
@@ -664,11 +665,12 @@
         meter: document.getElementById("startMeter").value,
         note: document.getElementById("startNote").value
       };
-    
+      alert("fetch 送信直前");
       await fetch(gasUrl, {
         method: "POST",
         body: new URLSearchParams(payload)
       });
+      alert("fetch 完了");
     }
 
     // 積み込みイベント送信
