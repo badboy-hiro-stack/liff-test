@@ -430,7 +430,10 @@
           <label>出庫時刻</label>
           <input type="time" id="startTime" placeholder="自動取得"><br>
   
-          <button class="time-btn" onclick="saveStartEvent()">出庫時刻を記録して保存</button>
+          <!-- <button class="time-btn" onclick="saveStartEvent()">出庫時刻を記録して保存</button> -->
+          <button class="time-btn" onclick="setNowToInput('startTime'); saveStartEvent();">
+            出庫時刻を記録して保存
+          </button>
       </div>
   
   
@@ -459,7 +462,10 @@
           <label>入庫時刻</label>
           <input type="time" id="endTime" placeholder="自動取得"><br>
   
-          <button class="time-btn" onclick="saveEndEvent()">入庫時刻を記録して保存</button>
+          <!-- <button class="time-btn" onclick="saveEndEvent()">入庫時刻を記録して保存</button> -->
+          <button class="time-btn" onclick="setNowToInput('endTime'); saveEndEvent();">
+            入庫時刻を記録して保存
+          </button>
       </div>
   
       <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
@@ -657,6 +663,13 @@
         `;
       }
     }
+
+    function setNowToInput(id) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      document.getElementById(id).value = `${hh}:${mm}`;
+    }
     
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
@@ -671,7 +684,8 @@
       const payload = {
         mode: "start",
         driverName: driverName,
-        time: timeString,  // ← これが getOperationDate に渡る
+        // time: timeString,  // ← これが getOperationDate に渡る
+        time: document.getElementById("startTime").value,
         meter: document.getElementById("startMeter").value,
         note: document.getElementById("startNote").value
       };
