@@ -657,25 +657,23 @@
 
     // 出庫イベント送信
     async function saveStartEvent() {
-      alert("saveStartEvent 発火");
-
-      alert("driverName=" + driverName);
-      alert("startTime=" + document.getElementById("startTime"));
-      alert("startTime.value=" + document.getElementById("startTime")?.value);
-      
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      const timeString = `${hh}:${mm}`;
+    
       const payload = {
         mode: "start",
         driverName: driverName,
-        time: document.getElementById("startTime").value,
+        time: timeString,  // ← これが getOperationDate に渡る
         meter: document.getElementById("startMeter").value,
         note: document.getElementById("startNote").value
       };
-      alert("fetch 送信直前");
+    
       await fetch(gasUrl, {
         method: "POST",
         body: new URLSearchParams(payload)
       });
-      alert("fetch 完了");
     }
 
     // 積み込みイベント送信
