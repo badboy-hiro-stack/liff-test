@@ -394,7 +394,7 @@
 
     <div class="menu-container">
       <button class="menu-btn driver" onclick="showScreen('screen-driverOperation')">運行関連</button>
-      <button class="menu-btn driver" onclick="showScreen('screen-driverReport')">作業日報</button>
+      <button class="menu-btn driver" onclick="showScreen('screen-driverReport')">運行日報</button>
       <button class="menu-btn driver" onclick="showScreen('screen-driverCheck')">車両点検票</button>
       <button class="menu-btn driver" onclick="showScreen('screen-applyMenu')">勤怠・休暇管理（申請）</button>
     </div>
@@ -761,6 +761,23 @@
       });
     
       alert("運行日報を送信しました！");
+    }
+
+    async function loadDailyReport() {
+      const opDate = document.getElementById("selectedDate").value;
+      const driverName = document.getElementById("driverName").value;
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          mode: "getEvents",
+          opDate: opDate,
+          driverName: driverName
+        })
+      });
+    
+      const events = await res.json();
+      renderDailyReport(events);  // ← ここで画面に反映
     }
 
     // ▼ 位置情報取得（permission API は一切使わない）
@@ -1348,7 +1365,12 @@
       if (id === "statusListScreen") {
         showStatusList(userId);
       }
-    
+
+      // 運行日報画面を開いた時だけデータを読み込む
+      if (id === "screen-driverReport") {
+        loadDailyReport();
+      }
+      
       // 従業員退職処理
       if (id === "screen-employeeRetire") {
         alert("Init employeeRetire");
