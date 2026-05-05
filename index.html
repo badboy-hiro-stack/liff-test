@@ -426,7 +426,10 @@
       <!-- 出庫イベント -->
       <div class="card start-event">
         <h3>① 出庫</h3>
-        
+
+        <label>車両番号（下4桁）</label>
+        <input type="number" id="carNumber" placeholder="例：1234" onblur="loadCarMeter()">
+
         <label>出庫メーター</label>
         <input type="number" id="startMeter" placeholder="例：436613"><br>
         
@@ -471,7 +474,10 @@
             入庫時刻を記録して保存
           </button>
       </div>
-  
+      <!-- hidden（loadDailyReport 用） -->
+      <input type="hidden" id="selectedDate">
+      <input type="hidden" id="driverName">
+      
       <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
   
   </div>
@@ -564,6 +570,7 @@
 </body>
 
   <script>
+    
     function loadStoreMaster(selectElement) {
       fetch(gasUrl + "?mode=getStoreMaster")
         .then(r => r.json())
@@ -677,12 +684,35 @@
     const liffId = "2009445215-yPBcEdg0";
     const gasUrl = "https://script.google.com/macros/s/AKfycbyBLKRlsLf909TbyXT8m5up65eLiWTxJLayBw21n_oOj9bUPaqwG5bte3YLG7m78uR_/exec";　
 
+    // 車両番号から最新メーターを自動取得
+    async function loadCarMeter() {
+      const carNumber = document.getElementById("carNumber").value;
+      if (!carNumber) return;
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          mode: "getCarMeter",
+          carNumber: carNumber
+        })
+      });
+    
+      const data = await res.json();
+    
+      if (data && data.meter) {
+        document.getElementById("startMeter").value = data.meter;
+      }
+    }
+
     // 出庫イベント送信
     async function saveStartEvent() {
     
       // 出庫時刻を取得
       const startTimeValue = document.getElementById("startTime").value;
-    
+
+      // 車両ナンバーを取得
+      const carNumber = document.getElementById("carNumber").value;
+      
       // ★ 運行日を計算（getOperationDate を使う）
       const opDate = getOperationDate(startTimeValue);
     
@@ -693,13 +723,15 @@
       document.getElementById("selectedDate").value = opDate;
     
       // ★ ドライバー名も hidden にセット
-      document.getElementById("driverName").value =
-        document.getElementById("reportDriverName").innerText;
+      const driver = document.getElementById("reportDriverName").innerText;
+      document.getElementById("driverName").value = driver;
     
       // ここから payload を作る
       const payload = {
         mode: "start",
-        driverName: document.getElementById("driverName").value,
+        opDate: opDate,
+        driverName: driver,
+        carNumber: carNumber,
         time: startTimeValue,
         meter: document.getElementById("startMeter").value,
         note: document.getElementById("startNote").value
@@ -711,6 +743,7 @@
       });
     
       alert("出庫イベントを保存しました！");
+      loadDailyReport();
     }
 
     // 積み込みイベント送信
@@ -753,11 +786,19 @@
 
     // 入庫イベント送信
     async function saveEndEvent() {
+      const endTimeValue = document.getElementById("endTime").value;
+      const carNumber = document.getElementById("carNumber").value;
+      const endMeter = document.getElementById("endMeter").value;
+      const opDate = document.getElementById("selectedDate").value;
+      const driver = document.getElementById("driverName").value;
+      
       const payload = {
         mode: "end",
-        driverName: driverName,
-        time: document.getElementById("endTime").value,
-        meter: document.getElementById("endMeter").value,
+        opDate: opDate,
+        driverName: driver,
+        carNumber: carNumber,
+        time: endTimeValue,
+        meter: endMeter,
         note: document.getElementById("endNote").value
       };
     
@@ -765,8 +806,20 @@
         method: "POST",
         body: new URLSearchParams(payload)
       });
+      alert("入庫イベントを保存しました！");
+      loadDailyReport();
     }
 
+    // 車両管理シートの走行距離を更新
+    await fetch(gasUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        mode: "updateCarMeter",
+        carNumber: carNumber,
+        meter: endMeter
+      })
+    });
+    
     // 運行日報を送信
     function submitDriverReport() {
       fetch(gasUrl, {
@@ -780,6 +833,7 @@
       alert("運行日報を送信しました！");
     }
 
+    // 日報読み込み
     async function loadDailyReport() {
       const opDate = document.getElementById("selectedDate").value;
       const driverName = document.getElementById("driverName").value;
@@ -1397,7 +1451,7 @@
     
         // loadDailyReport に渡すために hidden input もセットしておく
         document.getElementById("selectedDate").value = opDate;
-        document.getElementById("driverName").value = driverNameGlobal;
+        document.getElementById("driverName").value = driverName;
     
         loadDailyReport();
       }
