@@ -415,7 +415,7 @@
   <!-- 運行日報画面 -->
   <div id="screen-driverReport" class="screen" style="display:none;">
   
-      <h2>運行日報</h2>
+      <h2 id="reportTitle">運行日報</h2>
   
       <!-- 出庫イベント -->
       <div class="card start-event">
@@ -435,8 +435,6 @@
             出庫時刻を記録して保存
           </button>
       </div>
-
-    <div id="debugArea" style="font-size:14px;color:red;"></div>
   
       <!-- 積み込みイベント一覧 -->
       <div id="loadingEvents"></div>
@@ -768,9 +766,10 @@
       const opDate = document.getElementById("selectedDate").value;
       const driverName = document.getElementById("driverName").value;
 
-      document.getElementById("debugArea").innerText =
-  "opDate=" + document.getElementById("selectedDate")?.value +
-  " / driverName=" + document.getElementById("driverName")?.value;
+      document.getElementById("reportTitle").innerText =
+  "運行日報（" +
+  document.getElementById("selectedDate")?.value + " / " +
+  document.getElementById("driverName")?.value + "）";
     
       const res = await fetch(gasUrl, {
         method: "POST",
