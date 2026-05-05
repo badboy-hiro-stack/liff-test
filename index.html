@@ -435,7 +435,8 @@
             出庫時刻を記録して保存
           </button>
       </div>
-  
+
+    <div id="debugArea" style="font-size:14px;color:red;"></div>
   
       <!-- 積み込みイベント一覧 -->
       <div id="loadingEvents"></div>
@@ -766,6 +767,10 @@
     async function loadDailyReport() {
       const opDate = document.getElementById("selectedDate").value;
       const driverName = document.getElementById("driverName").value;
+
+      document.getElementById("debugArea").innerText =
+  "opDate=" + document.getElementById("selectedDate")?.value +
+  " / driverName=" + document.getElementById("driverName")?.value;
     
       const res = await fetch(gasUrl, {
         method: "POST",
