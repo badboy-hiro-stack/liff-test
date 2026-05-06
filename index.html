@@ -735,7 +735,7 @@
       loadDailyReport();
     }
 
-    // 積み込みイベント送信
+    /* // 積み込みイベント送信
     async function saveLoadingEvent() {
       const payload = {
         mode: "loading",
@@ -751,6 +751,42 @@
       await fetch(gasUrl, {
         method: "POST",
         body: new URLSearchParams(payload)
+      });
+    } */
+    // 積み込みイベント送信
+    async function saveLoadingEvent() {
+    
+      // ① GPS取得
+      navigator.geolocation.getCurrentPosition(async (position) => {
+    
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+    
+        // ② payload に lat/lng を追加
+        const payload = {
+          mode: "loading",
+          driverName: driverName,
+          opDate: document.getElementById("selectedDate").value,
+          time: document.getElementById("loadingTime").value,
+          store: document.getElementById("loadingStore").value,
+          meter: document.getElementById("loadingMeter").value,
+          qty: document.getElementById("loadingQty").value,
+          unit: document.getElementById("loadingUnit").value,
+          note: document.getElementById("loadingNote").value,
+          lat: lat,
+          lng: lng
+        };
+    
+        // ③ 送信
+        await fetch(gasUrl, {
+          method: "POST",
+          body: new URLSearchParams(payload)
+        });
+    
+        alert("積み込みイベントを保存しました");
+      },
+      (error) => {
+        alert("GPS取得に失敗しました：" + error.message);
       });
     }
 
