@@ -486,9 +486,10 @@
       <input type="number" class="loadingMeter" placeholder="例：436600"><br>
   
       <label>荷積み開始時刻</label>
-      <input type="text" class="loadingStartTime" readonly placeholder="開始時刻"><br>
+      <input type="text" class="loadingStartTime" readonly placeholder="開始時刻自動取得"><br>
   
-      <!-- <button class="time-btn" onclick="setLoadingStartTime(this)">開始時刻を記録</button><br> -->
+      <label>荷積み完了時刻</label>
+      <input type="text" class="loadingEndTime" readonly placeholder="完了時刻自動取得"><br>
   
       <label>数量</label>
       <input type="number" class="loadingQty" placeholder="例：18"><br>
@@ -796,7 +797,11 @@
 
       // ★ このボタンが属する loading-event カードを取得
       const card = button.closest(".loading-event");
-    
+
+      // ★ 完了時刻を自動セット
+      const endTime = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+      card.querySelector(".loadingEndTime").value = endTime;
+      
       // ★ カード内の値を取得
       const place = card.querySelector(".loadingPlace").value;
       const meter = card.querySelector(".loadingMeter").value;
@@ -805,10 +810,11 @@
       const store = card.querySelector(".loadingStore").value;
       const note = card.querySelector(".loadingNote").value;
       const startTime = card.querySelector(".loadingStartTime").value;
+      const endTime = card.querySelector(".loadingEndTime").value;
     
-      // ★ 完了時刻を自動セット
+      /* // ★ 完了時刻を自動セット
       const endTime = new Date().toLocaleTimeString("ja-JP", { hour12: false });
-      card.querySelector(".loadingStartTime").value = endTime;
+      card.querySelector(".loadingStartTime").value = endTime; */
     
       // ★ GPS取得
       const pos = await getLocation();
