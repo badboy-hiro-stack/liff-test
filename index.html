@@ -791,23 +791,25 @@
         note: document.getElementById("endNote").value
       };
     
+      // ① 入庫イベントを保存
       await fetch(gasUrl, {
         method: "POST",
         body: new URLSearchParams(payload)
       });
+    
+      // ② 車両管理シートの走行距離を更新 ← これを関数の中に入れる！
+      await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          mode: "updateCarMeter",
+          carNumber: carNumber,
+          meter: endMeter
+        })
+      });
+    
       alert("入庫イベントを保存しました！");
       loadDailyReport();
     }
-
-    // 車両管理シートの走行距離を更新
-    await fetch(gasUrl, {
-      method: "POST",
-      body: JSON.stringify({
-        mode: "updateCarMeter",
-        carNumber: carNumber,
-        meter: endMeter
-      })
-    });
     
     // 運行日報を送信
     function submitDriverReport() {
@@ -1429,7 +1431,7 @@
       }
 
       // 運行日報画面を開いた時だけデータを読み込む
-      /* if (id === "screen-driverReport") {
+      if (id === "screen-driverReport") {
 
         // 運行日をセット（出庫時刻から計算するなら後で差し替えOK）
         const opDate = new Date().toISOString().slice(0, 10);
@@ -1443,7 +1445,7 @@
         document.getElementById("driverName").value = driverName;
     
         loadDailyReport();
-      } */
+      }
       
       // 従業員退職処理
       if (id === "screen-employeeRetire") {
