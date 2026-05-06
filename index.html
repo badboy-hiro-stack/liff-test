@@ -753,38 +753,97 @@
         body: new URLSearchParams(payload)
       });
     } */
-    // 積み込みイベント送信
-    async function saveLoadingEvent() {
+    /* // 積み込みイベント送信
+    async function saveLoadingEvent(button) {
       
-        // ★ 打刻処理と同じ getLocation() を使う
-        const pos = await getLocation();
-        const lat = pos.latitude;
-        const lng = pos.longitude;
-      
-        const params = new URLSearchParams();
-        params.append("mode", "loading");
-        params.append("driverName", driverName);
-        params.append("opDate", document.getElementById("selectedDate").value);
-        params.append("time", document.getElementById("loadingTime").value);
-        params.append("store", document.getElementById("loadingStore").value);
-        params.append("meter", document.getElementById("loadingMeter").value);
-        params.append("qty", document.getElementById("loadingQty").value);
-        params.append("unit", document.getElementById("loadingUnit").value);
-        params.append("note", document.getElementById("loadingNote").value);
-      
-        // ★ lat/lng を打刻処理と同じ形式で送る
-        params.append("lat", lat);
-        params.append("lng", lng);
-      
-        await fetch(gasUrl, {
+      // ★ 打刻処理と同じ getLocation() を使う
+      const pos = await getLocation();
+      const lat = pos.latitude;
+      const lng = pos.longitude;
+    
+      const params = new URLSearchParams();
+      params.append("mode", "loading");
+      params.append("driverName", driverName);
+      params.append("opDate", document.getElementById("selectedDate").value);
+      params.append("time", document.getElementById("loadingTime").value);
+      params.append("store", document.getElementById("loadingStore").value);
+      params.append("meter", document.getElementById("loadingMeter").value);
+      params.append("qty", document.getElementById("loadingQty").value);
+      params.append("unit", document.getElementById("loadingUnit").value);
+      params.append("note", document.getElementById("loadingNote").value);
+    
+      // ★ lat/lng を打刻処理と同じ形式で送る
+      params.append("lat", lat);
+      params.append("lng", lng);
+    
+      try {
+        const res = await fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
         });
       
-        alert("積み込みイベントを保存しました");
+        const text = await res.text();
+        alert("レスポンス: " + text);
+      
+      } catch (err) {
+        alert("fetch エラー: " + err);
       }
+    
+      alert("積み込みイベントを保存しました");
+    } */
+    async function saveLoadingEvent(button) {
 
+      // ★ このボタンが属する loading-event カードを取得
+      const card = button.closest(".loading-event");
+    
+      // ★ カード内の値を取得
+      const place = card.querySelector(".loadingPlace").value;
+      const meter = card.querySelector(".loadingMeter").value;
+      const qty = card.querySelector(".loadingQty").value;
+      const unit = card.querySelector(".loadingUnit").value;
+      const store = card.querySelector(".loadingStore").value;
+      const note = card.querySelector(".loadingNote").value;
+      const startTime = card.querySelector(".loadingStartTime").value;
+    
+      // ★ 完了時刻を自動セット
+      const endTime = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+      card.querySelector(".loadingStartTime").value = endTime;
+    
+      // ★ GPS取得
+      const pos = await getLocation();
+      const lat = pos.latitude;
+      const lng = pos.longitude;
+    
+      const params = new URLSearchParams();
+      params.append("mode", "loading");
+      params.append("driverName", driverName);
+      params.append("opDate", document.getElementById("selectedDate").value);
+      params.append("time", endTime);  // ★ 完了時刻を送る
+      params.append("store", store);
+      params.append("meter", meter);
+      params.append("qty", qty);
+      params.append("unit", unit);
+      params.append("note", note);
+      params.append("lat", lat);
+      params.append("lng", lng);
+      
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const text = await res.text();
+        alert("レスポンス: " + text);
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+      alert("積み込みイベントを保存しました");
+    }
+    
     // 荷卸しイベント送信
     async function saveUnloadingEvent() {
       const payload = {
