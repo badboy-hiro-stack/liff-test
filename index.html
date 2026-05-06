@@ -841,6 +841,7 @@
       });
     
       const events = await res.json();
+      alert("受信したイベント一覧：\n" + JSON.stringify(events, null, 2));
       renderDailyReport(events);  // ← ここで画面に反映
     }
 
