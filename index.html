@@ -828,22 +828,22 @@
     async function loadDailyReport() {
       const opDate = document.getElementById("selectedDate").value;
       const driverName = document.getElementById("driverName").value;
-
-      alert("driverName2：" + driverName);
+    
+      const payload = new URLSearchParams({
+        mode: "getEvents",
+        type: "all",
+        opDate: opDate,
+        driverName: driverName
+      });
     
       const res = await fetch(gasUrl, {
         method: "POST",
-        body: JSON.stringify({
-          mode: "getEvents",
-          type: "all",
-          opDate: opDate,
-          driverName: driverName
-        })
+        body: payload
       });
     
       const events = await res.json();
       alert("受信したイベント一覧：\n" + JSON.stringify(events, null, 2));
-      renderDailyReport(events);  // ← ここで画面に反映
+      renderDailyReport(events);
     }
 
     // 画面に値を戻す処理
