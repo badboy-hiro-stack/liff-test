@@ -844,6 +844,73 @@
       renderDailyReport(events);  // ← ここで画面に反映
     }
 
+    // 画面に値を戻す処理
+    function renderDailyReport(events) {
+
+      // まず画面を初期化（前回のイベントを消す）
+      document.getElementById("carNumber").value = "";
+      document.getElementById("startMeter").value = "";
+      document.getElementById("startTime").value = "";
+      document.getElementById("startNote").value = "";
+    
+      document.getElementById("endMeter").value = "";
+      document.getElementById("endTime").value = "";
+      document.getElementById("endNote").value = "";
+    
+      document.getElementById("loadingEvents").innerHTML = "";
+      document.getElementById("unloadingEvents").innerHTML = "";
+    
+      // イベントを種類ごとに復元
+      events.forEach(ev => {
+    
+        // ① 出庫イベント
+        if (ev.mode === "start") {
+          document.getElementById("carNumber").value = ev.carNumber || "";
+          document.getElementById("startMeter").value = ev.meter || "";
+          document.getElementById("startTime").value = ev.time || "";
+          document.getElementById("startNote").value = ev.note || "";
+        }
+    
+        // ② 積み込みイベント
+        if (ev.mode === "loading") {
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".loadingPlace").value = ev.place || "";
+          clone.querySelector(".loadingMeter").value = ev.meter || "";
+          clone.querySelector(".loadingStartTime").value = ev.time || "";
+          clone.querySelector(".loadingQty").value = ev.qty || "";
+          clone.querySelector(".loadingUnit").value = ev.unit || "";
+          clone.querySelector(".loadingStore").value = ev.store || "";
+          clone.querySelector(".loadingNote").value = ev.note || "";
+    
+          document.getElementById("loadingEvents").appendChild(clone);
+        }
+    
+        // ③ 荷降ろしイベント
+        if (ev.mode === "unloading") {
+          const template = document.getElementById("unloadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".unloadingPlace").value = ev.place || "";
+          clone.querySelector(".unloadingQty").value = ev.qty || "";
+          clone.querySelector(".unloadingUnit").value = ev.unit || "";
+          clone.querySelector(".unloadingStartTime").value = ev.time || "";
+          clone.querySelector(".unloadingNote").value = ev.note || "";
+    
+          document.getElementById("unloadingEvents").appendChild(clone);
+        }
+    
+        // ④ 入庫イベント
+        if (ev.mode === "end") {
+          document.getElementById("endMeter").value = ev.meter || "";
+          document.getElementById("endTime").value = ev.time || "";
+          document.getElementById("endNote").value = ev.note || "";
+        }
+    
+      });
+    }
+
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
       return new Promise((resolve, reject) => {
