@@ -755,40 +755,35 @@
     } */
     // 積み込みイベント送信
     async function saveLoadingEvent() {
-    
-      // ① GPS取得
-      navigator.geolocation.getCurrentPosition(async (position) => {
-    
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-    
-        // ② payload に lat/lng を追加
-        const payload = {
-          mode: "loading",
-          driverName: driverName,
-          opDate: document.getElementById("selectedDate").value,
-          time: document.getElementById("loadingTime").value,
-          store: document.getElementById("loadingStore").value,
-          meter: document.getElementById("loadingMeter").value,
-          qty: document.getElementById("loadingQty").value,
-          unit: document.getElementById("loadingUnit").value,
-          note: document.getElementById("loadingNote").value,
-          lat: lat,
-          lng: lng
-        };
-    
-        // ③ 送信
+      
+        // ★ 打刻処理と同じ getLocation() を使う
+        const pos = await getLocation();
+        const lat = pos.latitude;
+        const lng = pos.longitude;
+      
+        const params = new URLSearchParams();
+        params.append("mode", "loading");
+        params.append("driverName", driverName);
+        params.append("opDate", document.getElementById("selectedDate").value);
+        params.append("time", document.getElementById("loadingTime").value);
+        params.append("store", document.getElementById("loadingStore").value);
+        params.append("meter", document.getElementById("loadingMeter").value);
+        params.append("qty", document.getElementById("loadingQty").value);
+        params.append("unit", document.getElementById("loadingUnit").value);
+        params.append("note", document.getElementById("loadingNote").value);
+      
+        // ★ lat/lng を打刻処理と同じ形式で送る
+        params.append("lat", lat);
+        params.append("lng", lng);
+      
         await fetch(gasUrl, {
           method: "POST",
-          body: new URLSearchParams(payload)
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
         });
-    
+      
         alert("積み込みイベントを保存しました");
-      },
-      (error) => {
-        alert("GPS取得に失敗しました：" + error.message);
-      });
-    }
+      }
 
     // 荷卸しイベント送信
     async function saveUnloadingEvent() {
