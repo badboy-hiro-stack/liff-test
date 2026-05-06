@@ -866,11 +866,13 @@
       events.forEach(ev => {
     
         // ① 出庫イベント
-        if (ev.mode === "start") {
-          document.getElementById("carNumber").value = ev.carNumber || "";
-          document.getElementById("startMeter").value = ev.meter || "";
-          document.getElementById("startTime").value = ev.time || "";
-          document.getElementById("startNote").value = ev.note || "";
+        if (ev.eventType === "start") {
+          const data = ev.eventData;
+        
+          document.getElementById("carNumber").value = data.carNumber || "";
+          document.getElementById("startMeter").value = data.meter || "";
+          document.getElementById("startTime").value = data.time || "";
+          document.getElementById("startNote").value = data.note || "";
         }
     
         // ② 積み込みイベント
