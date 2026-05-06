@@ -829,12 +829,13 @@
       const opDate = document.getElementById("selectedDate").value;
       const driverName = document.getElementById("driverName").value;
 
-      alert("driverName：" + driverName);
+      alert("driverName2：" + driverName);
     
       const res = await fetch(gasUrl, {
         method: "POST",
         body: JSON.stringify({
           mode: "getEvents",
+          type: "all",
           opDate: opDate,
           driverName: driverName
         })
