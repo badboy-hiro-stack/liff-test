@@ -839,8 +839,15 @@
           body: params
         });
     
-        const text = await res.text();
-        alert("レスポンス: " + text);
+        // ★★★ レスポンスを JSON として取得
+        const json = await res.json();
+    
+        // ★★★ 地点名を UI に反映
+        if (json.point) {
+          card.querySelector(".loadingPlace").value = json.point;
+        }
+    
+        alert(json.message);
     
       } catch (err) {
         alert("fetch エラー: " + err);
