@@ -842,7 +842,7 @@
       });
     
       const events = await res.json();
-      alert("受信したイベント一覧：\n" + JSON.stringify(events, null, 2));
+      alert("受信したイベント一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
       renderDailyReport(events);
     }
 
