@@ -802,7 +802,7 @@
       const startTime = card.querySelector(".loadingStartTime").value;
       
       // ★ 完了時刻を自動セット
-      const endTime = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+      const endTime = getNowTime();
       card.querySelector(".loadingEndTime").value = endTime;
       
       // ★ カード内の値を取得
