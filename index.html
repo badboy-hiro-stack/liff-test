@@ -984,6 +984,9 @@
           const clone = template.content.cloneNode(true);
           const card = clone.querySelector(".loading-event");
 
+          // ★ 店名プルダウンを先に読み込む（重要）
+          loadStoreMaster(card.querySelector(".loadingStore"));
+          
           card.querySelector(".loadingPlace").value = data.pointName || "";
           card.querySelector(".loadingMeter").value = data.meter || "";
           card.querySelector(".loadingStartTime").value = data.startTime || "";
