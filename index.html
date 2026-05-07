@@ -976,8 +976,29 @@
           document.getElementById("startTime").value = data.time || "";
           document.getElementById("startNote").value = data.note || "";
         }
-    
+
         // ② 積み込みイベント
+        if (ev.eventType === "load") {
+        
+          const data = ev.eventData;
+        
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".loading-event");
+        
+          card.querySelector(".loadingPlace").value = data.pointName || "";
+          card.querySelector(".loadingMeter").value = data.meter || "";
+          card.querySelector(".loadingStartTime").value = data.startTime || "";
+          card.querySelector(".loadingEndTime").value = data.time || "";
+          card.querySelector(".loadingQty").value = data.qty || "";
+          card.querySelector(".loadingUnit").value = data.unit || "";
+          card.querySelector(".loadingStore").value = data.store || "";
+          card.querySelector(".loadingNote").value = data.note || "";
+        
+          document.getElementById("loadingEvents").appendChild(clone);
+        }
+        
+        /* // ② 積み込みイベント
         if (ev.eventType === "load") {
         
           const data = ev.eventData;
@@ -1006,7 +1027,7 @@
           card.querySelector(".loadingQty").value = data.qty || "";
           card.querySelector(".loadingUnit").value = data.unit || "";
           card.querySelector(".loadingNote").value = data.note || "";
-        }
+        } */
 
         // ③ 荷降ろしイベント
         if (ev.mode === "unloading") {
