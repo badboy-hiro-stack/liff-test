@@ -979,31 +979,31 @@
     
         // ② 積み込みイベント
         if (ev.eventType === "load") {
-
+        
           const data = ev.eventData;
         
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
           const card = clone.querySelector(".loading-event");
         
+          // ★ 先に appendChild する（これが重要）
+          document.getElementById("loadingEvents").appendChild(clone);
+        
           const storeSelect = card.querySelector(".loadingStore");
         
-          // ★ 店名プルダウンを読み込んでから value をセットし、最後に append する
+          // ★ append した後に store を読み込む
           loadStoreMaster(storeSelect, () => {
-        
             storeSelect.value = data.store || "";
-        
-            card.querySelector(".loadingPlace").value = data.pointName || "";
-            card.querySelector(".loadingMeter").value = data.meter || "";
-            card.querySelector(".loadingStartTime").value = data.startTime || "";
-            card.querySelector(".loadingEndTime").value = data.time || "";
-            card.querySelector(".loadingQty").value = data.qty || "";
-            card.querySelector(".loadingUnit").value = data.unit || "";
-            card.querySelector(".loadingNote").value = data.note || "";
-        
-            // ★ ここで append する
-            document.getElementById("loadingEvents").appendChild(clone);
           });
+        
+          // ★ 他の項目は append 後にセットしても問題なし
+          card.querySelector(".loadingPlace").value = data.pointName || "";
+          card.querySelector(".loadingMeter").value = data.meter || "";
+          card.querySelector(".loadingStartTime").value = data.startTime || "";
+          card.querySelector(".loadingEndTime").value = data.time || "";
+          card.querySelector(".loadingQty").value = data.qty || "";
+          card.querySelector(".loadingUnit").value = data.unit || "";
+          card.querySelector(".loadingNote").value = data.note || "";
         }
 
         // ③ 荷降ろしイベント
