@@ -984,19 +984,22 @@
         
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
-          const card = clone.querySelector(".loading-event");
         
-          // ★ 先に appendChild する（これが重要）
-          document.getElementById("loadingEvents").appendChild(clone);
+          // ★ 先に appendChild する
+          const parent = document.getElementById("loadingEvents");
+          parent.appendChild(clone);
+        
+          // ★ append 後の DOM から card を取り直す（これが重要）
+          const card = parent.lastElementChild;
         
           const storeSelect = card.querySelector(".loadingStore");
         
-          // ★ append した後に store を読み込む
+          // ★ 店名プルダウンを読み込んでから value をセット
           loadStoreMaster(storeSelect, () => {
             storeSelect.value = data.store || "";
           });
         
-          // ★ 他の項目は append 後にセットしても問題なし
+          // ★ 他の項目をセット
           card.querySelector(".loadingPlace").value = data.pointName || "";
           card.querySelector(".loadingMeter").value = data.meter || "";
           card.querySelector(".loadingStartTime").value = data.startTime || "";
