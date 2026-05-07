@@ -977,18 +977,22 @@
         }
     
         // ② 積み込みイベント
-        if (ev.mode === "loading") {
+        if (ev.eventType === "load") {
+          const data = ev.eventData;
+        
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
-    
-          clone.querySelector(".loadingPlace").value = ev.place || "";
-          clone.querySelector(".loadingMeter").value = ev.meter || "";
-          clone.querySelector(".loadingStartTime").value = ev.time || "";
-          clone.querySelector(".loadingQty").value = ev.qty || "";
-          clone.querySelector(".loadingUnit").value = ev.unit || "";
-          clone.querySelector(".loadingStore").value = ev.store || "";
-          clone.querySelector(".loadingNote").value = ev.note || "";
-    
+          const card = clone.querySelector(".loading-event");
+
+          card.querySelector(".loadingPlace").value = data.pointName || "";
+          card.querySelector(".loadingMeter").value = data.meter || "";
+          card.querySelector(".loadingStartTime").value = data.startTime || "";
+          card.querySelector(".loadingEndTime").value = data.time || "";
+          card.querySelector(".loadingQty").value = data.qty || "";
+          card.querySelector(".loadingUnit").value = data.unit || "";
+          card.querySelector(".loadingStore").value = data.store || "";
+          card.querySelector(".loadingNote").value = data.note || "";
+        
           document.getElementById("loadingEvents").appendChild(clone);
         }
     
