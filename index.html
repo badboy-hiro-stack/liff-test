@@ -832,6 +832,7 @@
       params.append("note", note);
       params.append("lat", lat);
       params.append("lng", lng);
+      params.append("pointName", place); 
       
       try {
         const res = await fetch(gasUrl, {
@@ -979,7 +980,7 @@
 
         // ② 積み込みイベント
         if (ev.eventType === "load") {
-        
+          
           const data = ev.eventData;
         
           const template = document.getElementById("loadingEventTemplate");
