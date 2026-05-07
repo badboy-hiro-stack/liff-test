@@ -985,11 +985,10 @@
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
         
-          // ★ 先に appendChild する
           const parent = document.getElementById("loadingEvents");
           parent.appendChild(clone);
         
-          // ★ append 後の DOM から card を取り直す（これが重要）
+          // ★ append 後の DOM から card を取り直す（これが最重要）
           const card = parent.lastElementChild;
         
           const storeSelect = card.querySelector(".loadingStore");
@@ -999,7 +998,7 @@
             storeSelect.value = data.store || "";
           });
         
-          // ★ 他の項目をセット
+          // ★ 他の項目をセット（append 後なので確実に反映される）
           card.querySelector(".loadingPlace").value = data.pointName || "";
           card.querySelector(".loadingMeter").value = data.meter || "";
           card.querySelector(".loadingStartTime").value = data.startTime || "";
