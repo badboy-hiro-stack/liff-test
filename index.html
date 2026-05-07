@@ -561,17 +561,18 @@
   </div>
 
   <script>
-    function loadStoreMaster(selectElement) {
-      fetch(gasUrl + "?mode=getStoreMaster")
-        .then(r => r.json())
-        .then(list => {
-            list.forEach(name => {
-                const opt = document.createElement("option");
-                opt.value = name;
-                opt.textContent = name;
-                selectElement.appendChild(opt);
-            });
+    function loadStoreMaster(selectElem, callback) {
+      google.script.run.withSuccessHandler(function(list) {
+        list.forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          selectElem.appendChild(opt);
         });
+    
+        // ★ 読み込み完了後に実行
+        if (callback) callback();
+      }).getStoreMaster();
     }
 
     // 出庫時刻
@@ -984,8 +985,10 @@
           const clone = template.content.cloneNode(true);
           const card = clone.querySelector(".loading-event");
 
-          // ★ 店名プルダウンを先に読み込む（重要）
-          loadStoreMaster(card.querySelector(".loadingStore"));
+          // ★ 店名プルダウンを読み込んでから value をセットする
+          loadStoreMaster(storeSelect, () => {
+            storeSelect.value = data.store || "";
+          });
           
           card.querySelector(".loadingPlace").value = data.pointName || "";
           card.querySelector(".loadingMeter").value = data.meter || "";
