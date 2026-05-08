@@ -568,18 +568,19 @@
       box.textContent += msg + "\n";
     }
 
-    function loadStoreMaster(selectElem, callback) {
-      google.script.run.withSuccessHandler(function(list) {
-        list.forEach(name => {
-          const opt = document.createElement("option");
-          opt.value = name;
-          opt.textContent = name;
-          selectElem.appendChild(opt);
-        });
+    function loadStoreMaster(selectElement, callback) {
+      fetch(gasUrl + "?mode=getStoreMaster")
+        .then(r => r.json())
+        .then(list => {
+          list.forEach(name => {
+            const opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            selectElement.appendChild(opt);
+          });
     
-        // ★ 読み込み完了後に実行
-        if (callback) callback();
-      }).getStoreMaster();
+          if (callback) callback();
+        });
     }
 
     // 出庫時刻
@@ -624,7 +625,27 @@
       
         document.getElementById("loadingEvents").appendChild(clone);
     }
+
+    // 積み込みイベント復元
+    function restoreLoadingEvent(ev) {
+      const template = document.getElementById("loadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".loading-event");
     
+      // ★ 店名プルダウンを読み込んでから値をセット
+      loadStoreMaster(card.querySelector(".loadingStore"), () => {
+        card.querySelector(".loadingStore").value = ev.eventData.storeName || "";
+      });
+    
+      card.querySelector(".loadingQty").value = ev.eventData.qty || "";
+      card.querySelector(".loadingUnit").value = ev.eventData.unit || "";
+      card.querySelector(".loadingNote").value = ev.eventData.note || "";
+      card.querySelector(".loadingStartTime").value = ev.eventData.startTime || "";
+      card.querySelector(".loadingEndTime").value = ev.eventData.time || "";
+    
+      document.getElementById("loadingEvents").appendChild(clone);
+    }
+
     // 降ろしイベント追加
     function addUnloadingEvent() {
         const template = document.getElementById("unloadingEventTemplate");
