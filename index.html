@@ -16,6 +16,8 @@
     <p style="font-size:36px; color:#666; margin-top:10px;">
       アプリを準備しています…
     </p>
+    <div id="debug" style="white-space: pre-wrap; background:#eee; padding:10px; margin:10px 0;"></div>
+
   </div>
 
   <!-- ▼ 管理者用Menu -->
@@ -561,6 +563,11 @@
   </div>
 
   <script>
+    function debug(msg) {
+      const box = document.getElementById("debug");
+      box.textContent += msg + "\n";
+    }
+
     function loadStoreMaster(selectElem, callback) {
       google.script.run.withSuccessHandler(function(list) {
         list.forEach(name => {
@@ -1743,15 +1750,17 @@
     let storeMasterList = [];
 
     function initStoreMaster() {
+      debug("initStoreMaster: start");
+    
       return new Promise((resolve, reject) => {
         google.script.run
           .withSuccessHandler(list => {
+            debug("initStoreMaster: success");
             storeMasterList = list;
-            console.log("storeMasterList loaded:", list);
             resolve();
           })
           .withFailureHandler(err => {
-            console.error("initStoreMaster error:", err);
+            debug("initStoreMaster: error: " + JSON.stringify(err));
             reject(err);
           })
           .getStoreMaster();
@@ -1760,20 +1769,33 @@
     
     // ▼ LIFF 初期化
     async function init() {
+      debug("init: start");
       await initLiff();
+      debug("init: after initLiff");
       // handleScreenParam();
       await ensureLogin();
+      debug("init: after ensureLogin");
       await loadProfile();
+      debug("init: after loadProfile");
       // ★ 店名マスタをここで読み込む（最適）
       await initStoreMaster();
+      debug("init: after initStoreMaster");
       await loadEmployeeInfo();
+      debug("init: after loadEmployeeInfo");
       await checkAdminStatus();
+      debug("init: after loadEmployeeInfo");
       setupUI();
+      debug("init: after setupUI");
       applyAdminUI();
+      debug("init: after applyAdminUI");
       handleScreenParam();
+      debug("init: after handleScreenParam");
       await loadInitialStatus();
+      debug("init: after loadInitialStatus");
       setupEventHandlers();
-      
+      debug("init: after setupEventHandlers");
+
+      debug("init: end");
       // preloadUserData();
     }
 
