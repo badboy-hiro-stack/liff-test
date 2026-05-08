@@ -949,6 +949,18 @@
       renderDailyReport(events);
     }
 
+    // 店名プルダウンを埋める共通関数
+    function fillStoreOptions(selectElem) {
+      selectElem.innerHTML = ""; // 念のためクリア
+    
+      storeMasterList.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        selectElem.appendChild(opt);
+      });
+    }
+
     // 画面に値を戻す処理
     function renderDailyReport(events) {
 
@@ -1006,10 +1018,11 @@
         
           const storeSelect = appendedCard.querySelector(".loadingStore");
         
-          // ★ 店名マスタ読み込み後に value をセット
-          loadStoreMaster(storeSelect, () => {
-            storeSelect.value = data.store || "";
-          });
+          // ★ 店名プルダウンをセット（非同期なし）
+          fillStoreOptions(storeSelect);
+        
+          // ★ 保存されていた店名をセット
+          storeSelect.value = data.store || "";
         }
         
         /* // ② 積み込みイベント
@@ -1726,6 +1739,8 @@
     // ★ 追加
     let cachedStatus = null;
     let cachedIsAdmin = null;
+
+    let storeMasterList = [];
     
     // ▼ LIFF 初期化
     async function init() {
@@ -1733,6 +1748,8 @@
       // handleScreenParam();
       await ensureLogin();
       await loadProfile();
+      // ★ 店名マスタをここで読み込む（最適）
+      initStoreMaster();
       await loadEmployeeInfo();
       await checkAdminStatus();
       setupUI();
