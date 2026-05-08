@@ -1741,6 +1741,22 @@
     let cachedIsAdmin = null;
 
     let storeMasterList = [];
+
+    function initStoreMaster() {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(list => {
+            storeMasterList = list;
+            console.log("storeMasterList loaded:", list);
+            resolve();
+          })
+          .withFailureHandler(err => {
+            console.error("initStoreMaster error:", err);
+            reject(err);
+          })
+          .getStoreMaster();
+      });
+    }
     
     // ▼ LIFF 初期化
     async function init() {
@@ -1749,7 +1765,7 @@
       await ensureLogin();
       await loadProfile();
       // ★ 店名マスタをここで読み込む（最適）
-      initStoreMaster();
+      await initStoreMaster();
       await loadEmployeeInfo();
       await checkAdminStatus();
       setupUI();
