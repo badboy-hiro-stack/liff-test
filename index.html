@@ -1018,7 +1018,28 @@
           document.getElementById("startNote").value = data.note || "";
         }
 
-        // ② 積み込みイベント
+        // ② 積み込みイベント　一時的に変更しました。5/13/12:40
+        if (ev.eventType === "load") {
+        
+          const data = ev.eventData;
+        
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".loading-event");
+        
+          card.querySelector(".loadingPlace").value = data.pointName || "";
+          card.querySelector(".loadingMeter").value = data.meter || "";
+          card.querySelector(".loadingStartTime").value = data.startTime || "";
+          card.querySelector(".loadingEndTime").value = data.time || "";
+          card.querySelector(".loadingQty").value = data.qty || "";
+          card.querySelector(".loadingUnit").value = data.unit || "";
+          card.querySelector(".loadingStore").value = data.store || "";
+          card.querySelector(".loadingNote").value = data.note || "";
+        
+          document.getElementById("loadingEvents").appendChild(clone);
+        }
+
+        /* // ② 積み込みイベント
         if (ev.eventType === "load") {
         
           const data = ev.eventData;
@@ -1051,7 +1072,7 @@
         
           // ★ 保存されていた店名をセット
           storeSelect.value = data.store || "";
-        }
+        } */
         
         /* // ② 積み込みイベント
         if (ev.eventType === "load") {
