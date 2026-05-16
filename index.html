@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -987,6 +987,37 @@
         opt.textContent = name;
         selectElem.appendChild(opt);
       });
+    }
+
+    // GAS から未完了の出庫イベントを取得
+    async function loadStartEvent() {
+      const payload = new URLSearchParams({
+        mode: "getActiveStart",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const ev = await res.json();
+    
+      if (!ev) return; // 出庫していない場合は何もしない
+    
+      restoreStartEvent(ev);
+    }
+
+    // 出庫イベントをUIに復元
+    function restoreStartEvent(ev) {
+      const data = ev.eventData;
+    
+      const template = document.getElementById("startEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".start-event");
+    
+      card.querySelector(".startCarNumber").value = data.carNumber || "";
+      card.querySelector(".startMeter").value = data.meter || "";
+      card.querySelector(".startTime").value = data.time || "";
+      card.querySelector(".startNote").value = ev.note || "";
+    
+      document.getElementById("startEvents").appendChild(clone);
     }
 
     // 画面に値を戻す処理
