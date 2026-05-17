@@ -1020,6 +1020,74 @@
       document.getElementById("startEvents").appendChild(clone);
     }
 
+    // 積み込みイベントを取得する
+    async function loadLoadingEvent() {
+      const payload = new URLSearchParams({
+        mode: "getActiveLoading",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const ev = await res.json();
+    
+      if (!ev) return; // 未積み込みなら何もしない
+    
+      restoreLoadingEvent(ev);
+    }
+
+    // 積み込みイベントをUIに復元する
+    function restoreLoadingEvent(ev) {
+      const data = ev.eventData;
+    
+      const template = document.getElementById("loadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".loading-event");
+    
+      card.querySelector(".loadingPlace").value = data.place || "";
+      card.querySelector(".loadingMeter").value = data.meter || "";
+      card.querySelector(".loadingStartTime").value = data.startTime || "";
+      card.querySelector(".loadingEndTime").value = data.endTime || "";
+      card.querySelector(".loadingQuantity").value = data.quantity || "";
+      card.querySelector(".loadingUnit").value = data.unit || "";
+      card.querySelector(".loadingStore").value = data.storeName || "";
+      card.querySelector(".loadingNote").value = ev.note || "";
+    
+      document.getElementById("loadingEvents").appendChild(clone);
+    }
+
+    // 荷降ろしイベントを取得する
+    async function loadUnloadingEvent() {
+      const payload = new URLSearchParams({
+        mode: "getActiveUnloading",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const ev = await res.json();
+    
+      if (!ev) return; // 未荷降ろしなら何もしない
+    
+      restoreUnloadingEvent(ev);
+    }
+
+    // 荷降ろしイベントUIに復元する
+    function restoreUnloadingEvent(ev) {
+      const data = ev.eventData;
+    
+      const template = document.getElementById("unloadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".unloading-event");
+    
+      card.querySelector(".unloadingPlace").value = data.place || "";
+      card.querySelector(".unloadingQuantity").value = data.quantity || "";
+      card.querySelector(".unloadingUnit").value = data.unit || "";
+      card.querySelector(".unloadingStartTime").value = data.startTime || "";
+      card.querySelector(".unloadingEndTime").value = data.endTime || "";
+      card.querySelector(".unloadingNote").value = ev.note || "";
+    
+      document.getElementById("unloadingEvents").appendChild(clone);
+    }
+
     // 画面に値を戻す処理
     function renderDailyReport(events) {
 
