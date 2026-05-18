@@ -885,7 +885,7 @@
       alert("積み込みイベントを保存しました");
     }
     
-    // 荷卸しイベント送信
+    /* // 荷卸しイベント送信
     async function saveUnloadingEvent() {
       const payload = {
         mode: "unloading",
@@ -902,6 +902,96 @@
         method: "POST",
         body: new URLSearchParams(payload)
       });
+    } */
+
+    // 荷降ろしイベント登録時に「選択された積み込みイベントだけ」完了させる
+    function saveUnloadingEvent(data) {
+      saveEvent(data, "unloading", null);
+    
+      // ★ ユーザーが選択した積み込みイベントの行番号
+      const targetRow = data.loadingRowIndex;
+    
+      completeSpecificLoadingEvent(targetRow);
+    }
+
+    // カード一覧を生成する
+    async function loadLoadingEventCards() {
+      const payload = new URLSearchParams({
+        mode: "getActiveLoadingList",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const list = await res.json();
+    
+      const container = document.getElementById("loadingEventList");
+      container.innerHTML = "";
+    
+      list.forEach(ev => {
+        const card = createLoadingCard(ev);
+        container.appendChild(card);
+      });
+    }
+
+    // カード生成関数
+    function createLoadingCard(ev) {
+      const data = ev.eventData;
+    
+      const template = document.getElementById("loadingSelectTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".loading-select-card");
+    
+      card.querySelector(".loadingPlace").textContent = data.place;
+      card.querySelector(".loadingQty").textContent = `${data.quantity} ${data.unit}`;
+      card.querySelector(".loadingMeter").textContent = data.meter;
+      card.querySelector(".loadingStart").textContent = data.startTime;
+      card.querySelector(".loadingEnd").textContent = data.endTime;
+      card.querySelector(".loadingStore").textContent = data.storeName;
+      card.querySelector(".loadingNote").textContent = ev.note || "";
+    
+      // ★ この積み込みを選択するボタン
+      card.querySelector(".selectLoadingBtn").addEventListener("click", () => {
+        selectLoadingEvent(ev.rowIndex);
+      });
+    
+      return clone;
+    }
+
+    // 選択された積み込みイベントの rowIndex を保持する
+    let selectedLoadingRow = null;
+
+    function selectLoadingEvent(rowIndex) {
+      selectedLoadingRow = rowIndex;
+    
+      // UI に反映（例：選択済み表示）
+      document.getElementById("selectedLoadingInfo").textContent =
+        `選択中の積み込みイベント：行 ${rowIndex}`;
+    }
+
+    // 荷降ろしイベント登録時に紐付ける
+    async function saveUnloading() {
+      if (!selectedLoadingRow) {
+        alert("積み込みイベントを選択してください");
+        return;
+      }
+    
+      const data = {
+        driverName: employeeName,
+        place: document.querySelector("#unloadPlace").value,
+        quantity: document.querySelector("#unloadQty").value,
+        unit: document.querySelector("#unloadUnit").value,
+        startTime: document.querySelector("#unloadStart").value,
+        endTime: document.querySelector("#unloadEnd").value,
+        note: document.querySelector("#unloadNote").value,
+        loadingRowIndex: selectedLoadingRow  // ★ ここが重要
+      };
+    
+      const payload = new URLSearchParams({
+        mode: "saveUnloading",
+        data: JSON.stringify(data)
+      });
+    
+      await fetch(gasUrl, { method: "POST", body: payload });
     }
 
     // 入庫イベント送信
@@ -1053,6 +1143,27 @@
       card.querySelector(".loadingNote").value = ev.note || "";
     
       document.getElementById("loadingEvents").appendChild(clone);
+    }
+
+    // 未完了の積み込みイベントを UI に一覧表示
+    async function loadLoadingEventList() {
+      const payload = new URLSearchParams({
+        mode: "getActiveLoadingList",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const list = await res.json();
+    
+      const select = document.querySelector("#loadingSelect");
+      select.innerHTML = "";
+    
+      list.forEach(ev => {
+        const opt = document.createElement("option");
+        opt.value = ev.rowIndex; // ★ どの行かを保持
+        opt.textContent = `${ev.eventData.place} / ${ev.eventData.quantity}${ev.eventData.unit}`;
+        select.appendChild(opt);
+      });
     }
 
     // 荷降ろしイベントを取得する
