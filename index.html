@@ -422,7 +422,7 @@
       <span>運転手：<span id="reportDriverName"></span></span>
     </div>
     
-    <!-- 出庫イベント -->
+    <!-- 出庫 -->
     <div class="card start-event">
       <h3>① 出庫</h3>
   
@@ -443,15 +443,15 @@
       </button>
     </div>
     
-    <!-- 積み込みイベント一覧 -->
+    <!-- 積み込み一覧 -->
     <div id="loadingEvents"></div>
-    <button class="events-btn" onclick="addLoadingEvent()">＋ 積み込みイベントを追加</button>
+    <button class="events-btn" onclick="addLoadingEvent()">＋ 積み込みを追加</button>
   
-    <!-- 荷降ろしイベント一覧 -->
+    <!-- 荷降ろし一覧 -->
     <div id="unloadingEvents"></div>
-    <button class="events1-btn" onclick="addUnloadingEvent()">＋ 荷降ろしイベントを追加</button>
+    <button class="events1-btn" onclick="addUnloadingEvent()">＋ 荷降ろしを追加</button>
   
-    <!-- 入庫イベント -->
+    <!-- 入庫 -->
     <div class="card end-event">
       <h3>④ 入庫</h3>
   
@@ -476,7 +476,7 @@
     <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
   </div>
   
-  <!-- 積み込みイベントテンプレート -->
+  <!-- 積み込みテンプレート -->
   <template id="loadingEventTemplate">
     <div class="card loading-event">
       <h3>② 積み込み</h3>
@@ -516,7 +516,7 @@
     </div>
   </template>
   
-  <!-- 荷降ろしイベントテンプレート -->
+  <!-- 荷降ろしテンプレート -->
   <template id="unloadingEventTemplate">
     <div class="card unloading-event">
       <h3>③ 荷降ろし</h3>
@@ -609,7 +609,7 @@
         return d.toTimeString().slice(0,5);
     }
     
-    // 積み込みイベント追加
+    // 積み込み追加
     function addLoadingEvent() {
         const template = document.getElementById("loadingEventTemplate");
         const clone = template.content.cloneNode(true);
@@ -626,7 +626,7 @@
         document.getElementById("loadingEvents").appendChild(clone);
     }
 
-    // 積み込みイベント復元
+    // 積み込み復元
     function restoreLoadingEvent(ev) {
       const template = document.getElementById("loadingEventTemplate");
       const clone = template.content.cloneNode(true);
@@ -646,14 +646,14 @@
       document.getElementById("loadingEvents").appendChild(clone);
     }
 
-    // 降ろしイベント追加
+    // 降ろし追加
     function addUnloadingEvent() {
         const template = document.getElementById("unloadingEventTemplate");
         const clone = template.content.cloneNode(true);
         document.getElementById("unloadingEvents").appendChild(clone);
     }
     
-    // イベント削除
+    // 削除
     function deleteEvent(btn) {
         btn.parentElement.remove();
     }
@@ -723,7 +723,7 @@
       }
     }
 
-    // 出庫イベント送信
+    // 出庫送信
     async function saveStartEvent() {
     
       // 出庫時刻を取得
@@ -761,11 +761,11 @@
         body: new URLSearchParams(payload)
       });
     
-      alert("出庫イベントを保存しました！");
+      alert("出庫を保存しました！");
       loadDailyReport();
     }
 
-    /* // 積み込みイベント送信
+    /* // 積み込み送信
     async function saveLoadingEvent() {
       const payload = {
         mode: "loading",
@@ -783,7 +783,7 @@
         body: new URLSearchParams(payload)
       });
     } */
-    /* // 積み込みイベント送信
+    /* // 積み込み送信
     async function saveLoadingEvent(button) {
       
       // ★ 打刻処理と同じ getLocation() を使う
@@ -820,7 +820,7 @@
         alert("fetch エラー: " + err);
       }
     
-      alert("積み込みイベントを保存しました");
+      alert("積み込みを保存しました");
     } */
     async function saveLoadingEvent(button) {
 
@@ -882,10 +882,10 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-      alert("積み込みイベントを保存しました");
+      alert("積み込みを保存しました");
     }
     
-    /* // 荷卸しイベント送信
+    /* // 荷卸し送信
     async function saveUnloadingEvent() {
       const payload = {
         mode: "unloading",
@@ -904,11 +904,11 @@
       });
     } */
 
-    // 荷降ろしイベント登録時に「選択された積み込みイベントだけ」完了させる
+    // 荷降ろし登録時に「選択された積み込みだけ」完了させる
     function saveUnloadingEvent(data) {
       saveEvent(data, "unloading", null);
     
-      // ★ ユーザーが選択した積み込みイベントの行番号
+      // ★ ユーザーが選択した積み込みの行番号
       const targetRow = data.loadingRowIndex;
     
       completeSpecificLoadingEvent(targetRow);
@@ -957,7 +957,7 @@
       return clone;
     }
 
-    // 選択された積み込みイベントの rowIndex を保持する
+    // 選択された積み込みの rowIndex を保持する
     let selectedLoadingRow = null;
 
     function selectLoadingEvent(rowIndex) {
@@ -965,13 +965,13 @@
     
       // UI に反映（例：選択済み表示）
       document.getElementById("selectedLoadingInfo").textContent =
-        `選択中の積み込みイベント：行 ${rowIndex}`;
+        `選択中の積み込み：行 ${rowIndex}`;
     }
 
-    // 荷降ろしイベント登録時に紐付ける
+    // 荷降ろし登録時に紐付ける
     async function saveUnloading() {
       if (!selectedLoadingRow) {
-        alert("積み込みイベントを選択してください");
+        alert("積み込みを選択してください");
         return;
       }
     
@@ -994,7 +994,7 @@
       await fetch(gasUrl, { method: "POST", body: payload });
     }
 
-    // 入庫イベント送信
+    // 入庫送信
     async function saveEndEvent() {
       const endTimeValue = document.getElementById("endTime").value;
       const carNumber = document.getElementById("carNumber").value;
@@ -1012,7 +1012,7 @@
         note: document.getElementById("endNote").value
       };
     
-      // ① 入庫イベントを保存
+      // ① 入庫を保存
       await fetch(gasUrl, {
         method: "POST",
         body: new URLSearchParams(payload)
@@ -1028,7 +1028,7 @@
         })
       });
     
-      alert("入庫イベントを保存しました！");
+      alert("入庫を保存しました！");
       loadDailyReport();
     }
     
@@ -1063,7 +1063,7 @@
       });
     
       const events = await res.json();
-      alert("受信したイベント一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
+      alert("受信した一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
       renderDailyReport(events);
     }
 
@@ -1079,7 +1079,7 @@
       });
     }
 
-    // GAS から未完了の出庫イベントを取得
+    // GAS から未完了の出庫を取得
     async function loadStartEvent() {
       const payload = new URLSearchParams({
         mode: "getActiveStart",
@@ -1094,7 +1094,7 @@
       restoreStartEvent(ev);
     }
 
-    // 出庫イベントをUIに復元
+    // 出庫をUIに復元
     function restoreStartEvent(ev) {
       const data = ev.eventData;
     
@@ -1197,6 +1197,37 @@
       card.querySelector(".unloadingNote").value = ev.note || "";
     
       document.getElementById("unloadingEvents").appendChild(clone);
+    }
+
+    // 入庫イベントを取得する
+    async function loadEndEvent() {
+      const payload = new URLSearchParams({
+        mode: "getActiveEnd",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const ev = await res.json();
+    
+      if (!ev) return; // 未入庫なら何もしない
+    
+      restoreEndEvent(ev);
+    }
+
+    // 入庫イベントをUIに復元
+    function restoreEndEvent(ev) {
+      const data = ev.eventData;
+    
+      const template = document.getElementById("endEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".end-event");
+    
+      card.querySelector(".endCarNumber").value = data.carNumber || "";
+      card.querySelector(".endMeter").value = data.meter || "";
+      card.querySelector(".endTime").value = data.time || "";
+      card.querySelector(".endNote").value = ev.note || "";
+    
+      document.getElementById("endEvents").appendChild(clone);
     }
 
     // 画面に値を戻す処理
