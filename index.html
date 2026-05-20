@@ -536,7 +536,7 @@
       <label>荷降ろし開始時刻</label>
       <input type="text" class="unloadingStartTime" readonly><br>
   
-      <button class="time-btn" onclick="saveUnloadingEvent(this)">荷降ろし完了時刻を記録して保存</button>
+      <button class="time-btn" onclick="saveUnloading()">荷降ろし完了時刻を記録して保存</button>
   
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
@@ -987,7 +987,7 @@
       };
     
       const payload = new URLSearchParams({
-        mode: "saveUnloading",
+        mode: "unloading",
         data: JSON.stringify(data)
       });
     
