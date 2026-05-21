@@ -1248,7 +1248,10 @@
     
       // イベントを種類ごとに復元
       events.forEach(ev => {
-    
+        alert("ev 全体:\n" + JSON.stringify(ev, null, 2));
+        alert("eventType の値:\n" + ev.eventType);
+        alert("mode の値:\n" + ev.mode);
+
         // ① 出庫（startstatus=false のものだけ）
         if (ev.eventType === "start" && ev.eventData.startstatus === false) {
           alert(
