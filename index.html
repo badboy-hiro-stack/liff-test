@@ -846,7 +846,28 @@
       const pos = await getLocation();
       const lat = pos.latitude;
       const lng = pos.longitude;
-    
+
+      // ★ まず地点名を取得する（GAS に問い合わせ）
+      const placeRes = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          mode: "getPointName",
+          lat: lat,
+          lng: lng
+        })
+      });
+      
+      const placeJson = await placeRes.json();
+      
+      // ★ 地点名を UI に反映
+      if (placeJson.point) {
+        card.querySelector(".loadingPlace").value = placeJson.point;
+      }
+      
+      // ★ ここで初めて place を取得する
+      const place = card.querySelector(".loadingPlace").value;
+      
       const params = new URLSearchParams();
       params.append("mode", "loading");
       params.append("driverName", driverName);
