@@ -1288,7 +1288,7 @@
         }
     
         // ② 積み込み（completed=false のものだけ）
-        if (ev.eventType === "loading" && ev.eventData.completed === false) {
+        /* if (ev.eventType === "loading" && ev.eventData.completed === false) {
           const data = ev.eventData;
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
@@ -1303,10 +1303,10 @@
           card.querySelector(".loadingNote").value = data.note || "";
     
           document.getElementById("loadingEvents").appendChild(clone);
-        }
+        } */
     
         // ③ 荷降ろし
-        if (ev.eventType === "unloading") {
+        /* if (ev.eventType === "unloading") {
           const data = ev.eventData;
           const template = document.getElementById("unloadingEventTemplate");
           const clone = template.content.cloneNode(true);
@@ -1318,15 +1318,15 @@
           clone.querySelector(".unloadingNote").value = data.note || "";
     
           document.getElementById("unloadingEvents").appendChild(clone);
-        }
+        } */
     
         // ④ 入庫
-        if (ev.eventType === "end") {
+        /* if (ev.eventType === "end") {
           const data = ev.eventData;
           document.getElementById("endMeter").value = data.meter || "";
           document.getElementById("endTime").value = data.time || "";
           document.getElementById("endNote").value = data.note || "";
-        }
+        } */
     
       });
     }
