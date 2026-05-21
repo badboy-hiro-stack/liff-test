@@ -1253,7 +1253,7 @@
         alert("mode の値:\n" + ev.mode);
 
         // ① 出庫（startstatus=false のものだけ）
-        if (ev.mode === "start" && ev.startstatus === false) {
+        if (ev.eventType === "start" && ev.eventData.startstatus === false) {
           alert(
             "★ 出庫イベント復元処理に入りました！\n\n" +
             "ev:\n" + JSON.stringify(ev, null, 2) + "\n\n" +
