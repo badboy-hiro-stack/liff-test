@@ -505,7 +505,12 @@
       </select><br>
   
       <label>店名</label>
-      <select class="loadingStore"></select><br>
+  
+      <!-- ▼ 新規追加時に使うプルダウン -->
+      <select class="loadingStore"></select>
+  
+      <!-- ▼ 復元時に使うテキストボックス（初期は非表示） -->
+      <input type="text" class="loadingStoreText" readonly style="display:none;"><br>
   
       <label>備考</label>
       <textarea class="loadingNote" placeholder="任意入力"></textarea><br>
@@ -610,7 +615,7 @@
     }
     
     // 積み込み追加
-    function addLoadingEvent() {
+    /* function addLoadingEvent() {
         const template = document.getElementById("loadingEventTemplate");
         const clone = template.content.cloneNode(true);
 
@@ -624,6 +629,47 @@
         card.querySelector(".loadingStartTime").value = getNowTime();
       
         document.getElementById("loadingEvents").appendChild(clone);
+    } */
+    async function addLoadingEvent() {
+      const template = document.getElementById("loadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".loading-event");
+
+      // ▼ 新規追加時はプルダウンを表示、テキストを隠す
+      card.querySelector(".loadingStore").style.display = "block";
+      card.querySelector(".loadingStoreText").style.display = "none";
+      
+      // 店名プルダウン
+      loadStoreMaster(card.querySelector(".loadingStore"));
+  
+      // 開始時刻
+      card.querySelector(".loadingStartTime").value = getNowTime();
+  
+      // ★ まずカードを DOM に追加（ここ重要）
+      document.getElementById("loadingEvents").appendChild(clone);
+  
+      // ★ GPS 取得
+      const pos = await getLocation();
+      const lat = pos.latitude;
+      const lng = pos.longitude;
+  
+      // ★ GAS に地点判定を依頼
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          mode: "loading",   // ← ここは getPointName ではなく loading でOK
+          lat: lat,
+          lng: lng
+        })
+      });
+  
+      const json = await res.json();
+  
+      // ★ 地点名を UI に反映
+      if (json.point) {
+          card.querySelector(".loadingPlace").value = json.point;
+      }
     }
 
     // 積み込み復元
@@ -1250,7 +1296,8 @@
       events.forEach(ev => {
     
         // ① 出庫イベント
-        if (ev.eventType === "start") {
+        /* if (ev.eventType === "start") { */
+        if (ev.eventType === "start" && ev.eventData.startstatus === false) {
           const data = ev.eventData;
         
           document.getElementById("carNumber").value = data.carNumber || "";
@@ -1259,8 +1306,33 @@
           document.getElementById("startNote").value = data.note || "";
         }
 
-        // ② 積み込みイベント　一時的に変更しました。5/13/12:40
+        // ② 積み込みイベント　一時的に変更しました。5/22　9：18
         if (ev.eventType === "load") {
+          const data = ev.eventData;
+      
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".loading-event");
+      
+          // ▼ 復元時はテキストを表示、プルダウンを隠す
+          card.querySelector(".loadingStore").style.display = "none";
+          const storeText = card.querySelector(".loadingStoreText");
+          storeText.style.display = "block";
+          storeText.value = data.store || "";
+      
+          // 他の項目を復元
+          card.querySelector(".loadingPlace").value = data.pointName || "";
+          card.querySelector(".loadingMeter").value = data.meter || "";
+          card.querySelector(".loadingStartTime").value = data.startTime || "";
+          card.querySelector(".loadingEndTime").value = data.time || "";
+          card.querySelector(".loadingQty").value = data.qty || "";
+          card.querySelector(".loadingUnit").value = data.unit || "";
+          card.querySelector(".loadingNote").value = data.note || "";
+      
+          document.getElementById("loadingEvents").appendChild(clone);
+        }
+
+        /* if (ev.eventType === "load") {
         
           const data = ev.eventData;
         
@@ -1278,7 +1350,7 @@
           card.querySelector(".loadingNote").value = data.note || "";
         
           document.getElementById("loadingEvents").appendChild(clone);
-        }
+        } */
 
         /* // ② 積み込みイベント
         if (ev.eventType === "load") {
