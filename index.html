@@ -1381,7 +1381,6 @@
       events.forEach(ev => {
     
         // ① 出庫イベント
-        /* if (ev.eventType === "start") { */
         if (ev.eventType === "start" && ev.eventData.startstatus === false) {
           alert("出庫イベントの復元開始");
           const data = ev.eventData;
@@ -1440,8 +1439,8 @@
         }
     
       });
-    }
-
+    } */
+    
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
       return new Promise((resolve, reject) => {
