@@ -1298,6 +1298,7 @@
         // ① 出庫イベント
         /* if (ev.eventType === "start") { */
         if (ev.eventType === "start" && ev.eventData.startstatus === false) {
+          alert("出庫イベントの復元開始");
           const data = ev.eventData;
         
           document.getElementById("carNumber").value = data.carNumber || "";
