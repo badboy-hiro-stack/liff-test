@@ -1279,6 +1279,91 @@
     // 画面に値を戻す処理
     function renderDailyReport(events) {
 
+      // まず既存のカードを全部消す
+      document.getElementById("loadingContainer").innerHTML = "";
+      document.getElementById("unloadingContainer").innerHTML = "";
+      document.getElementById("endContainer").innerHTML = "";
+    
+      // 出庫欄も初期化
+      document.getElementById("carNumber").value = "";
+      document.getElementById("startMeter").value = "";
+      document.getElementById("startTime").value = "";
+      document.getElementById("startNote").value = "";
+    
+      events.forEach(ev => {
+        const type = ev.eventType;
+        const data = ev.eventData;
+    
+        // 🚚 出庫（start）
+        if (type === "start" && data.startstatus === false) {
+          document.getElementById("carNumber").value = data.carNumber || "";
+          document.getElementById("startMeter").value = data.meter || "";
+          document.getElementById("startTime").value = data.time || "";
+          document.getElementById("startNote").value = data.note || "";
+          return;
+        }
+    
+        // 📦 積み込み（load）
+        if (type === "load" && ev.unloadFlag === false) {
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".loadingPlace").value = data.pointName || "";
+          clone.querySelector(".loadingMeter").value = data.meter || "";
+          clone.querySelector(".loadingStartTime").value = data.startTime || "";
+          clone.querySelector(".loadingEndTime").value = data.time || "";
+          clone.querySelector(".loadingQty").value = data.qty || "";
+          clone.querySelector(".loadingUnit").value = data.unit || "";
+          clone.querySelector(".loadingStoreText").value = data.store || "";
+          clone.querySelector(".loadingNote").value = data.note || "";
+    
+          // 復元時は storeText を表示
+          clone.querySelector(".loadingStore").style.display = "none";
+          clone.querySelector(".loadingStoreText").style.display = "block";
+    
+          document.getElementById("loadingContainer").appendChild(clone);
+          return;
+        }
+    
+        // 📤 荷降ろし（unload）
+        if (type === "unload" && ev.unloadFlag === false) {
+          const template = document.getElementById("unloadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".unloadingPlace").value = data.pointName || "";
+          clone.querySelector(".unloadingMeter").value = data.meter || "";
+          clone.querySelector(".unloadingStartTime").value = data.startTime || "";
+          clone.querySelector(".unloadingEndTime").value = data.time || "";
+          clone.querySelector(".unloadingQty").value = data.qty || "";
+          clone.querySelector(".unloadingUnit").value = data.unit || "";
+          clone.querySelector(".unloadingStoreText").value = data.store || "";
+          clone.querySelector(".unloadingNote").value = data.note || "";
+    
+          clone.querySelector(".unloadingStore").style.display = "none";
+          clone.querySelector(".unloadingStoreText").style.display = "block";
+    
+          document.getElementById("unloadingContainer").appendChild(clone);
+          return;
+        }
+    
+        // 🏁 入庫（end）
+        if (type === "end" && data.endstatus === false) {
+          const template = document.getElementById("endEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".endPlace").value = data.pointName || "";
+          clone.querySelector(".endMeter").value = data.meter || "";
+          clone.querySelector(".endTime").value = data.time || "";
+          clone.querySelector(".endNote").value = data.note || "";
+    
+          document.getElementById("endContainer").appendChild(clone);
+          return;
+        }
+      });
+    }
+
+    /* function renderDailyReport(events) {
+
       // まず画面を初期化（前回のイベントを消す）
       document.getElementById("carNumber").value = "";
       document.getElementById("startMeter").value = "";
@@ -1333,92 +1418,6 @@
           document.getElementById("loadingEvents").appendChild(clone);
         }
 
-        /* if (ev.eventType === "load") {
-        
-          const data = ev.eventData;
-        
-          const template = document.getElementById("loadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-          const card = clone.querySelector(".loading-event");
-        
-          card.querySelector(".loadingPlace").value = data.pointName || "";
-          card.querySelector(".loadingMeter").value = data.meter || "";
-          card.querySelector(".loadingStartTime").value = data.startTime || "";
-          card.querySelector(".loadingEndTime").value = data.time || "";
-          card.querySelector(".loadingQty").value = data.qty || "";
-          card.querySelector(".loadingUnit").value = data.unit || "";
-          card.querySelector(".loadingStore").value = data.store || "";
-          card.querySelector(".loadingNote").value = data.note || "";
-        
-          document.getElementById("loadingEvents").appendChild(clone);
-        } */
-
-        /* // ② 積み込みイベント
-        if (ev.eventType === "load") {
-        
-          const data = ev.eventData;
-        
-          const template = document.getElementById("loadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-          const card = clone.querySelector(".loading-event");
-        
-          // 固定値
-          card.querySelector(".loadingPlace").value = data.pointName || "";
-          card.querySelector(".loadingMeter").value = data.meter || "";
-          card.querySelector(".loadingStartTime").value = data.startTime || "";
-          card.querySelector(".loadingEndTime").value = data.time || "";
-          card.querySelector(".loadingQty").value = data.qty || "";
-          card.querySelector(".loadingUnit").value = data.unit || "";
-          card.querySelector(".loadingNote").value = data.note || "";
-        
-          // ★ まず DOM に追加
-          document.getElementById("loadingEvents").appendChild(clone);
-        
-          // ★ append 後の実体を取得
-          const appendedCard = document
-            .getElementById("loadingEvents")
-            .lastElementChild;
-        
-          const storeSelect = appendedCard.querySelector(".loadingStore");
-        
-          // ★ 店名プルダウンをセット（非同期なし）
-          fillStoreOptions(storeSelect);
-        
-          // ★ 保存されていた店名をセット
-          storeSelect.value = data.store || "";
-        } */
-        
-        /* // ② 積み込みイベント
-        if (ev.eventType === "load") {
-        
-          const data = ev.eventData;
-        
-          const template = document.getElementById("loadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-        
-          const parent = document.getElementById("loadingEvents");
-          parent.appendChild(clone);
-        
-          // ★ append 後の DOM から card を取り直す（これが最重要）
-          const card = parent.lastElementChild;
-        
-          const storeSelect = card.querySelector(".loadingStore");
-        
-          // ★ 店名プルダウンを読み込んでから value をセット
-          loadStoreMaster(storeSelect, () => {
-            storeSelect.value = data.store || "";
-          });
-        
-          // ★ 他の項目をセット（append 後なので確実に反映される）
-          card.querySelector(".loadingPlace").value = data.pointName || "";
-          card.querySelector(".loadingMeter").value = data.meter || "";
-          card.querySelector(".loadingStartTime").value = data.startTime || "";
-          card.querySelector(".loadingEndTime").value = data.time || "";
-          card.querySelector(".loadingQty").value = data.qty || "";
-          card.querySelector(".loadingUnit").value = data.unit || "";
-          card.querySelector(".loadingNote").value = data.note || "";
-        } */
-
         // ③ 荷降ろしイベント
         if (ev.mode === "unloading") {
           const template = document.getElementById("unloadingEventTemplate");
@@ -1441,7 +1440,7 @@
         }
     
       });
-    }
+    } */
 
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
@@ -1653,9 +1652,73 @@
       // YYYY-MM-DD 形式で返す
       return now.toISOString().slice(0, 10);
     }
-    
-    // すべてのイベントを送信
+
+    // すべてのイベントを送信　2026/5/22
     async function submitDriverReport() {
+      try {
+        const date = selectedDate;
+        const driver = driverName;
+        const events = driverEvents;
+    
+        // ▼ 1. イベントを1つずつ送信
+        for (const ev of events) {
+          const params = new URLSearchParams();
+    
+          params.append("mode", ev.mode);
+          params.append("date", date);
+          params.append("driverName", driver);
+    
+          for (const key in ev) {
+            if (key !== "mode") {
+              params.append(key, ev[key]);
+            }
+          }
+    
+          await fetch(gasUrl, {
+            method: "POST",
+            body: params
+          });
+        }
+    
+        // ▼ 2. 出庫イベントを完了扱いにする（startstatus:true）
+        await fetch(gasUrl, {
+          method: "POST",
+          body: new URLSearchParams({
+            mode: "completeStart",
+            driverName: driver
+          })
+        });
+    
+        // ▼ 3. 入庫イベントを完了扱いにする（endstatus:true）
+        await fetch(gasUrl, {
+          method: "POST",
+          body: new URLSearchParams({
+            mode: "completeEnd",
+            driverName: driver
+          })
+        });
+    
+        // ▼ 4. 集計を実行
+        await fetch(gasUrl, {
+          method: "POST",
+          body: new URLSearchParams({
+            mode: "aggregate",
+            date: date,
+            driverName: driver
+          })
+        });
+    
+        // ▼ 5. 完了メッセージ
+        alert("運行日報を送信しました！");
+    
+      } catch (err) {
+        console.error(err);
+        alert("送信中にエラーが発生しました");
+      }
+    }
+
+    // すべてのイベントを送信
+    /* async function submitDriverReport() {
       try {
         // ▼ 運行日とドライバー名（あなたの変数名に合わせて変更）
         const date = selectedDate;        // 例： "2026-05-03"
@@ -1703,7 +1766,7 @@
         console.error(err);
         alert("送信中にエラーが発生しました");
       }
-    }
+    } */
 
     function showTaskScreen(tasks, rowIndex) {
       currentWorkRow = rowIndex;  // ← ここで保持（latestRowIndex は不要）
