@@ -1296,7 +1296,8 @@
       events.forEach(ev => {
     
         // ① 出庫イベント
-        if (ev.eventType === "start") {
+        /* if (ev.eventType === "start") { */
+        if (ev.eventType === "start" && ev.eventData.startstatus === false) {
           const data = ev.eventData;
         
           document.getElementById("carNumber").value = data.carNumber || "";
