@@ -693,11 +693,49 @@
     }
 
     // 降ろし追加
-    function addUnloadingEvent() {
+    async function addUnloadingEvent() {
+      const driverName = document.getElementById("driverName").value;
+    
+      // GAS に「未完了の積み込みイベント」を問い合わせる
+      const payload = new URLSearchParams({
+        mode: "getUnloadingTarget",
+        driverName: driverName
+      });
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: payload
+      });
+    
+      const loadEvent = await res.json();
+    
+      if (!loadEvent || !loadEvent.pointName) {
+        alert("未完了の積み込みイベントがありません。");
+        return;
+      }
+    
+      // テンプレートから荷降ろしカードを生成
+      const template = document.getElementById("unloadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+    
+      // 積み込みイベントの情報をセット
+      clone.querySelector(".unloadingPlace").value = loadEvent.pointName;
+      clone.querySelector(".unloadingQty").value = loadEvent.qty;
+      clone.querySelector(".unloadingUnit").value = loadEvent.unit;
+      clone.querySelector(".unloadingNote").value = loadEvent.note;
+    
+      // 荷降ろし開始時刻をセット
+      clone.querySelector(".unloadingStartTime").value = getNowTime();
+    
+      // 画面に追加
+      document.getElementById("unloadingEvents").appendChild(clone);
+    }
+    
+    /* function addUnloadingEvent() {
         const template = document.getElementById("unloadingEventTemplate");
         const clone = template.content.cloneNode(true);
         document.getElementById("unloadingEvents").appendChild(clone);
-    }
+    } */
     
     // 削除
     function deleteEvent(btn) {
