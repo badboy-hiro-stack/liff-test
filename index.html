@@ -1111,10 +1111,14 @@
       const events = await res.json();
 
       // ▼ 現状確認（修正ではない）
-      alert("① Array.isArray(events): " + Array.isArray(events));
-      alert("② keys: " + Object.keys(events));
-      alert("③ events(JSON):\n" + JSON.stringify(events, null, 2));
-      // alert("受信した一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
+      events.forEach(ev => {
+        alert(
+          "eventType=" + ev.eventType +
+          "\nunloadFlag=" + ev.unloadFlag + " (" + typeof ev.unloadFlag + ")" +
+          "\nstartstatus=" + ev.eventData?.startstatus + " (" + typeof ev.eventData?.startstatus + ")"
+        );
+      });
+      alert("受信した一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
       renderDailyReport(events);
     }
 
