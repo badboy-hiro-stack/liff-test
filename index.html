@@ -1290,10 +1290,14 @@
       alert("renderDailyReport START");
 
       // まず既存のカードを全部消す
-      // document.getElementById("loadingContainer").innerHTML = "";
-      // document.getElementById("unloadingContainer").innerHTML = "";
+      document.getElementById("loadingEvents").innerHTML = "";
+      document.getElementById("unloadingEvents").innerHTML = "";
+      
       // document.getElementById("endContainer").innerHTML = "";
-    
+      // 入庫は class なので querySelector を使う
+      const endCard = document.querySelector(".end-event");
+      if (endCard) endCard.innerHTML = "";
+      
       // 出庫欄も初期化
       document.getElementById("carNumber").value = "";
       document.getElementById("startMeter").value = "";
@@ -1331,7 +1335,7 @@
           clone.querySelector(".loadingStore").style.display = "none";
           clone.querySelector(".loadingStoreText").style.display = "block";
     
-          document.getElementById("loadingContainer").appendChild(clone);
+          document.getElementById("loadingEvents").appendChild(clone);
           return;
         }
     
@@ -1352,7 +1356,7 @@
           clone.querySelector(".unloadingStore").style.display = "none";
           clone.querySelector(".unloadingStoreText").style.display = "block";
     
-          document.getElementById("unloadingContainer").appendChild(clone);
+          document.getElementById("unloadingEvents").appendChild(clone);
           return;
         }
     
@@ -1366,7 +1370,8 @@
           clone.querySelector(".endTime").value = data.time || "";
           clone.querySelector(".endNote").value = data.note || "";
     
-          document.getElementById("endContainer").appendChild(clone);
+          // document.getElementById("endContainer").appendChild(clone);
+          document.querySelector(".end-event").appendChild(clone);
           return;
         }
       });
