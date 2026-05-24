@@ -540,7 +540,9 @@
   
       <label>荷降ろし開始時刻</label>
       <input type="text" class="unloadingStartTime" readonly><br>
-  
+
+      <input type="hidden" class="unloadingRowIndex">
+      
       <button class="time-btn" onclick="saveUnloading()">荷降ろし完了時刻を記録して保存</button>
   
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
@@ -728,7 +730,10 @@
     
         // 荷降ろし開始時刻をセット
         clone.querySelector(".unloadingStartTime").value = getNowTime();
-    
+
+        // ★ 行番号を hidden input にセット
+        clone.querySelector(".unloadingRowIndex").value = loadEvent.rowIndex;
+        
         // 画面に追加
         document.getElementById("unloadingEvents").appendChild(clone);
       });
@@ -1094,8 +1099,46 @@
         `選択中の積み込み：行 ${rowIndex}`;
     }
 
-    // 荷降ろし登録時に紐付ける
-    async function saveUnloading() {
+    // 荷降ろし登録時に紐付ける　20260524　修正
+    async function saveUnloading(button) {
+      // ★ このボタンが属する unloading-card を取得
+      const card = button.closest(".unloading-card");
+    
+      // ★ hidden input に埋め込んだ rowIndex を取得
+      const rowIndex = card.querySelector(".unloadingRowIndex").value;
+    
+      // ★ 荷降ろし完了時刻を取得
+      const endTime = getNowTime();
+    
+      // ★ 備考（ユーザーが入力したもの）
+      const note = card.querySelector(".unloadingNote").value;
+    
+      const payload = new URLSearchParams({
+        mode: "saveUnloading",
+        rowIndex: rowIndex,
+        endTime: endTime,
+        note: note
+      });
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          body: payload
+        });
+    
+        const json = await res.json();
+    
+        alert(json.message);
+    
+        // ★ UI 上のカードを削除（完了したので不要）
+        card.remove();
+    
+      } catch (err) {
+        alert("荷降ろし保存エラー: " + err);
+      }
+    }
+
+    /* async function saveUnloading() {
       if (!selectedLoadingRow) {
         alert("積み込みを選択してください");
         return;
@@ -1118,7 +1161,7 @@
       });
     
       await fetch(gasUrl, { method: "POST", body: payload });
-    }
+    } */
 
     // 入庫送信
     async function saveEndEvent() {
