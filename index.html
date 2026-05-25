@@ -1103,7 +1103,7 @@
     // 荷降ろし登録時に紐付ける　20260524　修正
     async function saveUnloading(button) {
       // ★ このボタンが属する unloading-card を取得
-      const card = button.closest(".unloading-card");
+      const card = button.closest(".unloading-event");
     
       // ★ hidden input に埋め込んだ rowIndex を取得
       const rowIndex = card.querySelector(".unloadingRowIndex").value;
