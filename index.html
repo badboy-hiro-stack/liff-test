@@ -452,7 +452,9 @@
     <button class="events1-btn" onclick="addUnloadingEvent()">＋ 荷降ろしを追加</button>
   
     <!-- 入庫 -->
-    <div class="card end-event">
+    <div id="arrivalEventArea"></div>
+
+    <!-- <div class="card end-event">
       <h3>④ 入庫</h3>
   
       <label>入庫メーター</label>
@@ -467,7 +469,7 @@
       <button class="time-btn" onclick="setNowToInput('endTime'); saveEndEvent();">
         入庫時刻を記録して保存
       </button>
-    </div>
+    </div> -->
   
     <!-- hidden（loadDailyReport 用） -->
     <input type="hidden" id="selectedDate">
@@ -550,6 +552,21 @@
     </div>
   </template>
 
+  <!-- 入庫イベントテンプレート -->
+  <template id="arrivalEventTemplate">
+    <div class="card arrival-event">
+      <h3>④ 入庫</h3>
+  
+      <label>入庫メーター</label>
+      <input type="number" id="arrivalMeter"><br>
+  
+      <label>備考</label>
+      <textarea id="arrivalNote" placeholder="任意入力"></textarea><br>
+  
+      <button class="time-btn" onclick="saveArrivalEvent()">入庫時刻を記録して保存</button>
+    </div>
+  </template>
+  
   <div id="screen-driverCheck" class="screen" style="display:none;">
     <h2>車両点検票</h2>
     <p>作成中または準備中です。</p>
@@ -1102,16 +1119,14 @@
 
     // 荷降ろし登録時に紐付ける　20260524　修正
     async function saveUnloading(button) {
-      // ★ このボタンが属する unloading-card を取得
+
+      // ★ 連打防止：押した瞬間に無効化
+      button.disabled = true;
+      button.textContent = "処理中…";
+    
       const card = button.closest(".unloading-event");
-    
-      // ★ hidden input に埋め込んだ rowIndex を取得
       const rowIndex = card.querySelector(".unloadingRowIndex").value;
-    
-      // ★ 荷降ろし完了時刻を取得
       const endTime = getNowTime();
-    
-      // ★ 備考（ユーザーが入力したもの）
       const note = card.querySelector(".unloadingNote").value;
     
       const payload = new URLSearchParams({
@@ -1122,20 +1137,20 @@
       });
     
       try {
-        const res = await fetch(gasUrl, {
-          method: "POST",
-          body: payload
-        });
-    
+        const res = await fetch(gasUrl, { method: "POST", body: payload });
         const json = await res.json();
     
         alert(json.message);
     
-        // ★ UI 上のカードを削除（完了したので不要）
+        // UI から削除
         card.remove();
     
       } catch (err) {
         alert("荷降ろし保存エラー: " + err);
+    
+        // ★ エラー時はボタンを再度有効化
+        button.disabled = false;
+        button.textContent = "荷降ろし完了時刻を記録して保存";
       }
     }
 
@@ -1431,6 +1446,51 @@
       card.querySelector(".endNote").value = ev.note || "";
     
       document.getElementById("endEvents").appendChild(clone);
+    }
+
+    // 画面ロード時に入庫イベントを常時表示する処理
+    async function loadArrivalEvent() {
+      const payload = new URLSearchParams({
+        mode: "getArrivalEvent",
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const data = await res.json();
+    
+      const area = document.getElementById("arrivalEventArea");
+      area.innerHTML = "";
+    
+      const template = document.getElementById("arrivalEventTemplate");
+      const clone = template.content.cloneNode(true);
+    
+      // ★ 復元データがある場合はセット
+      if (data && data.meter) {
+        clone.querySelector("#arrivalMeter").value = data.meter;
+        clone.querySelector("#arrivalNote").value = data.note;
+      }
+    
+      area.appendChild(clone);
+    }
+
+    // 入庫イベント保存処理
+    async function saveArrivalEvent() {
+      const meter = document.getElementById("arrivalMeter").value;
+      const note = document.getElementById("arrivalNote").value;
+      const time = getNowTime();
+    
+      const payload = new URLSearchParams({
+        mode: "saveArrivalEvent",
+        meter: meter,
+        note: note,
+        time: time,
+        driverName: employeeName
+      });
+    
+      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const json = await res.json();
+    
+      alert(json.message);
     }
 
     // 画面に値を戻す処理
