@@ -452,9 +452,9 @@
     <button class="events1-btn" onclick="addUnloadingEvent()">＋ 荷降ろしを追加</button>
   
     <!-- 入庫 -->
-    <div id="arrivalEventArea"></div>
+    <!-- <div id="arrivalEventArea"></div> -->
 
-    <!-- <div class="card end-event">
+    <div class="card end-event">
       <h3>④ 入庫</h3>
   
       <label>入庫メーター</label>
@@ -469,7 +469,7 @@
       <button class="time-btn" onclick="setNowToInput('endTime'); saveEndEvent();">
         入庫時刻を記録して保存
       </button>
-    </div> -->
+    </div>
   
     <!-- hidden（loadDailyReport 用） -->
     <input type="hidden" id="selectedDate">
@@ -551,24 +551,6 @@
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
   </template>
-
-  <!-- 入庫 -->
-    <div class="card end-event">
-      <h3>④ 入庫</h3>
-  
-      <label>入庫メーター</label>
-      <input type="number" id="endMeter" placeholder="例：436900"><br>
-  
-      <label>備考</label>
-      <textarea id="endNote" placeholder="任意入力"></textarea><br>
-  
-      <label>入庫時刻</label>
-      <input type="time" id="endTime" placeholder="自動取得"><br>
-  
-      <button class="time-btn" onclick="setNowToInput('endTime'); saveEndEvent();">
-        入庫時刻を記録して保存
-      </button>
-    </div>
   
   <div id="screen-driverCheck" class="screen" style="display:none;">
     <h2>車両点検票</h2>
