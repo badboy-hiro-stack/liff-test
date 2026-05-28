@@ -452,9 +452,9 @@
     <button class="events1-btn" onclick="addUnloadingEvent()">＋ 荷降ろしを追加</button>
   
     <!-- 入庫 -->
-    <!-- <div id="arrivalEventArea"></div> -->
+    <div id="arrivalEventArea"></div>
 
-    <div class="card end-event">
+    <!-- <div class="card end-event">
       <h3>④ 入庫</h3>
   
       <label>入庫メーター</label>
@@ -469,7 +469,7 @@
       <button class="time-btn" onclick="setNowToInput('endTime'); saveEndEvent();">
         入庫時刻を記録して保存
       </button>
-    </div>
+    </div> -->
   
     <!-- hidden（loadDailyReport 用） -->
     <input type="hidden" id="selectedDate">
@@ -1444,18 +1444,21 @@
       const data = await res.json();
     
       const area = document.getElementById("arrivalEventArea");
-      area.innerHTML = "";
+
+      // ★ 出庫イベントと同じく、直接 HTML を生成
+      area.innerHTML = `
+        <div class="card arrival-event">
+          <h3>④ 入庫</h3>
     
-      const template = document.getElementById("arrivalEventTemplate");
-      const clone = template.content.cloneNode(true);
+          <label>入庫メーター</label>
+          <input type="number" id="arrivalMeter" value="${data.meter ?? ''}"><br>
     
-      // ★ 復元データがある場合はセット
-      if (data && data.meter) {
-        clone.querySelector("#arrivalMeter").value = data.meter;
-        clone.querySelector("#arrivalNote").value = data.note;
-      }
+          <label>備考</label>
+          <textarea id="arrivalNote">${data.note ?? ''}</textarea><br>
     
-      area.appendChild(clone);
+          <button class="time-btn" onclick="saveArrivalEvent()">入庫時刻を記録して保存</button>
+        </div>
+      `;
     }
 
     // 入庫イベント保存処理
