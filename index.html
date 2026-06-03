@@ -663,7 +663,7 @@
     }
 
     // 積み込み復元
-    function restoreLoadingEvent(ev) {
+    /* function restoreLoadingEvent(ev) {
       const template = document.getElementById("loadingEventTemplate");
       const clone = template.content.cloneNode(true);
       const card = clone.querySelector(".loading-event");
@@ -680,7 +680,7 @@
       card.querySelector(".loadingEndTime").value = ev.eventData.time || "";
     
       document.getElementById("loadingEvents").appendChild(clone);
-    }
+    } */
 
     // 降ろし追加（複数件対応）
     async function addUnloadingEvent() {
@@ -904,17 +904,17 @@
     }
 
     // 荷降ろし登録時に「選択された積み込みだけ」完了させる
-    function saveUnloadingEvent(data) {
+    /* function saveUnloadingEvent(data) {
       saveEvent(data, "unloading", null);
     
       // ★ ユーザーが選択した積み込みの行番号
       const targetRow = data.loadingRowIndex;
     
       completeSpecificLoadingEvent(targetRow);
-    }
+    } */
 
     // カード一覧を生成する
-    async function loadLoadingEventCards() {
+    /* async function loadLoadingEventCards() {
       const payload = new URLSearchParams({
         mode: "getActiveLoadingList",
         driverName: employeeName
@@ -930,10 +930,10 @@
         const card = createLoadingCard(ev);
         container.appendChild(card);
       });
-    }
+    } */
 
     // カード生成関数
-    function createLoadingCard(ev) {
+    /* function createLoadingCard(ev) {
       const data = ev.eventData;
     
       const template = document.getElementById("loadingSelectTemplate");
@@ -954,18 +954,18 @@
       });
     
       return clone;
-    }
+    } */
 
     // 選択された積み込みの rowIndex を保持する
     let selectedLoadingRow = null;
 
-    function selectLoadingEvent(rowIndex) {
+    /* function selectLoadingEvent(rowIndex) {
       selectedLoadingRow = rowIndex;
     
       // UI に反映（例：選択済み表示）
       document.getElementById("selectedLoadingInfo").textContent =
         `選択中の積み込み：行 ${rowIndex}`;
-    }
+    } */
 
     // 荷降ろし登録時に紐付ける　20260524　修正
     async function saveUnloading(button) {
@@ -1077,13 +1077,13 @@
     }
 
     // 積み込みイベント一覧を直接確認する（確認用コード）
-    function debugLoadEvents(events) {
+    /* function debugLoadEvents(events) {
       const loads = events.filter(ev => ev.eventType === "load");
       alert("積み込みイベント一覧:\n" + JSON.stringify(loads, null, 2));
-    }
+    } */
 
     // unloadFlag の状態を確認する（確認用コード）
-    async function debugUnloadingTarget() {
+    /* async function debugUnloadingTarget() {
       const driverName = document.getElementById("driverName").value;
     
       const payload = new URLSearchParams({
@@ -1095,7 +1095,7 @@
       const data = await res.json();
     
       alert("getUnloadingTarget の返却:\n" + JSON.stringify(data, null, 2));
-    }
+    } */
 
     // 店名プルダウンを埋める共通関数
     function fillStoreOptions(selectElem) {
@@ -1110,7 +1110,7 @@
     }
 
     // GAS から未完了の出庫を取得
-    async function loadStartEvent() {
+    /* async function loadStartEvent() {
       const payload = new URLSearchParams({
         mode: "getActiveStart",
         driverName: employeeName
@@ -1122,10 +1122,10 @@
       if (!ev) return; // 出庫していない場合は何もしない
     
       restoreStartEvent(ev);
-    }
+    } */
 
     // 出庫をUIに復元
-    function restoreStartEvent(ev) {
+    /* function restoreStartEvent(ev) {
       const data = ev.eventData;
     
       const template = document.getElementById("startEventTemplate");
@@ -1138,10 +1138,10 @@
       card.querySelector(".startNote").value = ev.note || "";
     
       document.getElementById("startEvents").appendChild(clone);
-    }
+    } */
 
     // 積み込みイベントを取得する
-    async function loadLoadingEvent() {
+    /* async function loadLoadingEvent() {
       const payload = new URLSearchParams({
         mode: "getActiveLoading",
         driverName: employeeName
@@ -1153,10 +1153,10 @@
       if (!ev) return; // 未積み込みなら何もしない
     
       restoreLoadingEvent(ev);
-    }
+    } */
 
     // 積み込みイベントをUIに復元する
-    function restoreLoadingEvent(ev) {
+    /* function restoreLoadingEvent(ev) {
       const data = ev.eventData;
     
       const template = document.getElementById("loadingEventTemplate");
@@ -1173,10 +1173,10 @@
       card.querySelector(".loadingNote").value = ev.note || "";
     
       document.getElementById("loadingEvents").appendChild(clone);
-    }
+    } */
 
     // 未完了の積み込みイベントを UI に一覧表示
-    async function loadLoadingEventList() {
+    /* async function loadLoadingEventList() {
       const payload = new URLSearchParams({
         mode: "getActiveLoadingList",
         driverName: employeeName
@@ -1194,10 +1194,10 @@
         opt.textContent = `${ev.eventData.place} / ${ev.eventData.quantity}${ev.eventData.unit}`;
         select.appendChild(opt);
       });
-    }
+    } */
 
     // 荷降ろしイベントを取得する
-    async function loadUnloadingEvent() {
+    /* async function loadUnloadingEvent() {
       const payload = new URLSearchParams({
         mode: "getActiveUnloading",
         driverName: employeeName
@@ -1209,10 +1209,10 @@
       if (!ev) return; // 未荷降ろしなら何もしない
     
       restoreUnloadingEvent(ev);
-    }
+    } */
 
     // 荷降ろしイベントUIに復元する
-    function restoreUnloadingEvent(ev) {
+    /* function restoreUnloadingEvent(ev) {
       const data = ev.eventData;
     
       const template = document.getElementById("unloadingEventTemplate");
@@ -1227,10 +1227,10 @@
       card.querySelector(".unloadingNote").value = ev.note || "";
     
       document.getElementById("unloadingEvents").appendChild(clone);
-    }
+    } */
 
     // 入庫イベントを取得する
-    async function loadEndEvent() {
+    /* async function loadEndEvent() {
       const payload = new URLSearchParams({
         mode: "getActiveEnd",
         driverName: employeeName
@@ -1242,10 +1242,10 @@
       if (!ev) return; // 未入庫なら何もしない
     
       restoreEndEvent(ev);
-    }
+    } */
 
     // 入庫イベントをUIに復元
-    function restoreEndEvent(ev) {
+    /* function restoreEndEvent(ev) {
       const data = ev.eventData;
     
       const template = document.getElementById("endEventTemplate");
@@ -1258,10 +1258,10 @@
       card.querySelector(".endNote").value = ev.note || "";
     
       document.getElementById("endEvents").appendChild(clone);
-    }
+    } */
 
     // 画面ロード時に入庫イベントを常時表示する処理
-    async function loadArrivalEvent() {
+    /* async function loadArrivalEvent() {
       const payload = new URLSearchParams({
         mode: "getArrivalEvent",
         driverName: employeeName
@@ -1286,10 +1286,10 @@
           <button class="time-btn" onclick="saveArrivalEvent()">入庫時刻を記録して保存</button>
         </div>
       `;
-    }
+    } */
 
     // 入庫イベント保存処理
-    async function saveArrivalEvent() {
+    /* async function saveArrivalEvent() {
       const meter = document.getElementById("arrivalMeter").value;
       const note = document.getElementById("arrivalNote").value;
       const time = getNowTime();
@@ -1306,10 +1306,10 @@
       const json = await res.json();
     
       alert(json.message);
-    }
+    } */
 
     // 画面に値を戻す処理
-    function renderDailyReport(events) {
+    /* function renderDailyReport(events) {
       alert("renderDailyReport START");
 
       // まず既存のカードを全部消す
@@ -1398,7 +1398,7 @@
           return;
         }
       });
-    }
+    } */
     
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
