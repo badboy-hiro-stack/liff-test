@@ -1332,7 +1332,7 @@
         const data = ev.eventData;
     
         // 🚚 出庫（start）
-        if (type === "start" && data.startstatus === false) {
+        if (type === "start" && data.startstatus == false) {
           document.getElementById("carNumber").value = data.carNumber || "";
           document.getElementById("startMeter").value = data.meter || "";
           document.getElementById("startTime").value = data.time || "";
@@ -1341,7 +1341,7 @@
         }
     
         // 📦 積み込み（load）
-        if (type === "load" && ev.unloadFlag === false) {
+        if (type === "load" && ev.unloadFlag == false) {
           const template = document.getElementById("loadingEventTemplate");
           const clone = template.content.cloneNode(true);
     
@@ -1363,7 +1363,7 @@
         }
     
         // 📤 荷降ろし（unload）
-        if (type === "unload" && ev.unloadFlag === false) {
+        if (type === "unload" && ev.unloadFlag == false) {
           const template = document.getElementById("unloadingEventTemplate");
           const clone = template.content.cloneNode(true);
     
@@ -1384,7 +1384,7 @@
         }
     
         // 🏁 入庫（end）
-        if (type === "end" && data.endstatus === false) {
+        if (type === "end" && data.endstatus == false) {
           const template = document.getElementById("endEventTemplate");
           const clone = template.content.cloneNode(true);
     
