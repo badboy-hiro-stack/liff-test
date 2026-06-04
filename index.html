@@ -2003,8 +2003,17 @@
       if (id === "screen-driverReport") {
 
         // 運行日をセット（出庫時刻から計算するなら後で差し替えOK）
-        const opDate = new Date().toISOString().slice(0, 10);
-        document.getElementById("reportOpDate").innerText = opDate;
+        /* const opDate = new Date().toISOString().slice(0, 10);
+        document.getElementById("reportOpDate").innerText = opDate; */
+        
+        // ★ すでに selectedDate がセットされている場合は上書きしない
+        const current = document.getElementById("selectedDate").value;
+      
+        if (!current) {
+          const opDate = new Date().toISOString().slice(0, 10);
+          document.getElementById("reportOpDate").innerText = opDate;
+          document.getElementById("selectedDate").value = opDate;
+        }
     
         // ドライバー名（ログイン時に取得した値を使う）
         document.getElementById("reportDriverName").innerText = driverName;
