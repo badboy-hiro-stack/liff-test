@@ -2002,20 +2002,20 @@
 
       // 運行日報画面を開いた時だけデータを読み込む
       if (id === "screen-driverReport") {
-
+        alert("運行日報データの読込");
         // 運行日をセット（出庫時刻から計算するなら後で差し替えOK）
-        const opDate = new Date().toISOString().slice(0, 10);
-        document.getElementById("reportOpDate").innerText = opDate;
+        /* const opDate = new Date().toISOString().slice(0, 10);
+        document.getElementById("reportOpDate").innerText = opDate; */
         
         // ★ すでに selectedDate がセットされている場合は上書きしない
-        /* const current = document.getElementById("selectedDate").value;
+        const current = document.getElementById("selectedDate").value;
       
         if (!current) {
           const opDate = new Date().toISOString().slice(0, 10);
           document.getElementById("reportOpDate").innerText = opDate;
           document.getElementById("selectedDate").value = opDate;
-        } */
-    
+        }
+        alert("運行日をセット");
         // ドライバー名（ログイン時に取得した値を使う）
         document.getElementById("reportDriverName").innerText = driverName;
     
