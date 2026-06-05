@@ -531,23 +531,24 @@
       <label>荷降ろし地（GPS自動）</label>
       <input type="text" class="unloadingPlace" readonly><br>
   
+      <label>荷降ろしメーター</label>
+      <input type="number" class="unloadingMeter" readonly><br>
+  
       <label>数量</label>
       <input type="number" class="unloadingQty" readonly><br>
   
       <label>単位</label>
       <input type="text" class="unloadingUnit" readonly><br>
   
+      <input type="text" class="unloadingStoreText" readonly style="display:none;"><br>
+  
       <label>備考</label>
       <textarea class="unloadingNote" placeholder="任意入力"></textarea><br>
   
       <label>荷降ろし開始時刻</label>
       <input type="text" class="unloadingStartTime" readonly><br>
-
-      <input type="hidden" class="unloadingRowIndex">
-
-      <!-- <button class="time-btn" onclick="saveUnloadingEvent()">荷降ろし完了</button> -->
-      <button class="time-btn" onclick="saveUnloading(this)">荷降ろし完了時刻を記録して保存</button>
   
+      <button class="time-btn" onclick="saveUnloading(this)">荷降ろし完了時刻を記録して保存</button>
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
   </template>
