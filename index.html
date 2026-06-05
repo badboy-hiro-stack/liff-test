@@ -1079,13 +1079,13 @@
     }
 
     // 積み込みイベント一覧を直接確認する（確認用コード）
-    /* function debugLoadEvents(events) {
+    function debugLoadEvents(events) {
       const loads = events.filter(ev => ev.eventType === "load");
       alert("積み込みイベント一覧:\n" + JSON.stringify(loads, null, 2));
-    } */
+    }
 
     // unloadFlag の状態を確認する（確認用コード）
-    /* async function debugUnloadingTarget() {
+    async function debugUnloadingTarget() {
       const driverName = document.getElementById("driverName").value;
     
       const payload = new URLSearchParams({
@@ -1097,7 +1097,7 @@
       const data = await res.json();
     
       alert("getUnloadingTarget の返却:\n" + JSON.stringify(data, null, 2));
-    } */
+    }
 
     // 店名プルダウンを埋める共通関数
     function fillStoreOptions(selectElem) {
