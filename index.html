@@ -499,13 +499,17 @@
       <input type="number" class="loadingQty" placeholder="例：18"><br>
   
       <label>単位</label>
+      <!-- ▼ 新規追加時に使うプルダウン -->
       <select class="loadingUnit">
           <option value="P">P（パレット）</option>
           <option value="台">台（台車）</option>
           <option value="C">C（カート）</option>
           <option value="ケース">ケース</option>
       </select><br>
-  
+
+      <!-- ▼ 復元時に使うテキストボックス（初期は非表示） -->
+      <input type="text" class="loadingUnitText" readonly style="display:none;"><br>
+      
       <label>店名</label>
   
       <!-- ▼ 新規追加時に使うプルダウン -->
@@ -632,7 +636,11 @@
       
       // 店名プルダウン
       loadStoreMaster(card.querySelector(".loadingStore"));
-  
+
+      // ▼ 新規追加時はプルダウンを表示、テキストを隠す
+      card.querySelector(".loadingUnit").style.display = "block";
+      card.querySelector(".loadingUnitText").style.display = "none";
+      
       // 開始時刻
       card.querySelector(".loadingStartTime").value = getNowTime();
   
