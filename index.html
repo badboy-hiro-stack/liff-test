@@ -1362,10 +1362,14 @@
           clone.querySelector(".loadingStartTime").value = data.startTime || "";
           clone.querySelector(".loadingEndTime").value = data.time || "";
           clone.querySelector(".loadingQty").value = data.qty || "";
-          clone.querySelector(".loadingUnit").value = data.unit || "";
+          clone.querySelector(".loadingUnitText").value = data.unit || "";
           clone.querySelector(".loadingStoreText").value = data.store || "";
           clone.querySelector(".loadingNote").value = data.note || "";
-    
+
+          // 復元時は UnitTText を表示
+          clone.querySelector(".loadingUnit").style.display = "none";
+          clone.querySelector(".loadingUnitText").style.display = "block";
+          
           // 復元時は storeText を表示
           clone.querySelector(".loadingStore").style.display = "none";
           clone.querySelector(".loadingStoreText").style.display = "block";
