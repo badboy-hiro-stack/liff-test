@@ -2008,22 +2008,19 @@
         document.getElementById("reportOpDate").innerText = opDate; */
         
         // ★ すでに selectedDate がセットされている場合は上書きしない
-        const current = document.getElementById("selectedDate").value;
-      
-        if (!current) {
-          const opDate = new Date().toISOString().slice(0, 10);
-          document.getElementById("reportOpDate").innerText = opDate;
+        let opDate = document.getElementById("selectedDate").value;
+        
+        if (!opDate) {
+          opDate = new Date().toISOString().slice(0, 10);
           document.getElementById("selectedDate").value = opDate;
         }
-        alert("運行日をセット");
-        // ドライバー名（ログイン時に取得した値を使う）
+        
+        document.getElementById("reportOpDate").innerText = opDate;
         document.getElementById("reportDriverName").innerText = driverName;
-    
-        // loadDailyReport に渡すために hidden input もセットしておく
-        document.getElementById("selectedDate").value = opDate;
         document.getElementById("driverName").value = driverName;
-    
+        
         loadDailyReport();
+
       }
       
       // 従業員退職処理
