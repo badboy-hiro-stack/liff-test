@@ -321,6 +321,14 @@ select {
   border-radius: 6px;
 }
 
+.card.loading-event select,
+.card.loading-event input[type="text"],
+.card.loading-event input[type="number"] {
+  display: block;
+  margin: 0 auto;   /* ← これで“枠”が中央に来る */
+}
+
+
 .current-box {
   font-size: 36px;
   padding: 12px;
