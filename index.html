@@ -1380,7 +1380,12 @@
           // 復元時は storeText を表示
           clone.querySelector(".loadingStore").style.display = "none";
           clone.querySelector(".loadingStoreText").style.display = "block";
-    
+
+          // loadingEndTime が入っていたらボタンを非表示
+          if (data.time) {
+              clone.querySelector(".time-btn").style.display = "none";
+          }
+          
           document.getElementById("loadingEvents").appendChild(clone);
           return;
         }
