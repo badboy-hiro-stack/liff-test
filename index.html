@@ -1356,9 +1356,9 @@
           document.getElementById("startTime").value = data.time || "";
           document.getElementById("startNote").value = data.note || "";
 
-          // 出庫時刻が入っていたらボタンを非表示
+          // ★ 出庫時刻が入っていたらボタンを非表示にする
           if (data.time) {
-              document.getElementById(".time-btn").style.display = "none";
+            document.querySelector("#startEventContainer .time-btn").style.display = "none";
           }
           
           return;
