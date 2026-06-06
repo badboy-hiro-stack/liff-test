@@ -1355,6 +1355,12 @@
           document.getElementById("startMeter").value = data.meter || "";
           document.getElementById("startTime").value = data.time || "";
           document.getElementById("startNote").value = data.note || "";
+
+          // 出庫時刻が入っていたらボタンを非表示
+          if (data.time) {
+              clone.querySelector(".time-btn").style.display = "none";
+          }
+          
           return;
         }
     
