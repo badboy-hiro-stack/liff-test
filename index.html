@@ -1955,7 +1955,27 @@
       showScreen("screen-applyForm");
     }
 
-    function getOperationDate(timeString) {
+    // 運行日を取得　2026/06/11　修正
+    function getOperationDate(receivedDateTime, timeString) {
+      // receivedDateTime: "2026/06/11 04:44:22"
+      // timeString: "04:42"
+    
+      // ① 受信日時の日付部分を使う（今日ではない）
+      const baseDate = new Date(receivedDateTime);
+    
+      // ② 時刻を解析
+      const [hour, minute] = timeString.split(":").map(Number);
+    
+      // ③ 20:00〜23:59 は翌日扱い
+      if (hour >= 20) {
+        baseDate.setDate(baseDate.getDate() + 1);
+      }
+    
+      // ④ YYYY-MM-DD 形式で返す
+      return baseDate.toISOString().slice(0, 10);
+    }
+
+    /* function getOperationDate(timeString) {
       // timeString は "HH:MM" を想定
       const [hour, minute] = timeString.split(":").map(Number);
     
@@ -1968,7 +1988,7 @@
     
       // YYYY-MM-DD 形式で返す
       return now.toISOString().slice(0, 10);
-    }
+    } */
 
     // すべてのイベントを送信　2026/5/22
     async function submitDriverReport() {
