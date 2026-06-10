@@ -1740,27 +1740,6 @@
           document.getElementById("unloadingEvents").appendChild(clone);
           return;
         }
-          
-        /* if (type === "unload" && ev.unloadFlag == false) {
-          alert("荷降ろしの復元開始");
-          const template = document.getElementById("unloadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-    
-          clone.querySelector(".unloadingPlace").value = data.pointName || "";
-          clone.querySelector(".unloadingMeter").value = data.meter || "";
-          clone.querySelector(".unloadingStartTime").value = data.startTime || "";
-          clone.querySelector(".unloadingEndTime").value = data.time || "";
-          clone.querySelector(".unloadingQty").value = data.qty || "";
-          clone.querySelector(".unloadingUnit").value = data.unit || "";
-          clone.querySelector(".unloadingStoreText").value = data.store || "";
-          clone.querySelector(".unloadingNote").value = data.note || "";
-    
-          clone.querySelector(".unloadingStore").style.display = "none";
-          clone.querySelector(".unloadingStoreText").style.display = "block";
-    
-          document.getElementById("unloadingEvents").appendChild(clone);
-          return;
-        } */
     
         // 🏁 入庫（end）
         if (type === "end" && data.endstatus == false) {
