@@ -558,7 +558,10 @@
   
       <label>荷降ろし開始時刻</label>
       <input type="text" class="unloadingStartTime" readonly><br>
-  
+
+      <!-- ★ 追加：荷降ろし開始ボタン -->
+      <button class="start-btn" onclick="startUnloadingEvent(this)">荷卸し開始</button>
+      
       <button class="time-btn" onclick="saveUnloading(this)">荷降ろし完了時刻を記録して保存</button>
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
@@ -855,8 +858,87 @@
       loadDailyReport();
     }
 
-    // 積み込み送信
+    // 積み込み送信　20260608修正
     async function saveLoadingEvent(button) {
+    
+      // ★ このボタンが属する loading-event カードを取得
+      const card = button.closest(".loading-event");
+    
+      // ★ 既にセットされている開始時刻を取得
+      const startTime = card.querySelector(".loadingStartTime").value;
+      
+      // ★ 完了時刻を自動セット
+      const endTime = getNowTime();
+      card.querySelector(".loadingEndTime").value = endTime;
+      
+      // ★ カード内の値を取得
+      const place = card.querySelector(".loadingPlace").value;
+      const meter = card.querySelector(".loadingMeter").value;
+      const qty = card.querySelector(".loadingQty").value;
+      const unit = card.querySelector(".loadingUnit").value;
+      const store = card.querySelector(".loadingStore").value;
+      const note = card.querySelector(".loadingNote").value;
+    
+      // ★ GPS取得
+      const pos = await getLocation();
+      const lat = pos.latitude;
+      const lng = pos.longitude;
+    
+      const params = new URLSearchParams();
+      params.append("mode", "loading");
+      params.append("driverName", driverName);
+      params.append("opDate", document.getElementById("selectedDate").value);
+      params.append("startTime", startTime);
+      params.append("time", endTime);
+      params.append("store", store);
+      params.append("meter", meter);
+      params.append("qty", qty);
+      params.append("unit", unit);
+      params.append("note", note);
+      params.append("lat", lat);
+      params.append("lng", lng);
+      params.append("pointName", place); 
+      
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        // ★★★ レスポンスを JSON として取得
+        const json = await res.json();
+    
+        // ★★★ 地点名を UI に反映
+        if (json.point) {
+          card.querySelector(".loadingPlace").value = json.point;
+        }
+    
+        // ★★★ ここから追加処理 ★★★
+    
+        // ★ ① 荷降ろしイベントを自動生成
+        await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            mode: "createUnloadingEvent",
+            loadingEventId: json.eventId   // ← GAS 側で返す eventId を使う
+          })
+        });
+    
+        // ★ ② 積み込みカードを UI から削除
+        card.remove();
+    
+        alert(json.message);
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    
+      alert("積み込みを保存しました");
+    }
+
+    /* async function saveLoadingEvent(button) {
 
       // ★ このボタンが属する loading-event カードを取得
       const card = button.closest(".loading-event");
@@ -917,7 +999,7 @@
         alert("fetch エラー: " + err);
       }
       alert("積み込みを保存しました");
-    }
+    } */
 
     // 荷降ろし登録時に「選択された積み込みだけ」完了させる
     /* function saveUnloadingEvent(data) {
@@ -983,8 +1065,126 @@
         `選択中の積み込み：行 ${rowIndex}`;
     } */
 
-    // 荷降ろし登録時に紐付ける　20260524　修正
+    async function startUnloadingEvent(button) {
+      const card = button.closest(".unloading-event");
+    
+      // ★ 自動で開始時刻をセット
+      const startTime = getNowTime();
+      card.querySelector(".unloadingStartTime").value = startTime;
+    
+      const eventId = card.dataset.eventId; // 荷降ろしイベントID
+    
+      const params = new URLSearchParams();
+      params.append("mode", "unloadingStart");
+      params.append("eventId", eventId);
+      params.append("startTime", startTime);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        if (json.status === "success") {
+          // ★ ボタンを非表示
+          button.style.display = "none";
+        } else {
+          alert(json.message);
+        }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    }
+
+    // 荷降ろし完了ボタン eventId仕様
     async function saveUnloading(button) {
+      button.disabled = true;
+      button.textContent = "処理中…";
+    
+      const card = button.closest(".unloading-event");
+      const eventId = card.dataset.eventId; // ★ 受信日時を eventId として送信
+      const endTime = getNowTime();
+      const note = card.querySelector(".unloadingNote").value;
+    
+      const payload = new URLSearchParams({
+        mode: "saveUnloading",
+        eventId: eventId,
+        endTime: endTime,
+        note: note
+      });
+    
+      try {
+        const res = await fetch(gasUrl, { method: "POST", body: payload });
+        const json = await res.json();
+    
+        alert(json.message);
+        card.remove();
+    
+      } catch (err) {
+        alert("荷降ろし保存エラー: " + err);
+        button.disabled = false;
+        button.textContent = "荷降ろし完了時刻を記録して保存";
+      }
+    }
+
+    /* async function saveUnloading(button) {
+      const card = button.closest(".unloading-event");
+    
+      // ★ 完了時刻を自動セット
+      const endTime = getNowTime();
+      card.querySelector(".unloadingEndTime").value = endTime;
+    
+      const eventId = card.dataset.eventId;
+    
+      const params = new URLSearchParams();
+      params.append("mode", "unloadingEnd");
+      params.append("eventId", eventId);
+      params.append("endTime", endTime);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        if (json.status === "success") {
+          // ★ UI から荷降ろしカードを削除
+          card.remove();
+        } else {
+          alert(json.message);
+        }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    } */
+
+    // カード生成時に eventId を保持
+    function createUnloadingCard(event) {
+      const template = document.getElementById("unloadingEventTemplate");
+      const card = template.content.cloneNode(true).querySelector(".unloading-event");
+    
+      // ★ A列（受信日時）を eventId として保持
+      card.dataset.eventId = event.receivedTime; // 例: "2026/05/25 20:05:53"
+    
+      // 他の項目を反映
+      card.querySelector(".unloadingPlace").value = event.pointName;
+      card.querySelector(".unloadingQty").value = event.qty;
+      card.querySelector(".unloadingUnit").value = event.unit;
+      card.querySelector(".unloadingNote").value = event.note;
+    
+      document.getElementById("unloadingContainer").appendChild(card);
+    }
+
+    // 荷降ろし登録時に紐付ける　20260524　修正
+    /* async function saveUnloading(button) {
 
       // ★ 連打防止：押した瞬間に無効化
       button.disabled = true;
@@ -1018,7 +1218,7 @@
         button.disabled = false;
         button.textContent = "荷降ろし完了時刻を記録して保存";
       }
-    }
+    } */
 
     // 入庫送信
     async function saveEndEvent() {
@@ -1396,8 +1596,39 @@
           return;
         }
     
-        // 📤 荷降ろし（unload）
-        if (type === "unload" && ev.unloadFlag == false) {
+        // 📤 荷降ろし（unload）20260610　修正
+        if (type === "unload" && ev.unloadingFlag == false) {
+          alert("荷降ろしの復元開始");
+          const template = document.getElementById("unloadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".unloading-event");
+        
+          // ★ eventId（受信日時）を保持
+          card.dataset.eventId = ev.receivedTime;
+        
+          // ★ UI 反映
+          card.querySelector(".unloadingPlace").value = data.pointName || "";
+          card.querySelector(".unloadingMeter").value = data.meter || "";
+          card.querySelector(".unloadingStartTime").value = data.startTime || "";
+          card.querySelector(".unloadingEndTime").value = data.time || "";
+          card.querySelector(".unloadingQty").value = data.qty || "";
+          card.querySelector(".unloadingUnit").value = data.unit || "";
+          card.querySelector(".unloadingStoreText").value = data.store || "";
+          card.querySelector(".unloadingNote").value = data.note || "";
+        
+          // ★ 開始済みなら開始ボタンを非表示
+          if (data.startTime) {
+            card.querySelector(".start-btn").style.display = "none";
+          }
+        
+          // ★ 完了済みなら復元しない（保険）
+          if (ev.unloadingFlag === true) return;
+        
+          document.getElementById("unloadingEvents").appendChild(clone);
+          return;
+        }
+          
+        /* if (type === "unload" && ev.unloadFlag == false) {
           alert("荷降ろしの復元開始");
           const template = document.getElementById("unloadingEventTemplate");
           const clone = template.content.cloneNode(true);
@@ -1416,7 +1647,7 @@
     
           document.getElementById("unloadingEvents").appendChild(clone);
           return;
-        }
+        } */
     
         // 🏁 入庫（end）
         if (type === "end" && data.endstatus == false) {
