@@ -1525,8 +1525,121 @@
       alert(json.message);
     } */
 
-    // 画面に値を戻す処理
+    // 画面に値を戻す処理 20260610 修正
     function renderDailyReport(events) {
+      alert("renderDailyReport START");
+    
+      // まず既存のカードを全部消す
+      document.getElementById("loadingEvents").innerHTML = "";
+      document.getElementById("unloadingEvents").innerHTML = "";
+    
+      const endCard = document.querySelector(".end-event");
+      if (endCard) endCard.innerHTML = "";
+    
+      // 出庫欄も初期化
+      document.getElementById("carNumber").value = "";
+      document.getElementById("startMeter").value = "";
+      document.getElementById("startTime").value = "";
+      document.getElementById("startNote").value = "";
+    
+      // ★ forEach → for...of に変更（return 問題を解決）
+      for (const ev of events) {
+        const type = ev.eventType;
+        const data = ev.eventData;
+    
+        // 🚚 出庫（start）
+        if (type === "start" && data.startstatus == false) {
+          alert("出庫の復元開始");
+    
+          document.getElementById("carNumber").value = data.carNumber || "";
+          document.getElementById("startMeter").value = data.meter || "";
+          document.getElementById("startTime").value = data.time || "";
+          document.getElementById("startNote").value = data.note || "";
+    
+          if (data.time) {
+            document.querySelector(".start-event .time-btn").style.display = "none";
+          }
+    
+          continue; // ★ 次のイベントへ
+        }
+    
+        // 📦 積み込み（load）
+        if (type === "load" && ev.unloadingFlag == false) {
+          alert("積み込みの復元開始");
+    
+          const template = document.getElementById("loadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".loadingPlace").value = data.pointName || "";
+          clone.querySelector(".loadingMeter").value = data.meter || "";
+          clone.querySelector(".loadingStartTime").value = data.startTime || "";
+          clone.querySelector(".loadingEndTime").value = data.time || "";
+          clone.querySelector(".loadingQty").value = data.qty || "";
+          clone.querySelector(".loadingUnitText").value = data.unit || "";
+          clone.querySelector(".loadingStoreText").value = data.store || "";
+          clone.querySelector(".loadingNote").value = data.note || "";
+    
+          clone.querySelector(".loadingUnit").style.display = "none";
+          clone.querySelector(".loadingUnitText").style.display = "block";
+    
+          clone.querySelector(".loadingStore").style.display = "none";
+          clone.querySelector(".loadingStoreText").style.display = "block";
+    
+          if (data.time) {
+            clone.querySelector(".time-btn").style.display = "none";
+          }
+    
+          document.getElementById("loadingEvents").appendChild(clone);
+          continue;
+        }
+    
+        // 📤 荷降ろし（unload）
+        if (type === "unload" && ev.unloadingFlag == false) {
+          alert("荷降ろしの復元開始");
+    
+          const template = document.getElementById("unloadingEventTemplate");
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".unloading-event");
+    
+          // ★ eventId（受信日時）を保持
+          card.dataset.eventId = ev.receivedTime;
+    
+          card.querySelector(".unloadingPlace").value = data.pointName || "";
+          card.querySelector(".unloadingMeter").value = data.meter || "";
+          card.querySelector(".unloadingStartTime").value = data.startTime || "";
+          card.querySelector(".unloadingEndTime").value = data.time || "";
+          card.querySelector(".unloadingQty").value = data.qty || "";
+          card.querySelector(".unloadingUnit").value = data.unit || "";
+          card.querySelector(".unloadingStoreText").value = data.store || "";
+          card.querySelector(".unloadingNote").value = data.note || "";
+    
+          if (data.startTime) {
+            card.querySelector(".start-btn").style.display = "none";
+          }
+    
+          document.getElementById("unloadingEvents").appendChild(clone);
+          continue;
+        }
+    
+        // 🏁 入庫（end）
+        if (type === "end" && data.endstatus == false) {
+          alert("入庫の復元開始");
+    
+          const template = document.getElementById("endEventTemplate");
+          const clone = template.content.cloneNode(true);
+    
+          clone.querySelector(".endPlace").value = data.pointName || "";
+          clone.querySelector(".endMeter").value = data.meter || "";
+          clone.querySelector(".endTime").value = data.time || "";
+          clone.querySelector(".endNote").value = data.note || "";
+    
+          document.querySelector(".end-event").appendChild(clone);
+          continue;
+        }
+      }
+    }
+
+    /* function renderDailyReport(events) {
       alert("renderDailyReport START");
 
       // まず既存のカードを全部消す
@@ -1665,7 +1778,7 @@
           return;
         }
       });
-    }
+    } */
     
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
