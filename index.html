@@ -816,31 +816,34 @@
       }
     }
 
-    // 出庫送信
+    // 出庫送信　2026/06/11　修正
     async function saveStartEvent() {
     
-      // 出庫時刻を取得
+      // 出庫時刻
       const startTimeValue = document.getElementById("startTime").value;
-
-      // 車両ナンバーを取得
+    
+      // 車両ナンバー
       const carNumber = document.getElementById("carNumber").value;
-      
-      // ★ 運行日を計算（getOperationDate を使う）
-      const opDate = getOperationDate(startTimeValue);
     
-      // ★ 画面に表示（運行日報画面に表示する用）
-      document.getElementById("reportOpDate").innerText = opDate;
-    
-      // ★ loadDailyReport 用の hidden input にもセット
-      document.getElementById("selectedDate").value = opDate;
-    
-      // ★ ドライバー名も hidden にセット
+      // ドライバー名
       const driver = document.getElementById("reportDriverName").innerText;
+    
+      // ★ 受信日時（eventId）を生成
+      const receivedDateTime = new Date();  
+      const eventId = receivedDateTime.toISOString();  // A列と同じ形式にする
+    
+      // ★ 運行日を計算（受信日時＋時刻で正しく判定）
+      const opDate = getOperationDate(receivedDateTime, startTimeValue);
+    
+      // ★ 画面に表示
+      document.getElementById("reportOpDate").innerText = opDate;
+      document.getElementById("selectedDate").value = opDate;
       document.getElementById("driverName").value = driver;
     
-      // ここから payload を作る
+      // ★ payload（GAS に送るデータ）
       const payload = {
         mode: "start",
+        eventId: eventId,          // ← これが重要
         opDate: opDate,
         driverName: driver,
         carNumber: carNumber,
