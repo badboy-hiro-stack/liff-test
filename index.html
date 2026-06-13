@@ -1611,7 +1611,7 @@
         }
     
         // 📤 荷降ろし（unload）
-        if (type === "unload" && ev.unloadingFlag == false) {
+        if (type === "unload" && ev.unloadFlag == false) {
           alert("荷降ろしの復元開始");
     
           const template = document.getElementById("unloadingEventTemplate");
@@ -1639,7 +1639,7 @@
         }
     
         // 🏁 入庫（end）
-        if (type === "end" && data.endstatus == false) {
+        if (type === "end") {
           alert("入庫の復元開始");
     
           const template = document.getElementById("endEventTemplate");
