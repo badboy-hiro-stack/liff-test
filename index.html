@@ -1279,7 +1279,7 @@
         body: payload
       });
     
-      const events = await res.json();
+      /* const events = await res.json();
 
       // ▼ 現状確認（修正ではない）
       events.forEach(ev => {
@@ -1288,7 +1288,21 @@
           "\nunloadFlag=" + ev.unloadFlag + " (" + typeof ev.unloadFlag + ")" +
           "\nstartstatus=" + ev.eventData?.startstatus + " (" + typeof ev.eventData?.startstatus + ")"
         );
+      }); */
+      // 確認用に一時的に変更
+      const events = await res.json();
+
+      alert("events.length = " + events.length);
+      
+      events.forEach((ev, idx) => {
+        alert(
+          "index=" + idx +
+          "\neventType=" + ev.eventType +
+          "\nunloadFlag=" + ev.unloadFlag +
+          "\nraw=" + JSON.stringify(ev, null, 2)
+        );
       });
+
       alert("受信した一覧URLSearchParams：\n" + JSON.stringify(events, null, 2));
 
       debugLoadEvents(events);
