@@ -1625,17 +1625,20 @@
           
           // ★ eventId（受信日時）を保持
           card.dataset.eventId = ev.receivedTime;
-    
+
+          alert("data=" + JSON.stringify(data));
+          alert("keys=" + Object.keys(data || {}));
+
           const d = data || {};  // ★ data が null/undefined でも落ちない
 
-          card.querySelector(".unloadingPlace").value = d.pointName || "";
-          card.querySelector(".unloadingMeter").value = d.meter || "";
-          card.querySelector(".unloadingStartTime").value = d.startTime || "";
-          card.querySelector(".unloadingEndTime").value = d.time || "";
-          card.querySelector(".unloadingQty").value = d.qty || "";
-          card.querySelector(".unloadingUnit").value = d.unit || "";
-          card.querySelector(".unloadingStoreText").value = d.store || "";
-          card.querySelector(".unloadingNote").value = d.note || "";
+          (card.querySelector(".unloadingPlace") || {}).value = d.pointName || "";
+          (card.querySelector(".unloadingMeter") || {}).value = d.meter || "";
+          (card.querySelector(".unloadingStartTime") || {}).value = d.startTime || "";
+          (card.querySelector(".unloadingEndTime") || {}).value = d.time || "";
+          (card.querySelector(".unloadingQty") || {}).value = d.qty || "";
+          (card.querySelector(".unloadingUnit") || {}).value = d.unit || "";
+          (card.querySelector(".unloadingStoreText") || {}).value = d.store || "";
+          (card.querySelector(".unloadingNote") || {}).value = d.note || "";
           
           if (d.startTime) {
             const btn = card.querySelector(".start-btn");
