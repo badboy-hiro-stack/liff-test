@@ -1629,50 +1629,45 @@
           alert("data=" + JSON.stringify(data));
           alert("keys=" + Object.keys(data || {}));
 
-          const d = data || {};  // ★ data が null/undefined でも落ちない
-
-          (card.querySelector(".unloadingPlace") || {}).value = d.pointName || "";
-          (card.querySelector(".unloadingMeter") || {}).value = d.meter || "";
-          (card.querySelector(".unloadingStartTime") || {}).value = d.startTime || "";
-          (card.querySelector(".unloadingEndTime") || {}).value = d.time || "";
-          (card.querySelector(".unloadingQty") || {}).value = d.qty || "";
-          (card.querySelector(".unloadingUnit") || {}).value = d.unit || "";
-          (card.querySelector(".unloadingStoreText") || {}).value = d.store || "";
-          (card.querySelector(".unloadingNote") || {}).value = d.note || "";
+          try {
+            const d = data || {};
+            card.querySelector(".unloadingPlace").value = d.pointName || "";
+            card.querySelector(".unloadingMeter").value = d.meter || "";
+            card.querySelector(".unloadingStartTime").value = d.startTime || "";
+            card.querySelector(".unloadingEndTime").value = d.time || "";
+            card.querySelector(".unloadingQty").value = d.qty || "";
+            card.querySelector(".unloadingUnit").value = d.unit || "";
+            card.querySelector(".unloadingStoreText").value = d.store || "";
+            card.querySelector(".unloadingNote").value = d.note || "";
           
-          if (d.startTime) {
-            const btn = card.querySelector(".start-btn");
-            if (btn) btn.style.display = "none";
+            if (d.startTime) {
+              const btn = card.querySelector(".start-btn");
+              if (btn) btn.style.display = "none";
+            }
+          
+            document.getElementById("unloadingEvents").appendChild(clone);
+            alert("荷降ろしカード追加完了");
+          } catch (err) {
+            alert("例外発生: " + err.message);
           }
-
-          const container = document.getElementById("unloadingEvents");
-          if (!container) {
-            alert("unloadingEvents が存在しません");
+    
+          // 🏁 入庫（end）
+          if (type === "end") {
+            alert("入庫の復元開始");
+      
+            const template = document.getElementById("endEventTemplate");
+            const clone = template.content.cloneNode(true);
+      
+            clone.querySelector(".endPlace").value = data.pointName || "";
+            clone.querySelector(".endMeter").value = data.meter || "";
+            clone.querySelector(".endTime").value = data.time || "";
+            clone.querySelector(".endNote").value = data.note || "";
+      
+            document.querySelector(".end-event").appendChild(clone);
             continue;
           }
-          
-          container.appendChild(clone);
-          alert("荷降ろしカード追加完了");
-          continue;
-        }
-    
-        // 🏁 入庫（end）
-        if (type === "end") {
-          alert("入庫の復元開始");
-    
-          const template = document.getElementById("endEventTemplate");
-          const clone = template.content.cloneNode(true);
-    
-          clone.querySelector(".endPlace").value = data.pointName || "";
-          clone.querySelector(".endMeter").value = data.meter || "";
-          clone.querySelector(".endTime").value = data.time || "";
-          clone.querySelector(".endNote").value = data.note || "";
-    
-          document.querySelector(".end-event").appendChild(clone);
-          continue;
         }
       }
-    }
 
     /* function renderDailyReport(events) {
       alert("renderDailyReport START");
