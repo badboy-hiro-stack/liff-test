@@ -1617,7 +1617,12 @@
           const template = document.getElementById("unloadingEventTemplate");
           const clone = template.content.cloneNode(true);
           const card = clone.querySelector(".unloading-event");
-    
+
+          if (!card) {
+            alert("テンプレート構造不一致: .unloading-event が見つかりません");
+            continue;
+          }
+          
           // ★ eventId（受信日時）を保持
           card.dataset.eventId = ev.receivedTime;
     
@@ -1631,10 +1636,18 @@
           card.querySelector(".unloadingNote").value = data.note || "";
     
           if (data.startTime) {
-            card.querySelector(".start-btn").style.display = "none";
+            const btn = card.querySelector(".start-btn");
+            if (btn) btn.style.display = "none";
           }
-    
-          document.getElementById("unloadingEvents").appendChild(clone);
+
+          const container = document.getElementById("unloadingEvents");
+          if (!container) {
+            alert("unloadingEvents が存在しません");
+            continue;
+          }
+          
+          container.appendChild(clone);
+          alert("荷降ろしカード追加完了");
           continue;
         }
     
