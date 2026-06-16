@@ -1078,7 +1078,9 @@
       card.querySelector(".unloadingStartTime").value = startTime;
     
       const eventId = card.dataset.eventId; // 荷降ろしイベントID
-    
+
+      alert("荷降ろしイベントID: " + eventId);
+      
       const params = new URLSearchParams();
       params.append("mode", "unloadingStart");
       params.append("eventId", eventId);
