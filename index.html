@@ -1626,7 +1626,9 @@
             alert("テンプレート構造不一致: .unloading-event が見つかりません");
             continue;
           }
-          
+
+          alert("unload ev=" + JSON.stringify(ev, null, 2));
+
           // ★ eventId（受信日時）を保持
           card.dataset.eventId = ev.receivedTime;
           /* const d = JSON.parse(ev.eventJson);
