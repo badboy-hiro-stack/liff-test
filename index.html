@@ -1628,9 +1628,9 @@
           }
           
           // ★ eventId（受信日時）を保持
-          /* card.dataset.eventId = ev.receivedTime; */
-          const d = JSON.parse(ev.eventJson);
-          card.dataset.eventId = d.loadingEventId;
+          card.dataset.eventId = ev.receivedTime;
+          /* const d = JSON.parse(ev.eventJson);
+          card.dataset.eventId = d.loadingEventId; */
 
           alert("data=" + JSON.stringify(data));
           alert("keys=" + Object.keys(data || {}));
