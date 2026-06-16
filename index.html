@@ -1630,7 +1630,7 @@
           alert("unload ev=" + JSON.stringify(ev, null, 2));
 
           // ★ eventId（受信日時）を保持
-          card.dataset.eventId = ev.receivedTime;
+          card.dataset.eventId = ev.timestamp;
           /* const d = JSON.parse(ev.eventJson);
           card.dataset.eventId = d.loadingEventId; */
 
