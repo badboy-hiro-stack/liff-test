@@ -543,7 +543,7 @@
       <input type="text" class="unloadingPlace" readonly><br>
   
       <label>荷降ろしメーター</label>
-      <input type="number" class="unloadingMeter" readonly><br>
+      <input type="number" class="unloadingMeter"><br>
   
       <label>数量</label>
       <input type="number" class="unloadingQty" readonly><br>
@@ -1109,10 +1109,21 @@
 
     // 荷降ろし完了ボタン eventId仕様
     async function saveUnloading(button) {
+      const card = button.closest(".unloading-event");
+
+      // ★ メーター必須チェック
+      const meterInput = card.querySelector(".unloadingMeter");
+      const meter = meterInput.value;
+    
+      if (!meter) {
+        alert("荷降ろしメーターを入力してください。");
+        meterInput.focus();
+        return; // ★ 処理を止める
+      }
+      
       button.disabled = true;
       button.textContent = "処理中…";
-    
-      const card = button.closest(".unloading-event");
+      
       const eventId = card.dataset.eventId; // ★ 受信日時を eventId として送信
       const endTime = getNowTime();
       const note = card.querySelector(".unloadingNote").value;
@@ -1121,7 +1132,8 @@
         mode: "unloadingEnd",
         eventId: eventId,
         endTime: endTime,
-        note: note
+        note: note,
+        meter: meter
       });
     
       try {
