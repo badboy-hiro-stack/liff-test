@@ -941,6 +941,7 @@
       }
     
       alert("積み込みを保存しました");
+      renderDailyReport(events);
     }
 
     /* async function saveLoadingEvent(button) {
@@ -1148,7 +1149,6 @@
         button.disabled = false;
         button.textContent = "荷降ろし完了時刻を記録して保存";
       }
-      renderDailyReport
     }
 
     /* async function saveUnloading(button) {
