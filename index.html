@@ -868,7 +868,17 @@
     
       // ★ このボタンが属する loading-event カードを取得
       const card = button.closest(".loading-event");
+
+      // ★ メーター必須チェック
+      const meterInput = card.querySelector(".loadingMeter");
+      const meter = meterInput.value;
     
+      if (!meter) {
+        alert("積み込みメーターを入力してください。");
+        meterInput.focus();
+        return; // ★ 処理を止める
+      }
+      
       // ★ 既にセットされている開始時刻を取得
       const startTime = card.querySelector(".loadingStartTime").value;
       
@@ -1071,7 +1081,54 @@
         `選択中の積み込み：行 ${rowIndex}`;
     } */
 
+    // 荷降ろし開始処理　メーター必須チェック付き
     async function startUnloadingEvent(button) {
+      const card = button.closest(".unloading-event");
+    
+      // ★ メーター必須チェック
+      const meterInput = card.querySelector(".unloadingMeter");
+      const meter = meterInput.value;
+    
+      if (!meter) {
+        alert("荷降ろしメーターを入力してください。");
+        meterInput.focus();
+        return; // ★ 処理を止める
+      }
+    
+      // ★ 自動で開始時刻をセット
+      const startTime = getNowTime();
+      card.querySelector(".unloadingStartTime").value = startTime;
+    
+      const eventId = card.dataset.eventId; // 荷降ろしイベントID
+    
+      const params = new URLSearchParams();
+      params.append("mode", "unloadingStart");
+      params.append("eventId", eventId);
+      params.append("startTime", startTime);
+      params.append("meter", meter);   // ★ GAS に送る
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        if (json.status === "success") {
+          // ★ ボタンを非表示
+          button.style.display = "none";
+        } else {
+          alert(json.message);
+        }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    }
+
+    /* async function startUnloadingEvent(button) {
       const card = button.closest(".unloading-event");
     
       // ★ 自動で開始時刻をセット
@@ -1106,7 +1163,7 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-    }
+    } */
 
     // 荷降ろし完了ボタン eventId仕様
     async function saveUnloading(button) {
