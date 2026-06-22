@@ -870,14 +870,14 @@
       const card = button.closest(".loading-event");
 
       // ★ メーター必須チェック
-      /* const meterInput = card.querySelector(".loadingMeter");
+      const meterInput = card.querySelector(".loadingMeter");
       const meter = meterInput.value;
     
       if (!meter) {
         alert("積み込みメーターを入力してください。");
         meterInput.focus();
         return; // ★ 処理を止める
-      } */
+      }
       
       // ★ 既にセットされている開始時刻を取得
       const startTime = card.querySelector(".loadingStartTime").value;
@@ -888,16 +888,16 @@
       
       // ★ カード内の値を取得
       const place = card.querySelector(".loadingPlace").value;
-      const meter = card.querySelector(".loadingMeter").value;
+      /* const meter = card.querySelector(".loadingMeter").value; */
       const qty = card.querySelector(".loadingQty").value;
       const unit = card.querySelector(".loadingUnit").value;
       const store = card.querySelector(".loadingStore").value;
       const note = card.querySelector(".loadingNote").value;
     
       // ★ GPS取得
-      const pos = await getLocation();
+      /* const pos = await getLocation();
       const lat = pos.latitude;
-      const lng = pos.longitude;
+      const lng = pos.longitude; */
     
       const params = new URLSearchParams();
       params.append("mode", "loading");
@@ -910,8 +910,8 @@
       params.append("qty", qty);
       params.append("unit", unit);
       params.append("note", note);
-      params.append("lat", lat);
-      params.append("lng", lng);
+      /* params.append("lat", lat);
+      params.append("lng", lng); */
       params.append("pointName", place); 
       
       try {
@@ -1704,6 +1704,10 @@
           /* const d = JSON.parse(ev.eventJson);
           card.dataset.eventId = d.loadingEventId; */
 
+          // ★ 未来対応：lat/lng を保持
+          card.dataset.lat = data.lat;
+          card.dataset.lng = data.lng;
+          
           alert("data=" + JSON.stringify(data));
           alert("keys=" + Object.keys(data || {}));
 
