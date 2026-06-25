@@ -967,16 +967,16 @@
       
       // ★ カード内の値を取得
       const place = card.querySelector(".loadingPlace").value;
-      /* const meter = card.querySelector(".loadingMeter").value; */
+      const meter = card.querySelector(".loadingMeter").value;
       const qty = card.querySelector(".loadingQty").value;
       const unit = card.querySelector(".loadingUnit").value;
       const store = card.querySelector(".loadingStore").value;
       const note = card.querySelector(".loadingNote").value;
     
       // ★ GPS取得
-      /* const pos = await getLocation();
+      const pos = await getLocation();
       const lat = pos.latitude;
-      const lng = pos.longitude; */
+      const lng = pos.longitude;
     
       const params = new URLSearchParams();
       params.append("mode", "loading");
@@ -989,8 +989,8 @@
       params.append("qty", qty);
       params.append("unit", unit);
       params.append("note", note);
-      /* params.append("lat", lat);
-      params.append("lng", lng); */
+      params.append("lat", lat);
+      params.append("lng", lng);
       params.append("pointName", place); 
       
       try {
