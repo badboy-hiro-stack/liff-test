@@ -658,13 +658,13 @@
       card.querySelector(".loadingStartTime").value = startTime;
   
       // ★ まずカードを DOM に追加（ここ重要）
-      /* document.getElementById("loadingEvents").appendChild(clone); */
+      document.getElementById("loadingEvents").appendChild(clone);
       // ★ DOM に追加
-      const parent = document.getElementById("loadingEvents");
-      parent.appendChild(clone);
+      /* const parent = document.getElementById("loadingEvents");
+      parent.appendChild(clone); */
 
       // ★ append 後の card を再取得（これが本物）
-      const card = parent.lastElementChild;
+      /* const card = parent.lastElementChild; */
       
       // ★ GPS 取得
       const pos = await getLocation();
