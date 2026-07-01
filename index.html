@@ -942,10 +942,39 @@
     
         // ★ 再描画
         /* renderDailyReport(events); */
+
+        // ★ 荷降ろしカードを差し込む
+        appendUnloadingEventCard(json.unloadingEventId);
     
       } catch (err) {
         alert("fetch エラー: " + err);
       }
+    }
+
+    function appendUnloadingEventCard(unloadingEventId) {
+      google.script.run
+        .withSuccessHandler(function(eventData) {
+          renderUnloadingCard(eventData.eventJson);
+        })
+        .getEventById(unloadingEventId);
+    }
+
+    function renderUnloadingCard(json) {
+      const container = document.getElementById("dailyReportContainer");
+    
+      const card = document.createElement("div");
+      card.className = "event-card unloading-card";
+    
+      card.innerHTML = `
+        <h3>荷降ろし</h3>
+        <p>店舗：${json.store}</p>
+        <p>数量：${json.qty} ${json.unit}</p>
+        <p>備考：${json.note}</p>
+        <p>地点：${json.pointName}</p>
+        <p>時刻：${json.time}</p>
+      `;
+    
+      container.appendChild(card);
     }
 
     // 積み込み送信　20260608修正
