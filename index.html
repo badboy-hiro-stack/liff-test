@@ -880,7 +880,7 @@
     }
 
     // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）2026/07/01二重クリック防止追加
-    async function saveLoadingEvent(button) {
+    /* async function saveLoadingEvent(button) {
 
       // ★ 二重クリック防止
       button.disabled = true;
@@ -945,9 +945,9 @@
         button.disabled = false;
         button.textContent = "積み込み完了";
       }
-    }
+    } */
 
-    /* async function saveLoadingEvent(button) {
+    async function saveLoadingEvent(button) {
 
       const card = button.closest(".loading-event");
     
@@ -1013,7 +1013,7 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-    } */
+    }
 
     function appendUnloadingEventCard(unloadingEventId) {
       google.script.run
