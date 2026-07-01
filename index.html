@@ -528,7 +528,7 @@
       <label>備考</label>
       <textarea class="loadingNote" placeholder="任意入力"></textarea><br>
   
-      <button class="time-btn" onclick="saveLoadingEvent(this)">荷積み完了時刻を記録して保存</button>
+      <button class="time-btn" onclick="(this)">荷積み完了時刻を記録して保存</button>
   
       <button class="delete-btn" onclick="deleteEvent(this)">削除</button>
     </div>
@@ -879,8 +879,75 @@
       loadDailyReport();
     }
 
-    // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）
+    // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）2026/07/01二重クリック防止追加
     async function saveLoadingEvent(button) {
+
+      // ★ 二重クリック防止
+      button.disabled = true;
+      button.textContent = "処理中…";
+    
+      const card = button.closest(".loading-event");
+    
+      const eventId = card.dataset.eventId;
+      if (!eventId) {
+        alert("eventId がありません（loadingStart が未実行）");
+        return;
+      }
+    
+      const meterInput = card.querySelector(".loadingMeter");
+      const meter = meterInput.value;
+    
+      if (!meter) {
+        alert("積み込みメーターを入力してください。");
+        meterInput.focus();
+        button.disabled = false;
+        button.textContent = "積み込み完了";
+        return;
+      }
+    
+      const startTime = card.querySelector(".loadingStartTime").value;
+    
+      const endTime = getNowTime();
+      card.querySelector(".loadingEndTime").value = endTime;
+    
+      const qty = card.querySelector(".loadingQty").value;
+      const unit = card.querySelector(".loadingUnit").value;
+      const store = card.querySelector(".loadingStore").value;
+      const note = card.querySelector(".loadingNote").value;
+    
+      const params = new URLSearchParams();
+      params.append("mode", "loadingEnd");
+      params.append("eventId", eventId);
+      params.append("time", endTime);
+      params.append("store", store);
+      params.append("meter", meter);
+      params.append("qty", qty);
+      params.append("unit", unit);
+      params.append("note", note);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        alert(json.message);
+    
+        card.remove();
+    
+        appendUnloadingEventCard(json.unloadingEventId);
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+        button.disabled = false;
+        button.textContent = "積み込み完了";
+      }
+    }
+
+    /* async function saveLoadingEvent(button) {
 
       const card = button.closest(".loading-event");
     
@@ -949,7 +1016,7 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-    }
+    } */
 
     function appendUnloadingEventCard(unloadingEventId) {
       google.script.run
