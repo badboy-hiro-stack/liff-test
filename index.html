@@ -879,6 +879,74 @@
       loadDailyReport();
     }
 
+    // 動作確認用に古いコードで試す
+    async function saveLoadingEvent(button) {
+
+      const card = button.closest(".loading-event");
+    
+      // ★ eventId（loadingStart で発行された ID）を取得
+      const eventId = card.dataset.eventId;
+      if (!eventId) {
+        alert("eventId がありません（loadingStart が未実行）");
+        return;
+      }
+    
+      // ★ メーター必須チェック
+      const meterInput = card.querySelector(".loadingMeter");
+      const meter = meterInput.value;
+    
+      if (!meter) {
+        alert("積み込みメーターを入力してください。");
+        meterInput.focus();
+        return;
+      }
+    
+      // ★ 既にセットされている開始時刻
+      const startTime = card.querySelector(".loadingStartTime").value;
+    
+      // ★ 完了時刻を自動セット
+      const endTime = getNowTime();
+      card.querySelector(".loadingEndTime").value = endTime;
+    
+      // ★ カード内の値を取得
+      const qty = card.querySelector(".loadingQty").value;
+      const unit = card.querySelector(".loadingUnit").value;
+      const store = card.querySelector(".loadingStore").value;
+      const note = card.querySelector(".loadingNote").value;
+    
+      // ★ GPS取得は不要（loadingStart で済んでいる）
+    
+      const params = new URLSearchParams();
+      params.append("mode", "loadingEnd");
+      params.append("eventId", eventId);
+      params.append("time", endTime);
+      params.append("store", store);
+      params.append("meter", meter);
+      params.append("qty", qty);
+      params.append("unit", unit);
+      params.append("note", note);
+    
+      try {
+        const res = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params
+        });
+    
+        const json = await res.json();
+    
+        alert(json.message);
+    
+        // ★ 積み込みカードを UI から削除
+        card.remove();
+    
+        // ★ 再描画
+        /* renderDailyReport(events); */
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    }
     // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）2026/07/01二重クリック防止追加
     /* async function saveLoadingEvent(button) {
 
@@ -947,7 +1015,7 @@
       }
     } */
 
-    async function saveLoadingEvent(button) {
+    /* async function saveLoadingEvent(button) {
 
       const card = button.closest(".loading-event");
     
@@ -1013,7 +1081,7 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-    }
+    } */
 
     function appendUnloadingEventCard(unloadingEventId) {
       google.script.run
