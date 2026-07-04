@@ -939,6 +939,9 @@
         const json = await res.json();
     
         alert(json.message);
+
+        // ★ 荷降ろしカードを追加（これだけで動く）
+        appendUnloadingEventCard(json.unloadingEventId);
     
         // ★ 積み込みカードを UI から削除
         card.remove();
