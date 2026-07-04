@@ -882,6 +882,10 @@
     // 動作確認用に古いコードで試す
     async function saveLoadingEvent(button) {
 
+      // ★ 二重クリック防止
+      button.disabled = true;
+      button.textContent = "処理中…";
+
       const card = button.closest(".loading-event");
     
       // ★ eventId（loadingStart で発行された ID）を取得
@@ -945,6 +949,8 @@
     
       } catch (err) {
         alert("fetch エラー: " + err);
+        button.disabled = false;
+        button.textContent = "積み込み完了";
       }
     }
     
