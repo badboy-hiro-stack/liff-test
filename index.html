@@ -1092,13 +1092,32 @@
       }
     } */
 
-    function appendUnloadingEventCard(unloadingEventId) {
+    // fetch 版に変更 GitHub Pages対応
+    async function appendUnloadingEventCard(unloadingEventId) {
+      try {
+        // ★ GAS WebアプリのURLを使ってデータ取得
+        const res = await fetch(`${gasUrl}?mode=getEventById&eventId=${unloadingEventId}`);
+        const json = await res.json();
+    
+        // ★ eventJson が存在する場合のみ描画
+        if (json && json.eventJson) {
+          renderUnloadingCard(json.eventJson);
+        } else {
+          alert("荷降ろしイベントのデータが取得できません。");
+        }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    }
+
+    /* function appendUnloadingEventCard(unloadingEventId) {
       google.script.run
         .withSuccessHandler(function(eventData) {
           renderUnloadingCard(eventData.eventJson);
         })
         .getEventById(unloadingEventId);
-    }
+    } */
 
     function renderUnloadingCard(json) {
       const container = document.getElementById("dailyReportContainer");
@@ -1170,7 +1189,7 @@
       params.append("pointName", place); 
       
       try {
-        const res = await fetch(gasUrl, {
+        const res = await fetch(, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
@@ -1187,7 +1206,7 @@
         // ★★★ ここから追加処理 ★★★
     
         // ★ ① 荷降ろしイベントを自動生成
-        await fetch(gasUrl, {
+        await fetch(, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
@@ -1250,7 +1269,7 @@
       params.append("pointName", place); 
       
       try {
-        const res = await fetch(gasUrl, {
+        const res = await fetch(, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params
@@ -1289,7 +1308,7 @@
         driverName: employeeName
       });
     
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
+      const res = await fetch(, { method: "POST", body: payload });
       const list = await res.json();
     
       const container = document.getElementById("loadingEventList");
