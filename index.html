@@ -1149,6 +1149,33 @@
 
     function renderUnloadingCard(json) {
       const container = document.getElementById("unloadingEvents");
+      if (!container) {
+        alert("unloadingEvents が見つかりません。HTML側を確認してください。");
+        return;
+      }
+    
+      const template = document.getElementById("unloadingEventTemplate");
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".unloading-event");
+    
+      card.querySelector(".unloadingPlace").value = json.pointName || "";
+      card.querySelector(".unloadingMeter").value = json.meter || "";
+      card.querySelector(".unloadingQty").value = json.qty || "";
+      card.querySelector(".unloadingUnit").value = json.unit || "";
+      card.querySelector(".unloadingStoreText").value = json.store || "";
+      card.querySelector(".unloadingNote").value = json.note || "";
+      card.querySelector(".unloadingStartTime").value = json.startTime || "";
+      card.querySelector(".unloadingEndTime").value = json.time || "";
+    
+      if (json.startTime) {
+        card.querySelector(".start-btn").style.display = "none";
+      }
+    
+      container.appendChild(clone);
+    }
+
+    /* function renderUnloadingCard(json) {
+      const container = document.getElementById("unloadingEvents");
     
       const card = document.createElement("div");
       card.className = "event-card unloading-card";
@@ -1163,7 +1190,7 @@
       `;
     
       container.appendChild(card);
-    }
+    } */
 
     // 積み込み送信　20260608修正
     /* async function saveLoadingEvent(button) {
