@@ -1120,7 +1120,7 @@
     } */
 
     // 荷降ろしイベントのテンプレートに合わせる　2026/07/05
-    function renderUnloadingCard(json) {
+    /* function renderUnloadingCard(json) {
       const container = document.getElementById("dailyReportContainer");
       const template = document.getElementById("unloadingEventTemplate");
     
@@ -1145,9 +1145,9 @@
     
       // ★ コンテナに追加
       container.appendChild(clone);
-    }
+    } */
 
-    /* function renderUnloadingCard(json) {
+    function renderUnloadingCard(json) {
       const container = document.getElementById("unloadingEvents");
     
       const card = document.createElement("div");
@@ -1163,7 +1163,7 @@
       `;
     
       container.appendChild(card);
-    } */
+    }
 
     // 積み込み送信　20260608修正
     /* async function saveLoadingEvent(button) {
