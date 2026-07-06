@@ -1158,7 +1158,10 @@
       const template = document.getElementById("unloadingEventTemplate");
       const clone = template.content.cloneNode(true);
       const card = clone.querySelector(".unloading-event");
-    
+
+      // ★ ここが重要：eventId をセットする
+      card.dataset.eventId = json.eventId; 
+      
       card.querySelector(".unloadingPlace").value = json.pointName || "";
       card.querySelector(".unloadingMeter").value = json.meter || "";
       card.querySelector(".unloadingQty").value = json.qty || "";
