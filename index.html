@@ -1092,8 +1092,32 @@
       }
     } */
 
-    // fetch 版に変更 GitHub Pages対応
+    // fetch 版に変更 GitHub Pages対応　2026/07/07修正
     async function appendUnloadingEventCard(unloadingEventId) {
+      try {
+        const res = await fetch(`${gasUrl}?mode=getEventById&eventId=${unloadingEventId}`);
+        const json = await res.json();
+    
+        if (json && json.eventJson) {
+    
+          // ★ eventId を eventJson に合体させる
+          const merged = {
+            eventId: json.eventId,
+            ...json.eventJson
+          };
+    
+          renderUnloadingCard(merged);
+    
+        } else {
+          alert("荷降ろしイベントのデータが取得できません。");
+        }
+    
+      } catch (err) {
+        alert("fetch エラー: " + err);
+      }
+    }
+
+    /* async function appendUnloadingEventCard(unloadingEventId) {
       try {
         // ★ GAS WebアプリのURLを使ってデータ取得
         const res = await fetch(`${gasUrl}?mode=getEventById&eventId=${unloadingEventId}`);
@@ -1109,7 +1133,7 @@
       } catch (err) {
         alert("fetch エラー: " + err);
       }
-    }
+    } */
 
     /* function appendUnloadingEventCard(unloadingEventId) {
       google.script.run
