@@ -538,8 +538,11 @@
   <template id="unloadingEventTemplate">
     <div class="card unloading-event">
       <h3>③ 荷降ろし</h3>
-  
-      <label>荷降ろし地（GPS自動）</label>
+
+      <label>積み込み地</label>
+      <input type="text" class="loadingPlace" readonly><br>
+      
+      <label>荷降ろし地（店舗名）</label>
       <input type="text" class="unloadingPlace" readonly><br>
   
       <label>荷降ろしメーター</label>
@@ -1185,8 +1188,9 @@
 
       // ★ ここが重要：eventId をセットする
       card.dataset.eventId = json.eventId; 
-      
-      card.querySelector(".unloadingPlace").value = json.pointName || "";
+
+      card.querySelector(".loadingPlace").value = json.pointName || "";
+      card.querySelector(".unloadingPlace").value = json.store || "";
       card.querySelector(".unloadingMeter").value = json.meter || "";
       card.querySelector(".unloadingQty").value = json.qty || "";
       card.querySelector(".unloadingUnit").value = json.unit || "";
