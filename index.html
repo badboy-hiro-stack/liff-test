@@ -28,6 +28,7 @@
     <button class="btnadmin" onclick="openApproveList()">承認待ち一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showEmployeeEditScreen()">従業員情報編集</button>
+    <button class="btnadmin" onclick="showlocationRegister()">地点登録（店舗・センター・市場）</button>
     
     <p></p>
     <button class="btnadmin-Retire" onclick="showScreen('screen-employeeRetire')">従業員退職処理</button>
@@ -477,7 +478,64 @@
   
     <button class="submit-btn" onclick="submitDriverReport()">運行日報を送信する</button>
   </div>
+
+  <!-- ▼ 地点登録画面 -->
+  <div id="screen-locationRegister" class="screen" style="display:none; padding:20px;">
   
+    <h2>地点登録（店舗・センター・市場）</h2>
+  
+    <!-- 登録方法選択 -->
+    <fieldset style="margin-bottom:15px;">
+      <legend>登録方法を選択</legend>
+      <label>
+        <input type="radio" name="locationMode" value="gps" checked>
+        GPSで登録（現地）
+      </label><br>
+      <label>
+        <input type="radio" name="locationMode" value="map">
+        地図から登録（事務所）
+      </label>
+    </fieldset>
+  
+    <!-- 地点情報 -->
+    <div style="margin-bottom:15px;">
+      <label>地点名（店舗名）</label><br>
+      <input type="text" id="locationName" style="width:100%;" placeholder="例：AVE 平成店">
+    </div>
+  
+    <div style="margin-bottom:15px;">
+      <label>種別</label><br>
+      <select id="locationType" style="width:100%;">
+        <option value="店舗">店舗</option>
+        <option value="センター">センター</option>
+        <option value="市場">市場</option>
+        <option value="テスト用">テスト用</option>
+      </select>
+    </div>
+  
+    <!-- 座標情報 -->
+    <div style="margin-bottom:15px;">
+      <label>座標（緯度・経度）</label><br>
+      <input type="text" id="locationLat" style="width:100%;" placeholder="緯度（例：35.27104）"><br>
+      <input type="text" id="locationLng" style="width:100%; margin-top:5px;" placeholder="経度（例：139.68601）">
+    </div>
+  
+    <!-- 操作ボタン（モード別） -->
+    <div style="margin-bottom:15px;">
+      <button class="btnadmin" onclick="getCurrentLocation()">位置情報を取得（GPS）</button>
+      <button class="btnadmin" onclick="openLocationMap()">地図から選択</button>
+    </div>
+  
+    <!-- 登録ボタン -->
+    <div style="margin-bottom:15px;">
+      <button class="btnadmin" onclick="registerLocation()">地点登録</button>
+    </div>
+  
+    <!-- 戻る -->
+    <button class="back-button" onclick="showScreen('screen-adminMenu')">管理者Menuへ戻る</button>
+  
+  </div>
+
   <!-- 積み込みテンプレート -->
   <template id="loadingEventTemplate">
     <div class="card loading-event">
@@ -2915,6 +2973,29 @@
     function showEmployeeEditScreen() {
       showScreen("screen-employeeEdit");
       loadEmployeeListForEdit();
+    }
+
+    // ▼ 地点登録画面を開くときの関数
+    function showlocationRegister() {
+    
+      // 1. 入力欄の初期化
+      document.getElementById("locationName").value = "";
+      document.getElementById("locationLat").value = "";
+      document.getElementById("locationLng").value = "";
+    
+      // 2. 種別プルダウン初期化（デフォルト：店舗）
+      document.getElementById("locationType").value = "店舗";
+    
+      // 3. 登録方法（GPS/地図）の初期化（デフォルト：GPS）
+      const modeGps = document.querySelector("input[name='locationMode'][value='gps']");
+      if (modeGps) modeGps.checked = true;
+    
+      // 4. 地図モードの初期化（必要なら）
+      // 例：地図を非表示にする、ピンをクリアするなど
+      // hideLocationMap(); ← 地図UIを作ったらここで初期化
+    
+      // 5. 画面表示
+      showScreen("screen-locationRegister");
     }
 
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
