@@ -564,13 +564,6 @@
           <option value="C">C（カート）</option>
           <option value="ケース">ケース</option>
       </select>
-      <!-- <select class="loadingUnit" 
-        style="width:90%; box-sizing:border-box; padding-left:8px; padding-right:8px;">
-          <option value="P">P（パレット）</option>
-          <option value="台">台（台車）</option>
-          <option value="C">C（カート）</option>
-          <option value="ケース">ケース</option>
-      </select> -->
 
       <!-- ▼ 復元時に使うテキストボックス（初期は非表示） -->
       <input type="text" class="loadingUnitText" readonly style="display:none;">
@@ -720,12 +713,6 @@
   
       // ★ まずカードを DOM に追加（ここ重要）
       document.getElementById("loadingEvents").appendChild(clone);
-      // ★ DOM に追加
-      /* const parent = document.getElementById("loadingEvents");
-      parent.appendChild(clone); */
-
-      // ★ append 後の card を再取得（これが本物）
-      /* const card = parent.lastElementChild; */
       
       // ★ GPS 取得
       const pos = await getLocation();
@@ -759,26 +746,6 @@
       }
       alert("積み込みイベントを開始しました");
     }
-
-    // 積み込み復元
-    /* function restoreLoadingEvent(ev) {
-      const template = document.getElementById("loadingEventTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".loading-event");
-    
-      // ★ 店名プルダウンを読み込んでから値をセット
-      loadStoreMaster(card.querySelector(".loadingStore"), () => {
-        card.querySelector(".loadingStore").value = ev.eventData.storeName || "";
-      });
-    
-      card.querySelector(".loadingQty").value = ev.eventData.qty || "";
-      card.querySelector(".loadingUnit").value = ev.eventData.unit || "";
-      card.querySelector(".loadingNote").value = ev.eventData.note || "";
-      card.querySelector(".loadingStartTime").value = ev.eventData.startTime || "";
-      card.querySelector(".loadingEndTime").value = ev.eventData.time || "";
-    
-      document.getElementById("loadingEvents").appendChild(clone);
-    } */
 
     // 降ろし追加（複数件対応）
     async function addUnloadingEvent() {
@@ -940,7 +907,7 @@
       loadDailyReport();
     }
 
-    // 動作確認用に古いコードで試す
+    // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）2026/07/01二重クリック防止追加
     async function saveLoadingEvent(button) {
       const card = button.closest(".loading-event");
     
@@ -1016,142 +983,6 @@
         button.textContent = "荷積み完了時刻を記録して保存";
       }
     }
-    
-    // 積み込み送信　20260623　積み込み完了時の処理を修正（位置情報を取得しない）2026/07/01二重クリック防止追加
-    /* async function saveLoadingEvent(button) {
-
-      // ★ 二重クリック防止
-      button.disabled = true;
-      button.textContent = "処理中…";
-    
-      const card = button.closest(".loading-event");
-    
-      const eventId = card.dataset.eventId;
-      if (!eventId) {
-        alert("eventId がありません（loadingStart が未実行）");
-        return;
-      }
-    
-      const meterInput = card.querySelector(".loadingMeter");
-      const meter = meterInput.value;
-    
-      if (!meter) {
-        alert("積み込みメーターを入力してください。");
-        meterInput.focus();
-        button.disabled = false;
-        button.textContent = "積み込み完了";
-        return;
-      }
-    
-      const startTime = card.querySelector(".loadingStartTime").value;
-    
-      const endTime = getNowTime();
-      card.querySelector(".loadingEndTime").value = endTime;
-    
-      const qty = card.querySelector(".loadingQty").value;
-      const unit = card.querySelector(".loadingUnit").value;
-      const store = card.querySelector(".loadingStore").value;
-      const note = card.querySelector(".loadingNote").value;
-    
-      const params = new URLSearchParams();
-      params.append("mode", "loadingEnd");
-      params.append("eventId", eventId);
-      params.append("time", endTime);
-      params.append("store", store);
-      params.append("meter", meter);
-      params.append("qty", qty);
-      params.append("unit", unit);
-      params.append("note", note);
-    
-      try {
-        const res = await fetch(gasUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        const json = await res.json();
-    
-        alert(json.message);
-    
-        card.remove();
-    
-        appendUnloadingEventCard(json.unloadingEventId);
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-        button.disabled = false;
-        button.textContent = "積み込み完了";
-      }
-    } */
-
-    /* async function saveLoadingEvent(button) {
-
-      const card = button.closest(".loading-event");
-    
-      // ★ eventId（loadingStart で発行された ID）を取得
-      const eventId = card.dataset.eventId;
-      if (!eventId) {
-        alert("eventId がありません（loadingStart が未実行）");
-        return;
-      }
-    
-      // ★ メーター必須チェック
-      const meterInput = card.querySelector(".loadingMeter");
-      const meter = meterInput.value;
-    
-      if (!meter) {
-        alert("積み込みメーターを入力してください。");
-        meterInput.focus();
-        return;
-      }
-    
-      // ★ 既にセットされている開始時刻
-      const startTime = card.querySelector(".loadingStartTime").value;
-    
-      // ★ 完了時刻を自動セット
-      const endTime = getNowTime();
-      card.querySelector(".loadingEndTime").value = endTime;
-    
-      // ★ カード内の値を取得
-      const qty = card.querySelector(".loadingQty").value;
-      const unit = card.querySelector(".loadingUnit").value;
-      const store = card.querySelector(".loadingStore").value;
-      const note = card.querySelector(".loadingNote").value;
-    
-      // ★ GPS取得は不要（loadingStart で済んでいる）
-    
-      const params = new URLSearchParams();
-      params.append("mode", "loadingEnd");
-      params.append("eventId", eventId);
-      params.append("time", endTime);
-      params.append("store", store);
-      params.append("meter", meter);
-      params.append("qty", qty);
-      params.append("unit", unit);
-      params.append("note", note);
-    
-      try {
-        const res = await fetch(gasUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        const json = await res.json();
-    
-        alert(json.message);
-    
-        // ★ 積み込みカードを UI から削除
-        card.remove();
-
-        // ★ 荷降ろしカードを差し込む
-        appendUnloadingEventCard(json.unloadingEventId);
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-    } */
 
     // fetch 版に変更 GitHub Pages対応　2026/07/07修正
     async function appendUnloadingEventCard(unloadingEventId) {
@@ -1177,60 +1008,6 @@
         alert("fetch エラー: " + err);
       }
     }
-
-    /* async function appendUnloadingEventCard(unloadingEventId) {
-      try {
-        // ★ GAS WebアプリのURLを使ってデータ取得
-        const res = await fetch(`${gasUrl}?mode=getEventById&eventId=${unloadingEventId}`);
-        const json = await res.json();
-    
-        // ★ eventJson が存在する場合のみ描画
-        if (json && json.eventJson) {
-          renderUnloadingCard(json.eventJson);
-        } else {
-          alert("荷降ろしイベントのデータが取得できません。");
-        }
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-    } */
-
-    /* function appendUnloadingEventCard(unloadingEventId) {
-      google.script.run
-        .withSuccessHandler(function(eventData) {
-          renderUnloadingCard(eventData.eventJson);
-        })
-        .getEventById(unloadingEventId);
-    } */
-
-    // 荷降ろしイベントのテンプレートに合わせる　2026/07/05
-    /* function renderUnloadingCard(json) {
-      const container = document.getElementById("dailyReportContainer");
-      const template = document.getElementById("unloadingEventTemplate");
-    
-      // ★ テンプレートを複製
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".unloading-event");
-    
-      // ★ 各項目に値を代入
-      card.querySelector(".unloadingPlace").value = json.pointName || "";
-      card.querySelector(".unloadingMeter").value = json.meter || "";
-      card.querySelector(".unloadingQty").value = json.qty || "";
-      card.querySelector(".unloadingUnit").value = json.unit || "";
-      card.querySelector(".unloadingStoreText").value = json.store || "";
-      card.querySelector(".unloadingNote").value = json.note || "";
-      card.querySelector(".unloadingStartTime").value = json.startTime || "";
-      card.querySelector(".unloadingEndTime").value = json.time || "";
-    
-      // ★ 開始済みなら開始ボタンを非表示
-      if (json.startTime) {
-        card.querySelector(".start-btn").style.display = "none";
-      }
-    
-      // ★ コンテナに追加
-      container.appendChild(clone);
-    } */
 
     // ターゲットをunloadingEventsに指定
     function renderUnloadingCard(json) {
@@ -1264,241 +1041,8 @@
       container.appendChild(clone);
     }
 
-    /* function renderUnloadingCard(json) {
-      const container = document.getElementById("unloadingEvents");
-    
-      const card = document.createElement("div");
-      card.className = "event-card unloading-card";
-    
-      card.innerHTML = `
-        <h3>荷降ろし</h3>
-        <p>店舗：${json.store}</p>
-        <p>数量：${json.qty} ${json.unit}</p>
-        <p>備考：${json.note}</p>
-        <p>地点：${json.pointName}</p>
-        <p>時刻：${json.time}</p>
-      `;
-    
-      container.appendChild(card);
-    } */
-
-    // 積み込み送信　20260608修正
-    /* async function saveLoadingEvent(button) {
-    
-      // ★ このボタンが属する loading-event カードを取得
-      const card = button.closest(".loading-event");
-
-      // ★ メーター必須チェック
-      const meterInput = card.querySelector(".loadingMeter");
-      const meter = meterInput.value;
-    
-      if (!meter) {
-        alert("積み込みメーターを入力してください。");
-        meterInput.focus();
-        return; // ★ 処理を止める
-      }
-      
-      // ★ 既にセットされている開始時刻を取得
-      const startTime = card.querySelector(".loadingStartTime").value;
-      
-      // ★ 完了時刻を自動セット
-      const endTime = getNowTime();
-      card.querySelector(".loadingEndTime").value = endTime;
-      
-      // ★ カード内の値を取得
-      const place = card.querySelector(".loadingPlace").value;
-      const meter = card.querySelector(".loadingMeter").value;
-      const qty = card.querySelector(".loadingQty").value;
-      const unit = card.querySelector(".loadingUnit").value;
-      const store = card.querySelector(".loadingStore").value;
-      const note = card.querySelector(".loadingNote").value;
-    
-      // ★ GPS取得
-      const pos = await getLocation();
-      const lat = pos.latitude;
-      const lng = pos.longitude;
-    
-      const params = new URLSearchParams();
-      params.append("mode", "loading");
-      params.append("driverName", driverName);
-      params.append("opDate", document.getElementById("selectedDate").value);
-      params.append("startTime", startTime);
-      params.append("time", endTime);
-      params.append("store", store);
-      params.append("meter", meter);
-      params.append("qty", qty);
-      params.append("unit", unit);
-      params.append("note", note);
-      params.append("lat", lat);
-      params.append("lng", lng);
-      params.append("pointName", place); 
-      
-      try {
-        const res = await fetch(, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        // ★★★ レスポンスを JSON として取得
-        const json = await res.json();
-    
-        // ★★★ 地点名を UI に反映
-        if (json.point) {
-          card.querySelector(".loadingPlace").value = json.point;
-        }
-    
-        // ★★★ ここから追加処理 ★★★
-    
-        // ★ ① 荷降ろしイベントを自動生成
-        await fetch(, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            mode: "createUnloadingEvent",
-            loadingEventId: json.eventId   // ← GAS 側で返す eventId を使う
-          })
-        });
-    
-        // ★ ② 積み込みカードを UI から削除
-        card.remove();
-    
-        alert(json.message);
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-    
-      alert("積み込みを保存しました");
-      renderDailyReport(events);
-    } */
-
-    /* async function saveLoadingEvent(button) {
-
-      // ★ このボタンが属する loading-event カードを取得
-      const card = button.closest(".loading-event");
-
-      // ★ 既にセットされている開始時刻を取得
-      const startTime = card.querySelector(".loadingStartTime").value;
-      
-      // ★ 完了時刻を自動セット
-      const endTime = getNowTime();
-      card.querySelector(".loadingEndTime").value = endTime;
-      
-      // ★ カード内の値を取得
-      const place = card.querySelector(".loadingPlace").value;
-      const meter = card.querySelector(".loadingMeter").value;
-      const qty = card.querySelector(".loadingQty").value;
-      const unit = card.querySelector(".loadingUnit").value;
-      const store = card.querySelector(".loadingStore").value;
-      const note = card.querySelector(".loadingNote").value;
-    
-      // ★ GPS取得
-      const pos = await getLocation();
-      const lat = pos.latitude;
-      const lng = pos.longitude;
-    
-      const params = new URLSearchParams();
-      params.append("mode", "loading");
-      params.append("driverName", driverName);
-      params.append("opDate", document.getElementById("selectedDate").value);
-      params.append("startTime", startTime);  // ★ 開始時刻を送る
-      params.append("time", endTime);  // ★ 完了時刻を送る
-      params.append("store", store);
-      params.append("meter", meter);
-      params.append("qty", qty);
-      params.append("unit", unit);
-      params.append("note", note);
-      params.append("lat", lat);
-      params.append("lng", lng);
-      params.append("pointName", place); 
-      
-      try {
-        const res = await fetch(, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        // ★★★ レスポンスを JSON として取得
-        const json = await res.json();
-    
-        // ★★★ 地点名を UI に反映
-        if (json.point) {
-          card.querySelector(".loadingPlace").value = json.point;
-        }
-    
-        alert(json.message);
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-      alert("積み込みを保存しました");
-    } */
-
-    // 荷降ろし登録時に「選択された積み込みだけ」完了させる
-    /* function saveUnloadingEvent(data) {
-      saveEvent(data, "unloading", null);
-    
-      // ★ ユーザーが選択した積み込みの行番号
-      const targetRow = data.loadingRowIndex;
-    
-      completeSpecificLoadingEvent(targetRow);
-    } */
-
-    // カード一覧を生成する
-    /* async function loadLoadingEventCards() {
-      const payload = new URLSearchParams({
-        mode: "getActiveLoadingList",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(, { method: "POST", body: payload });
-      const list = await res.json();
-    
-      const container = document.getElementById("loadingEventList");
-      container.innerHTML = "";
-    
-      list.forEach(ev => {
-        const card = createLoadingCard(ev);
-        container.appendChild(card);
-      });
-    } */
-
-    // カード生成関数
-    /* function createLoadingCard(ev) {
-      const data = ev.eventData;
-    
-      const template = document.getElementById("loadingSelectTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".loading-select-card");
-    
-      card.querySelector(".loadingPlace").textContent = data.place;
-      card.querySelector(".loadingQty").textContent = `${data.quantity} ${data.unit}`;
-      card.querySelector(".loadingMeter").textContent = data.meter;
-      card.querySelector(".loadingStart").textContent = data.startTime;
-      card.querySelector(".loadingEnd").textContent = data.endTime;
-      card.querySelector(".loadingStore").textContent = data.storeName;
-      card.querySelector(".loadingNote").textContent = ev.note || "";
-    
-      // ★ この積み込みを選択するボタン
-      card.querySelector(".selectLoadingBtn").addEventListener("click", () => {
-        selectLoadingEvent(ev.rowIndex);
-      });
-    
-      return clone;
-    } */
-
     // 選択された積み込みの rowIndex を保持する
     let selectedLoadingRow = null;
-
-    /* function selectLoadingEvent(rowIndex) {
-      selectedLoadingRow = rowIndex;
-    
-      // UI に反映（例：選択済み表示）
-      document.getElementById("selectedLoadingInfo").textContent =
-        `選択中の積み込み：行 ${rowIndex}`;
-    } */
 
     // 荷降ろし開始処理　メーター必須チェック付き
     async function startUnloadingEvent(button) {
@@ -1547,43 +1091,6 @@
       }
     }
 
-    /* async function startUnloadingEvent(button) {
-      const card = button.closest(".unloading-event");
-    
-      // ★ 自動で開始時刻をセット
-      const startTime = getNowTime();
-      card.querySelector(".unloadingStartTime").value = startTime;
-    
-      const eventId = card.dataset.eventId; // 荷降ろしイベントID
-
-      alert("荷降ろしイベントID: " + eventId);
-      
-      const params = new URLSearchParams();
-      params.append("mode", "unloadingStart");
-      params.append("eventId", eventId);
-      params.append("startTime", startTime);
-    
-      try {
-        const res = await fetch(gasUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        const json = await res.json();
-    
-        if (json.status === "success") {
-          // ★ ボタンを非表示
-          button.style.display = "none";
-        } else {
-          alert(json.message);
-        }
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-    } */
-
     // 荷降ろし完了ボタン eventId仕様
     async function saveUnloading(button) {
       const card = button.closest(".unloading-event");
@@ -1627,41 +1134,6 @@
       }
     }
 
-    /* async function saveUnloading(button) {
-      const card = button.closest(".unloading-event");
-    
-      // ★ 完了時刻を自動セット
-      const endTime = getNowTime();
-      card.querySelector(".unloadingEndTime").value = endTime;
-    
-      const eventId = card.dataset.eventId;
-    
-      const params = new URLSearchParams();
-      params.append("mode", "unloadingEnd");
-      params.append("eventId", eventId);
-      params.append("endTime", endTime);
-    
-      try {
-        const res = await fetch(gasUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: params
-        });
-    
-        const json = await res.json();
-    
-        if (json.status === "success") {
-          // ★ UI から荷降ろしカードを削除
-          card.remove();
-        } else {
-          alert(json.message);
-        }
-    
-      } catch (err) {
-        alert("fetch エラー: " + err);
-      }
-    } */
-
     // カード生成時に eventId を保持
     function createUnloadingCard(event) {
       const template = document.getElementById("unloadingEventTemplate");
@@ -1678,43 +1150,6 @@
     
       document.getElementById("unloadingContainer").appendChild(card);
     }
-
-    // 荷降ろし登録時に紐付ける　20260524　修正
-    /* async function saveUnloading(button) {
-
-      // ★ 連打防止：押した瞬間に無効化
-      button.disabled = true;
-      button.textContent = "処理中…";
-    
-      const card = button.closest(".unloading-event");
-      const rowIndex = card.querySelector(".unloadingRowIndex").value;
-      const endTime = getNowTime();
-      const note = card.querySelector(".unloadingNote").value;
-    
-      const payload = new URLSearchParams({
-        mode: "saveUnloading",
-        rowIndex: rowIndex,
-        endTime: endTime,
-        note: note
-      });
-    
-      try {
-        const res = await fetch(gasUrl, { method: "POST", body: payload });
-        const json = await res.json();
-    
-        alert(json.message);
-    
-        // UI から削除
-        card.remove();
-    
-      } catch (err) {
-        alert("荷降ろし保存エラー: " + err);
-    
-        // ★ エラー時はボタンを再度有効化
-        button.disabled = false;
-        button.textContent = "荷降ろし完了時刻を記録して保存";
-      }
-    } */
 
     // 入庫送信
     async function saveEndEvent() {
@@ -1772,16 +1207,6 @@
         body: payload
       });
     
-      /* const events = await res.json();
-
-      // ▼ 現状確認（修正ではない）
-      events.forEach(ev => {
-        alert(
-          "eventType=" + ev.eventType +
-          "\nunloadFlag=" + ev.unloadFlag + " (" + typeof ev.unloadFlag + ")" +
-          "\nstartstatus=" + ev.eventData?.startstatus + " (" + typeof ev.eventData?.startstatus + ")"
-        );
-      }); */
       // 確認用に一時的に変更
       const events = await res.json();
 
@@ -1836,205 +1261,6 @@
       });
     }
 
-    // GAS から未完了の出庫を取得
-    /* async function loadStartEvent() {
-      const payload = new URLSearchParams({
-        mode: "getActiveStart",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const ev = await res.json();
-    
-      if (!ev) return; // 出庫していない場合は何もしない
-    
-      restoreStartEvent(ev);
-    } */
-
-    // 出庫をUIに復元
-    /* function restoreStartEvent(ev) {
-      const data = ev.eventData;
-    
-      const template = document.getElementById("startEventTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".start-event");
-    
-      card.querySelector(".startCarNumber").value = data.carNumber || "";
-      card.querySelector(".startMeter").value = data.meter || "";
-      card.querySelector(".startTime").value = data.time || "";
-      card.querySelector(".startNote").value = ev.note || "";
-    
-      document.getElementById("startEvents").appendChild(clone);
-    } */
-
-    // 積み込みイベントを取得する
-    /* async function loadLoadingEvent() {
-      const payload = new URLSearchParams({
-        mode: "getActiveLoading",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const ev = await res.json();
-    
-      if (!ev) return; // 未積み込みなら何もしない
-    
-      restoreLoadingEvent(ev);
-    } */
-
-    // 積み込みイベントをUIに復元する
-    /* function restoreLoadingEvent(ev) {
-      const data = ev.eventData;
-    
-      const template = document.getElementById("loadingEventTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".loading-event");
-    
-      card.querySelector(".loadingPlace").value = data.place || "";
-      card.querySelector(".loadingMeter").value = data.meter || "";
-      card.querySelector(".loadingStartTime").value = data.startTime || "";
-      card.querySelector(".loadingEndTime").value = data.endTime || "";
-      card.querySelector(".loadingQuantity").value = data.quantity || "";
-      card.querySelector(".loadingUnit").value = data.unit || "";
-      card.querySelector(".loadingStore").value = data.storeName || "";
-      card.querySelector(".loadingNote").value = ev.note || "";
-    
-      document.getElementById("loadingEvents").appendChild(clone);
-    } */
-
-    // 未完了の積み込みイベントを UI に一覧表示
-    /* async function loadLoadingEventList() {
-      const payload = new URLSearchParams({
-        mode: "getActiveLoadingList",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const list = await res.json();
-    
-      const select = document.querySelector("#loadingSelect");
-      select.innerHTML = "";
-    
-      list.forEach(ev => {
-        const opt = document.createElement("option");
-        opt.value = ev.rowIndex; // ★ どの行かを保持
-        opt.textContent = `${ev.eventData.place} / ${ev.eventData.quantity}${ev.eventData.unit}`;
-        select.appendChild(opt);
-      });
-    } */
-
-    // 荷降ろしイベントを取得する
-    /* async function loadUnloadingEvent() {
-      const payload = new URLSearchParams({
-        mode: "getActiveUnloading",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const ev = await res.json();
-    
-      if (!ev) return; // 未荷降ろしなら何もしない
-    
-      restoreUnloadingEvent(ev);
-    } */
-
-    // 荷降ろしイベントUIに復元する
-    /* function restoreUnloadingEvent(ev) {
-      const data = ev.eventData;
-    
-      const template = document.getElementById("unloadingEventTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".unloading-event");
-    
-      card.querySelector(".unloadingPlace").value = data.place || "";
-      card.querySelector(".unloadingQuantity").value = data.quantity || "";
-      card.querySelector(".unloadingUnit").value = data.unit || "";
-      card.querySelector(".unloadingStartTime").value = data.startTime || "";
-      card.querySelector(".unloadingEndTime").value = data.endTime || "";
-      card.querySelector(".unloadingNote").value = ev.note || "";
-    
-      document.getElementById("unloadingEvents").appendChild(clone);
-    } */
-
-    // 入庫イベントを取得する
-    /* async function loadEndEvent() {
-      const payload = new URLSearchParams({
-        mode: "getActiveEnd",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const ev = await res.json();
-    
-      if (!ev) return; // 未入庫なら何もしない
-    
-      restoreEndEvent(ev);
-    } */
-
-    // 入庫イベントをUIに復元
-    /* function restoreEndEvent(ev) {
-      const data = ev.eventData;
-    
-      const template = document.getElementById("endEventTemplate");
-      const clone = template.content.cloneNode(true);
-      const card = clone.querySelector(".end-event");
-    
-      card.querySelector(".endCarNumber").value = data.carNumber || "";
-      card.querySelector(".endMeter").value = data.meter || "";
-      card.querySelector(".endTime").value = data.time || "";
-      card.querySelector(".endNote").value = ev.note || "";
-    
-      document.getElementById("endEvents").appendChild(clone);
-    } */
-
-    // 画面ロード時に入庫イベントを常時表示する処理
-    /* async function loadArrivalEvent() {
-      const payload = new URLSearchParams({
-        mode: "getArrivalEvent",
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const data = await res.json();
-    
-      const area = document.getElementById("arrivalEventArea");
-
-      // ★ 出庫イベントと同じく、直接 HTML を生成
-      area.innerHTML = `
-        <div class="card arrival-event">
-          <h3>④ 入庫</h3>
-    
-          <label>入庫メーター</label>
-          <input type="number" id="arrivalMeter" value="${data.meter ?? ''}"><br>
-    
-          <label>備考</label>
-          <textarea id="arrivalNote">${data.note ?? ''}</textarea><br>
-    
-          <button class="time-btn" onclick="saveArrivalEvent()">入庫時刻を記録して保存</button>
-        </div>
-      `;
-    } */
-
-    // 入庫イベント保存処理
-    /* async function saveArrivalEvent() {
-      const meter = document.getElementById("arrivalMeter").value;
-      const note = document.getElementById("arrivalNote").value;
-      const time = getNowTime();
-    
-      const payload = new URLSearchParams({
-        mode: "saveArrivalEvent",
-        meter: meter,
-        note: note,
-        time: time,
-        driverName: employeeName
-      });
-    
-      const res = await fetch(gasUrl, { method: "POST", body: payload });
-      const json = await res.json();
-    
-      alert(json.message);
-    } */
-
     // 画面に値を戻す処理 20260610 修正
     function renderDailyReport(events) {
       alert("renderDailyReport START");
@@ -2042,9 +1268,6 @@
       // まず既存のカードを全部消す
       document.getElementById("loadingEvents").innerHTML = "";
       document.getElementById("unloadingEvents").innerHTML = "";
-    
-      /* const endCard = document.querySelector(".end-event");
-      if (endCard) endCard.innerHTML = ""; */
     
       // 出庫欄も初期化
       document.getElementById("carNumber").value = "";
@@ -2120,8 +1343,6 @@
 
           // ★ eventId（受信日時）を保持
           card.dataset.eventId = ev.timestamp;
-          /* const d = JSON.parse(ev.eventJson);
-          card.dataset.eventId = d.loadingEventId; */
 
           // ★ 未来対応：lat/lng を保持
           card.dataset.lat = data.lat;
@@ -2152,33 +1373,6 @@
             alert("例外発生: " + err.message);
           }
         }
-
-          /* const d = data || {};
-
-          (card.querySelector(".unloadingPlace") || {}).value = d.pointName || "";
-          (card.querySelector(".unloadingMeter") || {}).value = d.meter || "";
-          (card.querySelector(".unloadingStartTime") || {}).value = d.startTime || "";
-          (card.querySelector(".unloadingEndTime") || {}).value = d.time || "";
-          (card.querySelector(".unloadingQty") || {}).value = d.qty || "";
-          (card.querySelector(".unloadingUnit") || {}).value = d.unit || "";
-          (card.querySelector(".unloadingStoreText") || {}).value = d.store || "";
-          (card.querySelector(".unloadingNote") || {}).value = d.note || "";
-          
-          if (d.startTime) {
-            const btn = card.querySelector(".start-btn");
-            if (btn) btn.style.display = "none";
-          }
-          
-          const container = document.getElementById("unloadingEvents");
-          if (!container) {
-            alert("unloadingEvents が存在しません");
-            continue;
-          }
-        
-          container.appendChild(clone);
-          alert("荷降ろしカード追加完了");
-          continue;
-        } */
     
         // 🏁 入庫（end）
         if (type === "end") {
@@ -2197,126 +1391,6 @@
         }
       }
     }
-
-    /* function renderDailyReport(events) {
-      alert("renderDailyReport START");
-
-      // まず既存のカードを全部消す
-      document.getElementById("loadingEvents").innerHTML = "";
-      document.getElementById("unloadingEvents").innerHTML = "";
-      
-      // document.getElementById("endContainer").innerHTML = "";
-      // 入庫は class なので querySelector を使う
-      const endCard = document.querySelector(".end-event");
-      if (endCard) endCard.innerHTML = "";
-      
-      // 出庫欄も初期化
-      document.getElementById("carNumber").value = "";
-      document.getElementById("startMeter").value = "";
-      document.getElementById("startTime").value = "";
-      document.getElementById("startNote").value = "";
-    
-      events.forEach(ev => {
-        const type = ev.eventType;
-        const data = ev.eventData;
-    
-        // 🚚 出庫（start）
-        if (type === "start" && data.startstatus == false) {
-          alert("出庫の復元開始");
-          document.getElementById("carNumber").value = data.carNumber || "";
-          document.getElementById("startMeter").value = data.meter || "";
-          document.getElementById("startTime").value = data.time || "";
-          document.getElementById("startNote").value = data.note || "";
-
-          // ★ 出庫時刻が入っていたらボタンを非表示にする
-          if (data.time) {
-            document.querySelector(".start-event .time-btn").style.display = "none";
-          }
-          
-          return;
-        }
-    
-        // 📦 積み込み（load）
-        if (type === "load" && ev.unloadFlag == false) {
-          alert("積み込みの復元開始");
-          const template = document.getElementById("loadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-    
-          clone.querySelector(".loadingPlace").value = data.pointName || "";
-          clone.querySelector(".loadingMeter").value = data.meter || "";
-          clone.querySelector(".loadingStartTime").value = data.startTime || "";
-          clone.querySelector(".loadingEndTime").value = data.time || "";
-          clone.querySelector(".loadingQty").value = data.qty || "";
-          clone.querySelector(".loadingUnitText").value = data.unit || "";
-          clone.querySelector(".loadingStoreText").value = data.store || "";
-          clone.querySelector(".loadingNote").value = data.note || "";
-
-          // 復元時は UnitTText を表示
-          clone.querySelector(".loadingUnit").style.display = "none";
-          clone.querySelector(".loadingUnitText").style.display = "block";
-          
-          // 復元時は storeText を表示
-          clone.querySelector(".loadingStore").style.display = "none";
-          clone.querySelector(".loadingStoreText").style.display = "block";
-
-          // loadingEndTime が入っていたらボタンを非表示
-          if (data.time) {
-              clone.querySelector(".time-btn").style.display = "none";
-          }
-          
-          document.getElementById("loadingEvents").appendChild(clone);
-          return;
-        }
-    
-        // 📤 荷降ろし（unload）20260610　修正
-        if (type === "unload" && ev.unloadingFlag == false) {
-          alert("荷降ろしの復元開始");
-          const template = document.getElementById("unloadingEventTemplate");
-          const clone = template.content.cloneNode(true);
-          const card = clone.querySelector(".unloading-event");
-        
-          // ★ eventId（受信日時）を保持
-          card.dataset.eventId = ev.receivedTime;
-        
-          // ★ UI 反映
-          card.querySelector(".unloadingPlace").value = data.pointName || "";
-          card.querySelector(".unloadingMeter").value = data.meter || "";
-          card.querySelector(".unloadingStartTime").value = data.startTime || "";
-          card.querySelector(".unloadingEndTime").value = data.time || "";
-          card.querySelector(".unloadingQty").value = data.qty || "";
-          card.querySelector(".unloadingUnit").value = data.unit || "";
-          card.querySelector(".unloadingStoreText").value = data.store || "";
-          card.querySelector(".unloadingNote").value = data.note || "";
-        
-          // ★ 開始済みなら開始ボタンを非表示
-          if (data.startTime) {
-            card.querySelector(".start-btn").style.display = "none";
-          }
-        
-          // ★ 完了済みなら復元しない（保険）
-          if (ev.unloadingFlag === true) return;
-        
-          document.getElementById("unloadingEvents").appendChild(clone);
-          return;
-        }
-    
-        // 🏁 入庫（end）
-        if (type === "end" && data.endstatus == false) {
-          alert("入庫の復元開始");
-          const template = document.getElementById("endEventTemplate");
-          const clone = template.content.cloneNode(true);
-    
-          clone.querySelector(".endPlace").value = data.pointName || "";
-          clone.querySelector(".endMeter").value = data.meter || "";
-          clone.querySelector(".endTime").value = data.time || "";
-          clone.querySelector(".endNote").value = data.note || "";
-    
-          // document.getElementById("endContainer").appendChild(clone);
-          document.querySelector(".end-event").appendChild(clone);
-          return;
-        }
-      });
-    } */
     
     // ▼ 位置情報取得（permission API は一切使わない）
     async function getLocation() {
@@ -2533,21 +1607,6 @@
       // ④ YYYY-MM-DD 形式で返す
       return baseDate.toISOString().slice(0, 10);
     }
-
-    /* function getOperationDate(timeString) {
-      // timeString は "HH:MM" を想定
-      const [hour, minute] = timeString.split(":").map(Number);
-    
-      const now = new Date();
-    
-      // 20:00〜23:59 は翌日扱い
-      if (hour >= 20) {
-        now.setDate(now.getDate() + 1);
-      }
-    
-      // YYYY-MM-DD 形式で返す
-      return now.toISOString().slice(0, 10);
-    } */
 
     // すべてのイベントを送信　2026/5/22
     async function submitDriverReport() {
@@ -2940,9 +1999,6 @@
       // 運行日報画面を開いた時だけデータを読み込む
       if (id === "screen-driverReport") {
         alert("運行日報データの読込");
-        // 運行日をセット（出庫時刻から計算するなら後で差し替えOK）
-        /* const opDate = new Date().toISOString().slice(0, 10);
-        document.getElementById("reportOpDate").innerText = opDate; */
         
         // ★ すでに selectedDate がセットされている場合は上書きしない
         let opDate = document.getElementById("selectedDate").value;
