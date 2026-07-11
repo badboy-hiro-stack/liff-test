@@ -2140,12 +2140,8 @@
       showScreen("screen-locationRegister");
 
       // 地図領域を表示（地図から選択を押した時に表示するなら不要）
-      document.getElementById("locationMapContainer").style.display = "block";
-      
-      // 地図初期化を少し遅らせる
-      setTimeout(() => {
-        initLocationMap();
-      }, 300);
+      // document.getElementById("locationMapContainer").style.display = "none";
+
     }
 
     // ▼ 地図を初期化する（最初に1回だけ）
