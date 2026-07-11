@@ -1230,42 +1230,47 @@
 
     // ▼ 地図から座標を選択する
     function openLocationMap() {
-    
-      // 地図領域を表示
+
+      // 1. 地図領域を表示（最重要）
       document.getElementById("locationMapContainer").style.display = "block";
     
-      // すでに地図が初期化されている場合は再利用
-      if (window.locationMap) {
-        return;
-      }
+      // 2. DOM が展開されるまで少し待つ
+      setTimeout(() => {
     
-      // Leaflet.js の地図を初期化
-      window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5); // 日本全体を表示
+        // すでに初期化済みなら再初期化しない
+        if (!window.locationMap) {
     
-      // OpenStreetMap タイルを読み込み
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(window.locationMap);
+          // Leaflet.js の地図を初期化
+          window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5);
     
-      let marker;
+          // OpenStreetMap タイルを読み込み
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(window.locationMap);
     
-      // 地図クリックで座標取得
-      window.locationMap.on('click', function(e) {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
+          // ピン管理用
+          window.locationMarker = null;
     
-        // ピンを置く（既存ピンは削除）
-        if (marker) {
-          marker.remove();
+          // 地図クリックで座標取得
+          window.locationMap.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+    
+            // ピンを置く（既存ピンは削除）
+            if (window.locationMarker) {
+              window.locationMarker.remove();
+            }
+            window.locationMarker = L.marker([lat, lng]).addTo(window.locationMap);
+    
+            // 入力欄にセット
+            document.getElementById("locationLat").value = lat;
+            document.getElementById("locationLng").value = lng;
+    
+            alert("地図から座標を取得しました。");
+          });
         }
-        marker = L.marker([lat, lng]).addTo(window.locationMap);
     
-        // 入力欄にセット
-        document.getElementById("locationLat").value = lat;
-        document.getElementById("locationLng").value = lng;
-    
-        alert("地図から座標を取得しました。");
-      });
+      }, 200); // ← DOM 展開待ち
     }
 
     // 日報読み込み
