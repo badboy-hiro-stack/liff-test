@@ -2127,17 +2127,17 @@
     
       // 4. 地図モードの初期化（必要なら）
       
-      // 地図初期化を少し遅らせる
-      setTimeout(() => {
-        initLocationMap();
-      }, 300);
-      
       // 例：地図を非表示にする、ピンをクリアするなど
       
       // hideLocationMap(); ← 地図UIを作ったらここで初期化
     
       // 5. 画面表示
       showScreen("screen-locationRegister");
+
+      // 地図初期化を少し遅らせる
+      setTimeout(() => {
+        initLocationMap();
+      }, 300);
     }
 
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
