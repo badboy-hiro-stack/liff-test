@@ -30,7 +30,7 @@
     <button class="btnadmin" onclick="openApproveList()">承認待ち一覧</button>
     <button class="btnadmin" onclick="showEditScreen()">打刻修正</button>
     <button class="btnadmin" onclick="showEmployeeEditScreen()">従業員情報編集</button>
-    <button class="btnadmin" onclick="showlocationRegister()">地点登録（店舗・センター・市場）</button>
+    <button class="btnadmin" onclick="showlocationRegister()">地点登録</button>
     
     <p></p>
     <button class="btnadmin-Retire" onclick="showScreen('screen-employeeRetire')">従業員退職処理</button>
@@ -484,18 +484,18 @@
   <!-- ▼ 地点登録画面 -->
   <div id="screen-locationRegister" class="screen" style="display:none; padding:20px;">
   
-    <h2>地点登録（店舗・センター・市場）</h2>
+    <h2>地点登録</h2>
   
     <!-- 登録方法選択 -->
     <fieldset style="margin-bottom:15px;">
       <legend>登録方法を選択</legend>
       <label>
         <input type="radio" name="locationMode" value="gps" checked>
-        GPSで登録（現地）
+        GPSで登録
       </label><br>
       <label>
         <input type="radio" name="locationMode" value="map">
-        地図から登録（事務所）
+        地図から登録
       </label>
     </fieldset>
 
