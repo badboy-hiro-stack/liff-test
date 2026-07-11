@@ -496,7 +496,12 @@
         地図から登録（事務所）
       </label>
     </fieldset>
-  
+
+    <!-- ▼ 地図表示領域（初期は非表示） -->
+    <div id="locationMapContainer" style="display:none; margin-top:10px;">
+      <div id="locationMap" style="width:100%; height:300px; border:1px solid #ccc;"></div>
+    </div>
+
     <!-- 地点情報 -->
     <div style="margin-bottom:15px;">
       <label>地点名（店舗名）</label><br>
@@ -1187,6 +1192,78 @@
     
       alert("入庫を保存しました！");
       loadDailyReport();
+    }
+
+    // ▼ GPSで現在地を取得して入力欄にセットする
+    function getCurrentLocation() {
+    
+      // GPSが使えるかチェック
+      if (!navigator.geolocation) {
+        alert("この端末では位置情報が利用できません。");
+        return;
+      }
+    
+      // 位置情報取得
+      navigator.geolocation.getCurrentPosition(
+        function (pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+    
+          // 画面の入力欄にセット
+          document.getElementById("locationLat").value = lat;
+          document.getElementById("locationLng").value = lng;
+    
+          alert("現在地の座標を取得しました。");
+        },
+        function (err) {
+          alert("位置情報の取得に失敗しました。エラーコード：" + err.code);
+        },
+        {
+          enableHighAccuracy: true,   // 高精度モード
+          timeout: 10000,             // 10秒でタイムアウト
+          maximumAge: 0               // キャッシュを使わない
+        }
+      );
+    }
+
+    // ▼ 地図から座標を選択する
+    function openLocationMap() {
+    
+      // 地図領域を表示
+      document.getElementById("locationMapContainer").style.display = "block";
+    
+      // すでに地図が初期化されている場合は再利用
+      if (window.locationMap) {
+        return;
+      }
+    
+      // Leaflet.js の地図を初期化
+      window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5); // 日本全体を表示
+    
+      // OpenStreetMap タイルを読み込み
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(window.locationMap);
+    
+      let marker;
+    
+      // 地図クリックで座標取得
+      window.locationMap.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+    
+        // ピンを置く（既存ピンは削除）
+        if (marker) {
+          marker.remove();
+        }
+        marker = L.marker([lat, lng]).addTo(window.locationMap);
+    
+        // 入力欄にセット
+        document.getElementById("locationLat").value = lat;
+        document.getElementById("locationLng").value = lng;
+    
+        alert("地図から座標を取得しました。");
+      });
     }
 
     // 日報読み込み
