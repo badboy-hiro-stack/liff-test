@@ -2140,6 +2140,30 @@
       }, 300);
     }
 
+    // ▼ 地図を初期化する（最初に1回だけ）
+    function initLocationMap() {
+    
+      // すでに初期化済みなら何もしない
+      if (window.locationMap) {
+        return;
+      }
+    
+      // id="locationMap" の要素が存在するか確認
+      const mapDiv = document.getElementById("locationMap");
+      if (!mapDiv) {
+        console.error("locationMap の要素が見つかりません。");
+        return;
+      }
+    
+      // 地図を初期化（日本全体をざっくり表示）
+      window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5);
+    
+      // タイルレイヤー（OpenStreetMap）
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(window.locationMap);
+    }
+
     // 勤怠・休暇管理画面の戻るボタンは部署で決める
     function goBackFromApplyMenu() {
       // alert("userDept = " + userDept);
