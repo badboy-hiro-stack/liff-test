@@ -2126,7 +2126,14 @@
       if (modeGps) modeGps.checked = true;
     
       // 4. 地図モードの初期化（必要なら）
+      
+      // 地図初期化を少し遅らせる
+      setTimeout(() => {
+        initLocationMap();
+      }, 300);
+      
       // 例：地図を非表示にする、ピンをクリアするなど
+      
       // hideLocationMap(); ← 地図UIを作ったらここで初期化
     
       // 5. 画面表示
