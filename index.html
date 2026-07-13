@@ -1250,7 +1250,9 @@
       
       // DOM 展開を待つ（LINE WebView は遅いので 600ms）
       setTimeout(() => {
-    
+
+        alert("setTimeout に入りました"); 
+        
         // Leaflet が読み込まれているか確認
         if (typeof L === "undefined") {
           alert("地図ライブラリ Leaflet が読み込まれていません。CDN を変更してください。");
