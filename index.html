@@ -1253,11 +1253,16 @@
         if (!window.locationMap) {
     
           window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5);
-    
+          alert("地図初期化成功");
+
+          alert("mapDiv height: " + mapDiv.offsetHeight);
+
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
           }).addTo(window.locationMap);
-    
+
+          alert("タイル読み込み完了");
+          
           window.locationMarker = null;
     
           window.locationMap.on('click', function(e) {
