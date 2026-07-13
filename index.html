@@ -1253,16 +1253,13 @@
 
         alert("setTimeout に入りました"); 
 
-        // L を参照せずに次の行へ進むテスト
-        alert("L を参照する前のテストです");
-      
-        // ここで初めて L を参照する
-        let testLeaflet;
+        alert("window.locationMap の型: " + typeof window.locationMap);
+
         try {
-          testLeaflet = L;
-          alert("L の参照成功");
+          let test = window.locationMap;
+          alert("window.locationMap の参照成功");
         } catch (e) {
-          alert("L の参照で例外発生：" + e);
+          alert("window.locationMap の参照で例外発生: " + e);
           return;
         }
         
