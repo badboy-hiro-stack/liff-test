@@ -1228,8 +1228,65 @@
       );
     }
 
+    let mapInstance = null;
+    
     // ▼ 地図から座標を選択する
     function openLocationMap() {
+    
+      const container = document.getElementById("locationMapContainer");
+      container.style.display = "block";
+      container.style.height = "320px";   // ← 親要素の高さを強制設定
+    
+      const mapDiv = document.getElementById("locationMap");
+      mapDiv.style.height = "300px";
+      mapDiv.style.width = "100%";
+    
+      alert("地図領域を確保しました");
+    
+      setTimeout(() => {
+    
+        alert("setTimeout に入りました");
+    
+        if (typeof L === "undefined") {
+          alert("Leaflet が読み込まれていません");
+          return;
+        }
+    
+        alert("L の参照成功");
+    
+        alert("mapDiv offsetHeight: " + mapDiv.offsetHeight);
+    
+        if (mapDiv.offsetHeight === 0) {
+          alert("地図コンテナの高さが 0 のため初期化できません");
+          return;
+        }
+    
+        if (!mapInstance) {
+    
+          try {
+            mapInstance = L.map('locationMap').setView([35.0, 135.0], 5);
+            alert("地図初期化成功");
+          } catch (e) {
+            alert("L.map で例外発生: " + e);
+            return;
+          }
+    
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(mapInstance);
+    
+          alert("タイル読み込み完了");
+    
+          setTimeout(() => {
+            mapInstance.invalidateSize();
+            alert("invalidateSize 実行");
+          }, 100);
+        }
+    
+      }, 600);
+    }
+
+    /* function openLocationMap() {
 
       // 地図領域を表示
       const container = document.getElementById("locationMapContainer");
@@ -1252,6 +1309,8 @@
       setTimeout(() => {
 
         alert("setTimeout に入りました"); 
+
+        alert("mapDiv offsetHeight: " + mapDiv.offsetHeight);
 
         alert("window.locationMap の型: " + typeof window.locationMap);
 
@@ -1302,7 +1361,7 @@
         }
     
       }, 600); // ← LINE WebView は 600ms が安定
-    }
+    } */
 
     /* function openLocationMap() {
 
