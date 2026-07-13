@@ -1234,7 +1234,9 @@
       // 地図領域を表示
       const container = document.getElementById("locationMapContainer");
       container.style.display = "block";
-    
+
+      alert("地図領域を確保しました。");
+      
       // LINE WebView は CSS が効かないことがあるので強制設定
       const mapDiv = document.getElementById("locationMap");
       mapDiv.style.height = "300px";
