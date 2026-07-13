@@ -1232,6 +1232,81 @@
     
     // ▼ 地図から座標を選択する
     function openLocationMap() {
+
+      const container = document.getElementById("locationMapContainer");
+      container.style.display = "block";
+      container.style.height = "480px";   // 親要素の高さを強制設定
+    
+      const mapDiv = document.getElementById("locationMap");
+      mapDiv.style.height = "450px";
+      mapDiv.style.width = "100%";
+    
+      alert("地図領域を確保しました");
+    
+      setTimeout(() => {
+    
+        alert("setTimeout に入りました");
+    
+        if (typeof L === "undefined") {
+          alert("Leaflet が読み込まれていません");
+          return;
+        }
+    
+        alert("L の参照成功");
+    
+        alert("mapDiv offsetHeight: " + mapDiv.offsetHeight);
+    
+        if (mapDiv.offsetHeight === 0) {
+          alert("地図コンテナの高さが 0 のため初期化できません");
+          return;
+        }
+    
+        if (!mapInstance) {
+    
+          try {
+            mapInstance = L.map('locationMap').setView([35.0, 135.0], 5);
+            alert("地図初期化成功");
+          } catch (e) {
+            alert("L.map で例外発生: " + e);
+            return;
+          }
+    
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,   // ← 詳細地図が表示される
+            minZoom: 3
+          }).addTo(mapInstance);
+    
+          alert("タイル読み込み完了");
+    
+          // invalidateSize の後にクリックイベントを登録する（LINE WebViewで必須）
+          setTimeout(() => {
+            mapInstance.invalidateSize();
+            alert("invalidateSize 実行");
+    
+            // ▼ 座標取得イベント（ここに置くのが最も安定）
+            mapInstance.on('click', function(e) {
+              const lat = e.latlng.lat;
+              const lng = e.latlng.lng;
+    
+              if (window.locationMarker) {
+                window.locationMarker.remove();
+              }
+              window.locationMarker = L.marker([lat, lng]).addTo(mapInstance);
+    
+              document.getElementById("locationLat").value = lat;
+              document.getElementById("locationLng").value = lng;
+    
+              alert("地図から座標を取得しました。");
+            });
+    
+          }, 100);
+        }
+    
+      }, 600);
+    }
+
+    /* function openLocationMap() {
     
       const container = document.getElementById("locationMapContainer");
       container.style.display = "block";
@@ -1272,7 +1347,9 @@
           }
     
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+            minZoom: 3
           }).addTo(mapInstance);
     
           alert("タイル読み込み完了");
@@ -1284,7 +1361,7 @@
         }
     
       }, 600);
-    }
+    } */
 
     /* function openLocationMap() {
 
