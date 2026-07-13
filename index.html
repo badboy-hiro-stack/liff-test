@@ -5,8 +5,8 @@
   <title>運行支援システム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 </head>
 <body>
   <!-- ▼ メインメニュー（デフォルト画面） -->
@@ -1231,6 +1231,56 @@
     // ▼ 地図から座標を選択する
     function openLocationMap() {
 
+      // 地図領域を表示
+      const container = document.getElementById("locationMapContainer");
+      container.style.display = "block";
+    
+      // LINE WebView は CSS が効かないことがあるので強制設定
+      const mapDiv = document.getElementById("locationMap");
+      mapDiv.style.height = "300px";
+      mapDiv.style.width = "100%";
+    
+      // DOM 展開を待つ（LINE WebView は遅いので 600ms）
+      setTimeout(() => {
+    
+        // Leaflet が読み込まれているか確認
+        if (typeof L === "undefined") {
+          alert("地図ライブラリ Leaflet が読み込まれていません。CDN を変更してください。");
+          return;
+        }
+    
+        // 初期化済みなら再初期化しない
+        if (!window.locationMap) {
+    
+          window.locationMap = L.map('locationMap').setView([35.0, 135.0], 5);
+    
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(window.locationMap);
+    
+          window.locationMarker = null;
+    
+          window.locationMap.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+    
+            if (window.locationMarker) {
+              window.locationMarker.remove();
+            }
+            window.locationMarker = L.marker([lat, lng]).addTo(window.locationMap);
+    
+            document.getElementById("locationLat").value = lat;
+            document.getElementById("locationLng").value = lng;
+    
+            alert("地図から座標を取得しました。");
+          });
+        }
+    
+      }, 600); // ← LINE WebView は 600ms が安定
+    }
+
+    /* function openLocationMap() {
+
       // 1. 地図領域を表示（最重要）
       document.getElementById("locationMapContainer").style.display = "block";
     
@@ -1271,7 +1321,7 @@
         }
     
       }, 200); // ← DOM 展開待ち
-    }
+    } */
 
     // 日報読み込み
     async function loadDailyReport() {
