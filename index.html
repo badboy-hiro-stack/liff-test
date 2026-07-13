@@ -1239,6 +1239,10 @@
       
       // LINE WebView は CSS が効かないことがあるので強制設定
       const mapDiv = document.getElementById("locationMap");
+      if (!mapDiv) {
+        alert("locationMap が DOM に存在していません");
+        return;
+      }
       mapDiv.style.height = "300px";
       mapDiv.style.width = "100%";
     
