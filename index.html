@@ -1276,9 +1276,11 @@
             return;
           }
     
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 20,   // ← 詳細地図が表示される
+          /* L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors', */
+          L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg', {
+            attribution: "地理院地図（航空写真）",
+            maxZoom: 22,   // ← 詳細地図が表示される
             minZoom: 3
           }).addTo(mapInstance);
     
