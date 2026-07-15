@@ -1504,6 +1504,63 @@
       }, 200); // ← DOM 展開待ち
     } */
 
+    // 地点登録内容をGASに送信
+    function registerLocation() {
+      const name = document.getElementById("locationName").value.trim();
+      const type = document.getElementById("locationType").value.trim();
+      const lat = document.getElementById("locationLat").value.trim();
+      const lng = document.getElementById("locationLng").value.trim();
+    
+      // ▼ 入力チェック
+      if (!name) {
+        alert("地点名（店舗名）を入力してください");
+        return;
+      }
+      if (!type) {
+        alert("種別を選択してください");
+        return;
+      }
+      if (!lat || !lng) {
+        alert("地図または住所検索で座標を設定してください");
+        return;
+      }
+    
+      // ▼ 座標を小数点以下5桁に統一
+      const latFixed = Number(lat).toFixed(5);
+      const lngFixed = Number(lng).toFixed(5);
+    
+      // ▼ GAS に送るデータ
+      const payload = {
+        name: name,
+        type: type,
+        lat: latFixed,
+        lng: lngFixed
+      };
+    
+      alert("地点登録を開始します");
+    
+      google.script.run
+        .withSuccessHandler(() => {
+          alert("地点登録が完了しました");
+    
+          // 入力欄クリア
+          document.getElementById("locationName").value = "";
+          document.getElementById("locationType").value = "";
+          document.getElementById("locationLat").value = "";
+          document.getElementById("locationLng").value = "";
+    
+          // 地図のピンも消す
+          if (window.locationMarker) {
+            window.locationMarker.remove();
+            window.locationMarker = null;
+          }
+        })
+        .withFailureHandler((err) => {
+          alert("地点登録に失敗しました: " + err);
+        })
+        .registerLocationToSheet(payload);  // ← GAS 側の関数名
+    }
+
     // 住所検索の処理
     function searchAddress() {
       const address = document.getElementById("addressInput").value.trim();
