@@ -509,6 +509,22 @@
       <input type="text" id="addressInput" placeholder="住所を入力" style="width:70%;">
       <button class="btnadmin" onclick="searchAddress()">住所検索</button>
     </div>
+  
+    <!-- 操作ボタン（モード別） -->
+    <div style="margin-bottom:15px;">
+      <button class="btnadmin" onclick="openLocationMap()">地図から選択</button>
+    </div>
+    
+    <div style="margin-bottom:15px;">
+      <button class="btnadmin" onclick="getCurrentLocation()">位置情報を取得（GPS）</button>
+    </div>
+
+    <!-- 座標情報 -->
+    <div style="margin-bottom:15px;">
+      <label style="text-align:left;">座標（緯度・経度）</label><br>
+      <input type="text" id="locationLat" style="width:100%;" placeholder="緯度（例：35.27104）"><br>
+      <input type="text" id="locationLng" style="width:100%; margin-top:5px;" placeholder="経度（例：139.68601）">
+    </div>
     
     <!-- 地点情報 -->
     <div style="margin-bottom:15px;">
@@ -517,7 +533,7 @@
     </div>
   
     <div style="margin-bottom:15px;">
-      <label>種別</label><br>
+      <label style="text-align:left;">種別</label><br>
       <select id="locationType" style="width:100%;">
         <option value="店舗">店舗</option>
         <option value="センター">センター</option>
@@ -525,20 +541,7 @@
         <option value="テスト用">テスト用</option>
       </select>
     </div>
-  
-    <!-- 座標情報 -->
-    <div style="margin-bottom:15px;">
-      <label>座標（緯度・経度）</label><br>
-      <input type="text" id="locationLat" style="width:100%;" placeholder="緯度（例：35.27104）"><br>
-      <input type="text" id="locationLng" style="width:100%; margin-top:5px;" placeholder="経度（例：139.68601）">
-    </div>
-  
-    <!-- 操作ボタン（モード別） -->
-    <div style="margin-bottom:15px;">
-      <button class="btnadmin" onclick="getCurrentLocation()">位置情報を取得（GPS）</button>
-      <button class="btnadmin" onclick="openLocationMap()">地図から選択</button>
-    </div>
-  
+    
     <!-- 登録ボタン -->
     <div style="margin-bottom:15px;">
       <button class="btnadmin" onclick="registerLocation()">地点登録</button>
