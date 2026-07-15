@@ -1531,6 +1531,7 @@
     
       // ▼ GAS に送るデータ
       const payload = {
+        mode: "location",
         name: name,
         type: type,
         lat: latFixed,
@@ -1539,26 +1540,34 @@
     
       alert("地点登録を開始します");
     
-      google.script.run
-        .withSuccessHandler(() => {
-          alert("地点登録が完了しました");
-    
-          // 入力欄クリア
-          document.getElementById("locationName").value = "";
-          document.getElementById("locationType").value = "";
-          document.getElementById("locationLat").value = "";
-          document.getElementById("locationLng").value = "";
-    
-          // 地図のピンも消す
-          if (window.locationMarker) {
-            window.locationMarker.remove();
-            window.locationMarker = null;
-          }
+      fetch("★あなたのGAS WebアプリURL★", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result.status === "ok") {
+            alert("地点登録が完了しました");
+      
+            // 入力欄クリア
+            document.getElementById("locationName").value = "";
+            document.getElementById("locationType").value = "";
+            document.getElementById("locationLat").value = "";
+            document.getElementById("locationLng").value = "";
+      
+            // 地図のピンも消す
+            if (window.locationMarker) {
+              window.locationMarker.remove();
+              window.locationMarker = null;
+            }
+          } else {
+            alert("地点登録に失敗しました: " + result.message);
+          } 
         })
-        .withFailureHandler((err) => {
-          alert("地点登録に失敗しました: " + err);
-        })
-        .registerLocationToSheet(payload);  // ← GAS 側の関数名
+        .catch(err => {
+          alert("通信エラー: " + err);
+        });
     }
 
     // 住所検索の処理
