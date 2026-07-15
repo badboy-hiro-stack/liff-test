@@ -487,7 +487,7 @@
     <h2>地点登録</h2>
   
     <!-- 登録方法選択 -->
-    <fieldset style="margin-bottom:15px;">
+    <!-- <fieldset style="margin-bottom:15px;">
       <legend>登録方法を選択</legend>
       <label>
         <input type="radio" name="locationMode" value="gps" checked>
@@ -497,7 +497,7 @@
         <input type="radio" name="locationMode" value="map">
         地図から登録
       </label>
-    </fieldset>
+    </fieldset> -->
 
     <!-- ▼ 地図表示領域（初期は非表示） -->
     <div id="locationMapContainer" style="display:none; margin-top:10px;">
@@ -505,7 +505,7 @@
     </div>
 
     <!-- ▼ 住所検索（初期は非表示） -->
-    <div style="margin-top:10px;">
+    <div id="addressSearchArea" style="display:none; margin-top:10px;">
       <input type="text" id="addressInput" placeholder="住所を入力" style="width:70%;">
       <button class="btnadmin" onclick="searchAddress()">住所検索</button>
     </div>
@@ -1251,7 +1251,10 @@
       const mapDiv = document.getElementById("locationMap");
       mapDiv.style.height = "600px";
       mapDiv.style.width = "100%";
-    
+
+      // ▼ 住所検索 UI を表示
+      document.getElementById("addressSearchArea").style.display = "block";
+      
       alert("地図領域を確保しました");
     
       setTimeout(() => {
@@ -1530,8 +1533,8 @@
             return;
           }
     
-          const lat = parseFloat(data[0].lat);
-          const lng = parseFloat(data[0].lon);
+          const lat = Number(data[0].lat).toFixed(5);
+          const lng = Number(data[0].lon).toFixed(5);
     
           // ▼ Leaflet の地図へ移動
           if (mapInstance) {
