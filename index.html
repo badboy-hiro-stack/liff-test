@@ -729,8 +729,8 @@
       
       // ★ GPS 取得
       const pos = await getLocation();
-      const lat = pos.latitude;
-      const lng = pos.longitude;
+      const lat = Number(pos.latitude).toFixed(5);
+      const lng = Number(pos.longitude).toFixed(5);
   
       // ★ GAS に地点判定を依頼
       const res = await fetch(gasUrl, {
@@ -1214,8 +1214,8 @@
       // 位置情報取得
       navigator.geolocation.getCurrentPosition(
         function (pos) {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
+          const lat = Number(pos.coords.latitude).toFixed(5);
+          const lng = Number(pos.coords.longitude).toFixed(5);
     
           // 画面の入力欄にセット
           document.getElementById("locationLat").value = lat;
@@ -2949,8 +2949,8 @@
       try {
         // 位置情報取得
         const pos = await getLocation();
-        const lat = pos.latitude;
-        const lng = pos.longitude;
+        const lat = Number(pos.latitude).toFixed(5);
+        const lng = Number(pos.longitude).toFixed(5);
     
         // LINEプロフィール取得
         const profile = await liff.getProfile();
