@@ -485,19 +485,6 @@
   <div id="screen-locationRegister" class="screen" style="display:none; padding:20px;">
   
     <h2>地点登録</h2>
-  
-    <!-- 登録方法選択 -->
-    <!-- <fieldset style="margin-bottom:15px;">
-      <legend>登録方法を選択</legend>
-      <label>
-        <input type="radio" name="locationMode" value="gps" checked>
-        GPSで登録
-      </label><br>
-      <label>
-        <input type="radio" name="locationMode" value="map">
-        地図から登録
-      </label>
-    </fieldset> -->
 
     <!-- ▼ 地図表示領域（初期は非表示） -->
     <div id="locationMapContainer" style="display:none; margin-top:10px;">
@@ -518,20 +505,20 @@
     <div style="margin-bottom:15px;">
       <button class="btnadmin" onclick="getCurrentLocation()">位置情報を取得（GPS）</button>
     </div>
-
+    <br>
     <!-- 座標情報 -->
     <div style="margin-bottom:15px;">
       <label style="text-align:left;">座標（緯度・経度）</label><br>
       <input type="text" id="locationLat" style="width:100%;" placeholder="緯度（例：35.27104）"><br>
       <input type="text" id="locationLng" style="width:100%; margin-top:5px;" placeholder="経度（例：139.68601）">
     </div>
-    
+    <br>
     <!-- 地点情報 -->
     <div style="margin-bottom:15px;">
       <label style="text-align:left;">地点名（店舗名）</label><br>
       <input type="text" id="locationName" style="width:100%;" placeholder="例：AVE 平成店">
     </div>
-  
+    <br>
     <div style="margin-bottom:15px;">
       <label style="text-align:left;">種別</label><br>
       <select id="locationType" style="width:100%;">
