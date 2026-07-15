@@ -504,6 +504,12 @@
       <div id="locationMap" style="width:100%; height:300px; border:1px solid #ccc;"></div>
     </div>
 
+    <!-- ▼ 住所検索（初期は非表示） -->
+    <div style="margin-top:10px;">
+      <input type="text" id="addressInput" placeholder="住所を入力" style="width:70%;">
+      <button class="btnadmin" onclick="searchAddress()">住所検索</button>
+    </div>
+    
     <!-- 地点情報 -->
     <div style="margin-bottom:15px;">
       <label>地点名（店舗名）</label><br>
@@ -1294,8 +1300,8 @@
     
             // ▼ 座標取得イベント（ここに置くのが最も安定）
             mapInstance.on('click', function(e) {
-              const lat = e.latlng.lat;
-              const lng = e.latlng.lng;
+              const lat = Number(e.latlng.lat).toFixed(5);
+              const lng = Number(e.latlng.lng).toFixed(5);
     
               if (window.locationMarker) {
                 window.locationMarker.remove();
@@ -1311,8 +1317,8 @@
             // ▼ 現在地を初期位置にする（GPSが使える場合）
             navigator.geolocation.getCurrentPosition(
               (pos) => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
+                const lat = Number(pos.coords.latitude).toFixed(5);
+                const lng = Number(pos.coords.longitude).toFixed(5);
     
                 mapInstance.setView([lat, lng], 19);  // ← 現在地へ移動（ズーム19）
                 alert("現在地へ移動しました");
@@ -1504,6 +1510,50 @@
     
       }, 200); // ← DOM 展開待ち
     } */
+
+    // 住所検索の処理
+    function searchAddress() {
+      const address = document.getElementById("addressInput").value.trim();
+      if (!address) {
+        alert("住所を入力してください");
+        return;
+      }
+    
+      // Nominatim API（無料）
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (!data || data.length === 0) {
+            alert("住所が見つかりませんでした");
+            return;
+          }
+    
+          const lat = parseFloat(data[0].lat);
+          const lng = parseFloat(data[0].lon);
+    
+          // ▼ Leaflet の地図へ移動
+          if (mapInstance) {
+            mapInstance.setView([lat, lng], 17);  // ← 詳細表示できるズーム
+          }
+    
+          // ▼ ピンを置く
+          if (window.locationMarker) {
+            window.locationMarker.remove();
+          }
+          window.locationMarker = L.marker([lat, lng]).addTo(mapInstance);
+    
+          // ▼ フォームにセット
+          document.getElementById("locationLat").value = lat;
+          document.getElementById("locationLng").value = lng;
+    
+          alert("住所から座標を取得しました");
+        })
+        .catch(err => {
+          alert("住所検索に失敗しました: " + err);
+        });
+    }
 
     // 日報読み込み
     async function loadDailyReport() {
