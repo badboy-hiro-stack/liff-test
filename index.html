@@ -1540,7 +1540,7 @@
     
       alert("地点登録を開始します");
     
-      fetch("★あなたのGAS WebアプリURL★", {
+      fetch(gasUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
