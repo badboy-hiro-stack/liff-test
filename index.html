@@ -1506,6 +1506,61 @@
 
     // 地点登録内容をGASに送信
     function registerLocation() {
+
+      const name = document.getElementById("locationName").value.trim();
+      const type = document.getElementById("locationType").value.trim();
+      const lat = document.getElementById("locationLat").value.trim();
+      const lng = document.getElementById("locationLng").value.trim();
+    
+      if (!name || !type || !lat || !lng) {
+        alert("未入力があります");
+        return;
+      }
+
+      // ▼ 座標を小数点以下5桁に統一
+      const latFixed = Number(lat).toFixed(5);
+      const lngFixed = Number(lng).toFixed(5);
+      
+      const payload = {
+        mode: "location",
+        name,
+        type,
+        latFixed,
+        lngFixed
+      };
+    
+      // ★ FormData にする（従業員登録と同じ方式）
+      const formData = new FormData();
+      for (const key in payload) {
+        formData.append(key, payload[key]);
+      }
+    
+      fetch(gasUrl, {
+        method: "POST",
+        body: formData
+      })
+        .then(res => res.text())
+        .then(text => {
+          let result;
+          try {
+            result = JSON.parse(text);
+          } catch (err) {
+            alert("JSON パース失敗: " + err);
+            return;
+          }
+    
+          if (result.status === "ok") {
+            alert("地点登録が完了しました");
+          } else {
+            alert("地点登録エラー: " + result.message);
+          }
+        })
+        .catch(err => {
+          alert("通信エラー: " + err);
+        });
+    }
+
+    /* function registerLocation() {
       const name = document.getElementById("locationName").value.trim();
       const type = document.getElementById("locationType").value.trim();
       const lat = document.getElementById("locationLat").value.trim();
@@ -1568,7 +1623,7 @@
         .catch(err => {
           alert("通信エラー: " + err);
         });
-    }
+    } */
 
     // 住所検索の処理
     function searchAddress() {
