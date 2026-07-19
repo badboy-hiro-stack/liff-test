@@ -1551,6 +1551,18 @@
     
           if (result.status === "ok") {
             alert("地点登録が完了しました");
+
+            // 入力欄クリア
+            document.getElementById("locationName").value = "";
+            document.getElementById("locationType").value = "";
+            document.getElementById("locationLat").value = "";
+            document.getElementById("locationLng").value = "";
+      
+            // 地図のピンも消す
+            if (window.locationMarker) {
+              window.locationMarker.remove();
+              window.locationMarker = null;
+            }
           } else {
             alert("地点登録エラー: " + result.message);
           }
