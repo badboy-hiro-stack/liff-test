@@ -818,3 +818,18 @@ label {
   transform: scale(0.95);
   background: #4D2C52;
 }
+
+.info div {
+  margin: 2px 0;
+}
+
+.btnadmin.small {
+  padding: 4px 8px;
+  font-size: 12px;
+  margin: 3px 0;
+  width: 70px;
+}
+
+.actions {
+  text-align: center;
+}
