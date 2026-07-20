@@ -550,13 +550,22 @@
     <h2>登録地点一覧</h2>
   
     <div id="locationListArea">
-      <table id="locationListTable" class="table">
+      <!-- <table id="locationListTable" class="table">
         <thead>
           <tr>
             <th>地点名</th>
             <th>緯度</th>
             <th>経度</th>
             <th>削除</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table> -->
+      <table id="locationListTable" class="table">
+        <thead>
+          <tr>
+            <th>地点情報</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -1738,6 +1747,31 @@
         const tr = document.createElement("tr");
     
         tr.innerHTML = `
+          <td class="info">
+            <div><strong>地点名：</strong>${item.name}</div>
+            <div><strong>緯度：</strong>${item.lat}</div>
+            <div><strong>経度：</strong>${item.lng}</div>
+          </td>
+    
+          <td class="actions">
+            <button class="btnadmin small" onclick="showMap('${item.lat}', '${item.lng}', '${item.name}')">地図</button>
+            <button class="btnadmin small" onclick="editLocation('${item.name}')">編集</button>
+            <button class="btnadmin small" onclick="deleteLocation('${item.name}')">削除</button>
+          </td>
+        `;
+    
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* function renderLocationList(list) {
+      const tbody = document.querySelector("#locationListTable tbody");
+      tbody.innerHTML = "";
+    
+      list.forEach(item => {
+        const tr = document.createElement("tr");
+    
+        tr.innerHTML = `
           <td>${item.name}</td>
           <td>${item.lat}</td>
           <td>${item.lng}</td>
@@ -1750,7 +1784,7 @@
     
         tbody.appendChild(tr);
       });
-    }
+    } */
 
     // 登録地点削除ボタン
     async function deleteLocation(name) {
