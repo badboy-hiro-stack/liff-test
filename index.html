@@ -1714,25 +1714,6 @@
       loadLocationList();
     }
 
-    // 登録地点一覧取得 API
-    function getLocationList() {
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
-      const sheet = ss.getSheetByName("地点登録");
-      const values = sheet.getDataRange().getValues();
-    
-      const list = [];
-    
-      for (let i = 1; i < values.length; i++) {
-        list.push({
-          lat: values[i][0],
-          lng: values[i][1],
-          name: values[i][2]
-        });
-      }
-    
-      return list;
-    }
-
     // 登録地点一覧取得処理
     async function loadLocationList() {
       const formData = new FormData();
