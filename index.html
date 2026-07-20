@@ -539,6 +539,27 @@
   
   </div>
 
+  <!-- 登録地点一覧 -->
+  <div id="screen-locationList" class="screen" style="display:none;">
+    <h2>登録地点一覧</h2>
+  
+    <div id="locationListArea">
+      <table id="locationListTable" class="table">
+        <thead>
+          <tr>
+            <th>地点名</th>
+            <th>緯度</th>
+            <th>経度</th>
+            <th>削除</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  
+    <button class="btnadmin" onclick="showScreen('screen-adminMenu')">戻る</button>
+  </div>
+
   <!-- 積み込みテンプレート -->
   <template id="loadingEventTemplate">
     <div class="card loading-event">
@@ -1679,6 +1700,90 @@
         .catch(err => {
           alert("住所検索に失敗しました: " + err);
         });
+    }
+
+    // 登録地点一覧画面を開く関数
+    function showScreenLocationList() {
+      showScreen("screen-locationList");
+      loadLocationList();
+    }
+
+    // 登録地点一覧取得 API
+    function getLocationList() {
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName("地点登録");
+      const values = sheet.getDataRange().getValues();
+    
+      const list = [];
+    
+      for (let i = 1; i < values.length; i++) {
+        list.push({
+          lat: values[i][0],
+          lng: values[i][1],
+          name: values[i][2]
+        });
+      }
+    
+      return list;
+    }
+
+    // 登録地点一覧取得処理
+    async function loadLocationList() {
+      const formData = new FormData();
+      formData.append("mode", "getLocationList");
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: formData
+      });
+    
+      const text = await res.text();
+      const list = JSON.parse(text);
+    
+      renderLocationList(list);
+    }
+
+    // テーブル描画処理
+    function renderLocationList(list) {
+      const tbody = document.querySelector("#locationListTable tbody");
+      tbody.innerHTML = "";
+    
+      list.forEach(item => {
+        const tr = document.createElement("tr");
+    
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.lat}</td>
+          <td>${item.lng}</td>
+          <td>
+            <button class="btnadmin" onclick="deleteLocation('${item.name}')">
+              削除
+            </button>
+          </td>
+        `;
+    
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 登録地点削除ボタン
+    async function deleteLocation(name) {
+      const formData = new FormData();
+      formData.append("mode", "deleteLocation");
+      formData.append("name", name);
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: formData
+      });
+    
+      const text = await res.text();
+      const result = JSON.parse(text);
+    
+      alert(result.message);
+    
+      // ★ 一覧を再読み込み
+      loadLocationList();
     }
 
     // 日報読み込み
