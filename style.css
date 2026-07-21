@@ -832,7 +832,7 @@ label {
 }
 
 /* 地図（紫） */
-.btn-map {
+.actions .btn-map {
   display: block;
   width: 100%;
   padding: 10px 0;
@@ -845,7 +845,7 @@ label {
 }
 
 /* 編集（緑） */
-.btn-edit {
+.actions .btn-edit {
   display: block;
   width: 100%;
   padding: 10px 0;
@@ -858,7 +858,7 @@ label {
 }
 
 /* 削除（赤） */
-.btn-delete {
+.actions .btn-delete {
   display: block;
   width: 100%;
   padding: 10px 0;
