@@ -819,17 +819,22 @@ label {
   background: #4D2C52;
 }
 
-.info div {
-  margin: 2px 0;
+.info {
+  text-align: left;
 }
 
-.btnadmin.small {
-  padding: 4px 8px;
-  font-size: 12px;
+.info div {
   margin: 3px 0;
-  width: 70px;
 }
 
 .actions {
   text-align: center;
 }
+
+.btnadmin.small {
+  padding: 4px 8px;
+  font-size: 12px;
+  margin: 4px 0;
+  width: 80px; /* ボタン幅を揃える */
+}
+
