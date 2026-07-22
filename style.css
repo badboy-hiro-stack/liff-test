@@ -831,12 +831,36 @@ label {
   text-align: center;
 }
 
-.btnadmin.big {
+.btnadmin.big1 {
   display: block;
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
   margin: 6px 0;
+  background-color: #4A90E2;
+  color: white;
+  border: none;
   border-radius: 6px;
 }
-
+.btnadmin.big2 {
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  margin: 6px 0;
+  background-color: #50C878;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+.btnadmin.big3 {
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  margin: 6px 0;
+  background-color: #E74C3C;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
