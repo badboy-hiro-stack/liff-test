@@ -834,13 +834,12 @@ label {
 .btn-big {
   display: block;
   width: 100%;
-  padding: 12px 0;
-  font-size: 18px;
-  margin: 8px 0;
-  border-radius: 8px;
-  color: white;
-  border: none;
+  padding: 10px 0;
+  font-size: 16px;
+  margin: 6px 0;
+  border-radius: 6px;
 }
+
 .btn-map { background-color: #4A90E2; }   /* 青 */
 .btn-edit { background-color: #50C878; }  /* 緑 */
 .btn-delete { background-color: #E74C3C; } /* 赤 */
