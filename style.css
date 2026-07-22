@@ -839,7 +839,6 @@ label {
   margin: 6px 0;
   background-color: #4A90E2;
   color: white;
-  border: none;
   border-radius: 6px;
 }
 .btnadmin.big2 {
@@ -850,7 +849,6 @@ label {
   margin: 6px 0;
   background-color: #50C878;
   color: white;
-  border: none;
   border-radius: 6px;
 }
 .btnadmin.big3 {
@@ -861,6 +859,5 @@ label {
   margin: 6px 0;
   background-color: #E74C3C;
   color: white;
-  border: none;
   border-radius: 6px;
 }
