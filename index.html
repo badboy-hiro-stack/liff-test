@@ -548,19 +548,7 @@
   <!-- 登録地点一覧 -->
   <div id="screen-locationList" class="screen" style="display:none;">
     <h2>登録地点一覧</h2>
-  
     <div id="locationListArea">
-      <!-- <table id="locationListTable" class="table">
-        <thead>
-          <tr>
-            <th>地点名</th>
-            <th>緯度</th>
-            <th>経度</th>
-            <th>削除</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table> -->
       <table id="locationListTable" class="table">
         <thead>
           <tr>
@@ -572,6 +560,28 @@
       </table>
     </div>
     <button class="btnadmin" onclick="showlocationRegister()">戻る</button>
+  </div>
+
+  <!-- 登録地点編集 -->
+  <div id="editModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>地点編集</h3>
+  
+      <label>地点名</label>
+      <input type="text" id="editName">
+  
+      <label>緯度</label>
+      <input type="text" id="editLat">
+  
+      <label>経度</label>
+      <input type="text" id="editLng">
+  
+      <label>種別</label>
+      <input type="text" id="editType">
+  
+      <button class="btn-big btn-edit" onclick="saveLocationEdit()">保存</button>
+      <button class="btn-big btn-delete" onclick="closeEditModal()">閉じる</button>
+    </div>
   </div>
 
   <!-- 積み込みテンプレート -->
@@ -1786,6 +1796,47 @@
       });
     } */
 
+    // 登録地点の編集処理
+    function editLocation(name) {
+      // 一覧データから該当地点を取得（一覧データを保持している前提）
+      const item = window.locationList.find(x => x.name === name);
+    
+      document.getElementById("editName").value = item.name;
+      document.getElementById("editLat").value = item.lat;
+      document.getElementById("editLng").value = item.lng;
+      document.getElementById("editType").value = item.type;
+    
+      document.getElementById("editModal").style.display = "block";
+    }
+
+    // モーダルを閉じる関数
+    function closeEditModal() {
+      document.getElementById("editModal").style.display = "none";
+    }
+
+    // 登録地点更新処理
+    async function saveLocationEdit() {
+      const formData = new FormData();
+      formData.append("mode", "updateLocation");
+      formData.append("name", document.getElementById("editName").value);
+      formData.append("lat", document.getElementById("editLat").value);
+      formData.append("lng", document.getElementById("editLng").value);
+      formData.append("type", document.getElementById("editType").value);
+    
+      const res = await fetch(gasUrl, {
+        method: "POST",
+        body: formData
+      });
+    
+      const text = await res.text();
+      const result = JSON.parse(text);
+    
+      alert(result.message);
+    
+      closeEditModal();
+      loadLocationList(); // 一覧再読み込み
+    }
+    
     // 登録地点削除ボタン
     async function deleteLocation(name) {
       const formData = new FormData();
