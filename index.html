@@ -1744,7 +1744,9 @@
     
       const text = await res.text();
       const list = JSON.parse(text);
-    
+
+      window.locationList = list;
+      
       renderLocationList(list);
     }
 
