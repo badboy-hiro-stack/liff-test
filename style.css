@@ -831,11 +831,11 @@ label {
   text-align: center;
 }
 
-.btnadmin.big {
+.btnadminbig {
   display: block;
   width: 100%;
   padding: 10px 0;
-  font-size: 30px;
+  font-size: 36px;
   margin: 6px 0;
   border-radius: 6px;
 }
@@ -862,5 +862,5 @@ label {
   width: 100%;
   padding: 10px;
   margin: 6px 0 12px 0;
-  font-size: 30px;
+  font-size: 36px;
 }
