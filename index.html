@@ -565,22 +565,37 @@
   <!-- 登録地点編集 -->
   <div id="editModal" class="modal" style="display:none;">
     <div class="modal-content">
+  
       <h3>地点編集</h3>
   
-      <label>地点名</label>
-      <input type="text" id="editName">
+      <!-- 地点名 -->
+      <div class="edit-block">
+        <label>地点名</label>
+        <input type="text" id="editName">
+      </div>
   
-      <label>緯度</label>
-      <input type="text" id="editLat">
+      <!-- 種別（プルダウン） -->
+      <div class="edit-block">
+        <label>種別</label>
+        <select id="editType"></select>
+      </div>
   
-      <label>経度</label>
-      <input type="text" id="editLng">
+      <!-- 緯度・経度（再取得） -->
+      <div class="edit-block">
+        <label>緯度・経度</label>
+        <div id="editLatLngDisplay">
+          緯度：<span id="editLat"></span><br>
+          経度：<span id="editLng"></span>
+        </div>
   
-      <label>種別</label>
-      <input type="text" id="editType">
+        <button class="btn-big btn-map" onclick="getLatLngFromMap()">地図から再取得</button>
+        <button class="btn-big btn-map" onclick="getLatLngFromGPS()">現在地から再取得</button>
+      </div>
   
-      <button class="btnadmin big" onclick="saveLocationEdit()">保存</button>
-      <button class="btnadmin big" onclick="closeEditModal()">閉じる</button>
+      <!-- 保存・閉じる -->
+      <button class="btn-big btn-edit" onclick="saveLocationEdit()">保存</button>
+      <button class="btn-big btn-delete" onclick="closeEditModal()">閉じる</button>
+  
     </div>
   </div>
 
@@ -1682,6 +1697,28 @@
         });
     } */
 
+    // 現在地から再取得
+    function getLatLngFromGPS() {
+      navigator.geolocation.getCurrentPosition(pos => {
+        document.getElementById("editLat").textContent = pos.coords.latitude;
+        document.getElementById("editLng").textContent = pos.coords.longitude;
+      });
+    }
+
+    // 種別プルダウンの生成（店名マスタ連携）
+    function setTypePulldown(selectedType) {
+      const sel = document.getElementById("editType");
+      sel.innerHTML = "";
+    
+      window.typeList.forEach(type => {
+        const opt = document.createElement("option");
+        opt.value = type;
+        opt.textContent = type;
+        if (type === selectedType) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
     // 住所検索の処理
     function searchAddress() {
       const address = document.getElementById("addressInput").value.trim();
@@ -1798,15 +1835,43 @@
       });
     } */
 
+    // 種別一覧を取得する関数
+    async function loadTypeList() {
+      const formData = new FormData();
+      formData.append("mode", "getTypeList");
+    
+      const res = await fetch(gasUrl, { method: "POST", body: formData });
+      const result = JSON.parse(await res.text());
+    
+      window.typeList = result.typeList; // ★ 種別一覧を保持
+    }
+
+    // 編集画面のプルダウンに反映
+    function setTypePulldown(selectedType) {
+      const sel = document.getElementById("editType");
+      sel.innerHTML = "";
+    
+      window.typeList.forEach(type => {
+        const opt = document.createElement("option");
+        opt.value = type;
+        opt.textContent = type;
+        if (type === selectedType) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
     // 登録地点の編集処理
     function editLocation(name) {
       // 一覧データから該当地点を取得（一覧データを保持している前提）
       const item = window.locationList.find(x => x.name === name);
     
       document.getElementById("editName").value = item.name;
+      
+      // 種別プルダウン
+      setTypePulldown(item.type);
+      
       document.getElementById("editLat").value = item.lat;
       document.getElementById("editLng").value = item.lng;
-      document.getElementById("editType").value = item.type;
     
       document.getElementById("editModal").style.display = "block";
     }
