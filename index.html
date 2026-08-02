@@ -1766,6 +1766,29 @@
           </td>
     
           <td class="actions">
+            <button class="btnadmin big" onclick="deleteLocation('${item.name}')">削除</button>
+          </td>
+        `;
+    
+        tbody.appendChild(tr);
+      });
+    }
+    
+    /* function renderLocationList(list) {
+      const tbody = document.querySelector("#locationListTable tbody");
+      tbody.innerHTML = "";
+    
+      list.forEach(item => {
+        const tr = document.createElement("tr");
+    
+        tr.innerHTML = `
+          <td class="info">
+            <div><strong>地点名：</strong>${item.name}</div>
+            <div><strong>緯度：</strong>${item.lat}</div>
+            <div><strong>経度：</strong>${item.lng}</div>
+          </td>
+    
+          <td class="actions">
             <button class="btnadmin big" onclick="showMap('${item.lat}', '${item.lng}', '${item.name}')">地図</button>
             <button class="btnadmin big" onclick="editLocation('${item.name}')">編集</button>
             <button class="btnadmin big" onclick="deleteLocation('${item.name}')">削除</button>
@@ -1774,7 +1797,7 @@
     
         tbody.appendChild(tr);
       });
-    }
+    } */
 
     /* function renderLocationList(list) {
       const tbody = document.querySelector("#locationListTable tbody");
